@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <% include partials/head.html%>
+</head>
+
+<body>
+  <% include partials/navigation.html%>
+
+  <body>
+    <div class="login">
+      <div class="heading">
+        <h2>Iniciar sesion</h2>
+        <form action="#">
+          <form action="/">
+            <hr>
+
+            <div class="input-group input-group-lg">
+              <span class="input-group-addon"><i class="fa fa-user"></i></span>
+              <input type="text" class="form-control" placeholder="Cedula de identidad">
+            </div>
+
+            <div class="input-group input-group-lg">
+              <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+              <input type="password" class="form-control" placeholder="Contraseña">
+            </div>
+            <ul>¿Olvidó la contraseña?<a href="/contrasena">Click aqui</a></ul>
+            <form action="/">
+              <hr>
+
+              <a href="/micuenta" class="button">Entrar</a>
+            </form>
+      </div>
+    </div>
+    <% include partials/footer.html%>
+  </body>
+
+</html>
