@@ -1,0 +1,53 @@
+.main{
+   background: #6da7de;
+}
+.menu{
+   background: #acacac;
+   color: #000;
+   margin-top: 1em;
+}
+
+.justified {
+  text-align: justify;
+}
+
+.centered {
+  text-align: center;
+}
+
+.margin {
+  margin: .5em;
+}
+.margin-bottom{
+  margin-bottom: .5em;
+}
+
+.btn.btn-link{
+  padding:0;
+  font-size: 1em;
+  color:#fff;
+  text-decoration: none;
+  transition: all 500ms ease;
+}
+.btn.btn-link:hover{
+  color: #6ddede;
+  font-size: 1.1em;
+  text-decoration: none;
+  transition: all 500ms ease;
+}
+
+#o{
+  font-weight: 200;
+  color: #626262
+}
+
+#h5link{
+  color: #000;
+}
+
+#h5link:hover{
+  color: #6ddede;
+  font-size: 1em;
+  text-decoration: none;
+  transition: all 500ms ease;
+}
