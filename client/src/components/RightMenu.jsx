@@ -35,7 +35,7 @@ class RightMenu extends Component {
       <ul className="nav nav-pills nav-fill">
         <li className="nav-item">
           <Link className={
-            this.state.active === "login" ? "nav-link active" : "nav-link"
+            this.state.active === "signin" ? "nav-link active" : "nav-link"
           }
              to="/iniciosesion">
             Iniciar Sesion
@@ -43,7 +43,7 @@ class RightMenu extends Component {
         </li>
         <li className="nav-item">
           <Link className={
-              this.state.active === "registry" ? "nav-link active" : "nav-link"
+              this.state.active === "signup" ? "nav-link active" : "nav-link"
             }
             to="/registro/">
             Registro / Afiliacion

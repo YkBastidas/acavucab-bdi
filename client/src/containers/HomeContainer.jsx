@@ -40,7 +40,7 @@ export default class HomeContainer extends Component {
           <Carousel title="Más Buscados" slide1={slider1} slide2={slider2} slide3={slider3}/>
         </div>
         <div className=" col-sm-12 col align-self-center">
-          <ProductLine title="Top Discounts" product1={discount1} product2={discount2} product3={discount3} product4={discount4} product5={discount5} />
+          <ProductLine title="Mejores Descuentos" product1={discount1} product2={discount2} product3={discount3} product4={discount4} product5={discount5} />
         </div>
         <div className="col-sm-8 col">
           <SideEvents title="Eventos" image1={event1} image2={event2} image3={event3} image4={event4}/>
