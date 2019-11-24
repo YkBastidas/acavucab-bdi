@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
 
-class TopDiscount extends Component{
+class ProductLine extends Component{
     constructor(props) {
       super(props);
       this.state = {
         title: props.title,
-        discount1: props.image1,
-        discount2: props.image2,
-        discount3: props.image3,
-        discount4: props.image4,
-        discount5: props.image5
+        image1: props.product1,
+        image2: props.product2,
+        image3: props.product3,
+        image4: props.product4,
+        image5: props.product5
     }
   }
   render(){
@@ -23,23 +23,23 @@ class TopDiscount extends Component{
           </h4>
         </div>
         <div className="col-sm-2 mr-auto align-self-center margin">
-          <img src={this.state.discount1} alt="Top Discount 1" style={{width: "inherit"}}/>
+          <img src={this.state.image1} alt="Top Discount 1" style={{width: "inherit"}}/>
         </div>
         <div className="col-sm-2 mr-auto align-self-center margin">
-          <img src={this.state.discount2} alt="Top Discount 2" style={{width: "inherit"}}/>
+          <img src={this.state.image2} alt="Top Discount 2" style={{width: "inherit"}}/>
         </div>
         <div className="col-sm-2 mr-auto align-self-center margin">
-          <img src={this.state.discount3} alt="Top Discount 3" style={{width: "inherit"}}/>
+          <img src={this.state.image3} alt="Top Discount 3" style={{width: "inherit"}}/>
         </div>
         <div className="col-sm-2 mr-auto align-self-center margin">
-          <img src={this.state.discount4} alt="Top Discount 4" style={{width: "inherit"}}/>
+          <img src={this.state.image4} alt="Top Discount 4" style={{width: "inherit"}}/>
         </div>
         <div className="col-sm-2 mr-auto align-self-center margin">
-          <img src={this.state.discount5} alt="Top Discount 5" style={{width: "inherit"}}/>
+          <img src={this.state.image5} alt="Top Discount 5" style={{width: "inherit"}}/>
         </div>
       </section>
     )
   }
 }
 
-export default TopDiscount
+export default ProductLine

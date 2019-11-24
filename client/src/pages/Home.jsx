@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import './Home.css'
-import '../styles/Main.css';
 
 import HomeContainer from '../containers/HomeContainer';
 import Banner from '../components/Banner.jsx';

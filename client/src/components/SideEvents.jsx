@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 
-class HomeEvent extends Component{
+class SideEvents extends Component{
     constructor(props) {
       super(props);
       this.state = {
         title: props.title,
         event1: props.image1,
         event2: props.image2,
-        event3: props.image3
+        event3: props.image3,
+        event4: props.image4
     }
   }
   render(){
@@ -41,8 +42,7 @@ class HomeEvent extends Component{
                 <span><i className="fi-calendar"> 11/09/19 &nbsp;&nbsp;</i></span>
                 <span><i className="fi-comments"> 0 comments</i></span>
             </p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae impedit beatae, ipsum
-                delectus aperiam nesciunt magni facilis ullam.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae impedit beatae, ipsum delectus aperiam nesciunt magni facilis ullam.</p>
           </div>
           <div className=" col-6 margin-bottom">
             <img src={this.state.event3} alt="Event 3" style={{width: "inherit"}}/>
@@ -54,12 +54,23 @@ class HomeEvent extends Component{
                 <span><i className="fi-calendar"> 11/09/19 &nbsp;&nbsp;</i></span>
                 <span><i className="fi-comments"> 0 comments</i></span>
             </p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae impedit beatae, ipsum
-                delectus aperiam nesciunt magni facilis ullam.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae impedit beatae, ipsum delectus aperiam nesciunt magni facilis ullam.</p>
+          </div>
+          <div className=" col-6 margin-bottom">
+            <img src={this.state.event3} alt="Event 3" style={{width: "inherit"}}/>
+          </div>
+          <div className="justified col-6">
+            <h5> <Link to="#" id="h5link"> A new Event is making this page a lot better, Bootstrap4 is Amazing! </Link> </h5>
+            <p>
+                <span><i className="fi-torso"> By Yorfrank &nbsp;&nbsp;</i></span>
+                <span><i className="fi-calendar"> 23/11/19 &nbsp;&nbsp;</i></span>
+                <span><i className="fi-comments"> 0 comments</i></span>
+            </p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae impedit beatae, ipsum delectus aperiam nesciunt magni facilis ullam.</p>
           </div>
       </section>
     )
   }
 }
 
-export default HomeEvent
+export default SideEvents
