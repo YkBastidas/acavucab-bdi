@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import Banner from '../components/Banner.jsx';
 import Footer from '../components/Footer.jsx';
+import ContactContainer from '../containers/ContactContainer';
 
 class Contacto extends Component {
   render() {
@@ -13,9 +14,7 @@ class Contacto extends Component {
       </header>
       <br/>
       <div className="container">
-        {
-          //TODO: ContactContainer
-        }
+        <ContactContainer/>
       </div>
       <br/>
       <div className="container-fluid">
