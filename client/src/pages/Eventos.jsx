@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 
+import EventsContainer from '../containers/EventsContainer';
 import Banner from '../components/Banner.jsx';
 import Footer from '../components/Footer.jsx';
 
@@ -13,9 +14,7 @@ class Eventos extends Component {
       </header>
       <br/>
       <div className="container">
-        {
-          //TODO: EventsContainer}
-        }
+        <EventsContainer/>
       </div>
       <br/>
       <div className="container-fluid">
