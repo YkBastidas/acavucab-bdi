@@ -8,6 +8,7 @@ import Home from './pages/Home'
 import TipoCervezas from './pages/TipoCervezas'
 import Eventos from './pages/Eventos'
 import Tienda from './pages/Tienda'
+import Personal from './pages/Personal'
 import InicioSesion from './pages/InicioSesion'
 import Registro from './pages/Registro'
 import Carrito from './pages/Carrito'
@@ -25,6 +26,7 @@ class App extends Component {
             <Route path="/tipocerveza/" component={TipoCervezas}/>
             <Route path="/eventos/" component={Eventos}/>
             <Route path="/tienda/" component={Tienda}/>
+            <Route path="/personal/" component={Personal}/>
             <Route path="/iniciosesion/" component={InicioSesion}/>
             <Route path="/registro/" component={Registro}/>
             <Route path="/carrito/" component={Carrito}/>
