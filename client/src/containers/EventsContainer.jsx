@@ -20,10 +20,22 @@ export default class EventsContainer extends Component {
       return (
         <section className=" row align-items-center">
           <div className="callout col-sm-12 alert alert-primary" role="alert">
+<<<<<<< Updated upstream
             <Link to="#" className="alert-link">
               > AGREGAR EVENTO
             </Link>
           </div>
+=======
+            <Link to="/agregarevento" className="alert-link">
+              > AGREGAR EVENTO
+            </Link>
+          </div>
+          <div className="callout col-sm-12 alert alert-primary" role="alert">
+            <Link to="/modificarevento" className="alert-link">
+              > MODIFICAR EVENTO
+            </Link>
+          </div>
+>>>>>>> Stashed changes
           <div className="col-sm-12 col align-self-center">
             <hr/>
             <SideEvents title="Eventos" image1={event1} image2={event2} image3={event3} image4={event4}/>
