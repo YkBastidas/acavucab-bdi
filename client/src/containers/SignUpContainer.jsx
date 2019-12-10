@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+﻿import React, {Component} from 'react';
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import {withRouter} from 'react-router-dom';
 import axios from 'axios';
@@ -49,7 +49,7 @@ function validate(user) {
     homeMunicipality = document.getElementById('homeMunicipality').value;
     homeParish = document.getElementById('homeParish').value;
     homeAvenue = document.getElementById('homeAvenue').value;
-    homeBuilding = document.getElementById('homeBuildinge').value;
+    homeBuilding = document.getElementById('homeBuilding').value;
     homeFloor = document.getElementById('homeFloor').value;
     homeOffice = document.getElementById('homeOffice').value;
     homeApartment = document.getElementById('homeApartment').value;
