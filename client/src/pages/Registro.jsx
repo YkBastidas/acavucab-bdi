@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 
+import SignUpContainer from '../containers/SignUpContainer';
 import Banner from '../components/Banner.jsx';
 import Footer from '../components/Footer.jsx';
 
@@ -12,11 +13,7 @@ class Registro extends Component {
         </div>
       </header>
       <br/>
-      <div className="container">
-        {
-          //TODO: SignUpContainer}
-        }
-      </div>
+          <SignUpContainer/>
       <br/>
       <div className="container-fluid">
         <Footer/>
