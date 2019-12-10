@@ -1,22 +1,20 @@
 import React, {Component} from 'react';
 
-import SignInContainer from '../containers/SignInContainer';
 import Banner from '../components/Banner.jsx';
 import Footer from '../components/Footer.jsx';
+import CodigoConfirmacionContainer from '../containers/CodigoConfirmacionContainer';
 
-class InicioSesion extends Component {
+class CodigoConfirmacion extends Component {
   render() {
     return (<div>
       <header>
         <div className="container">
-          <Banner active="signin"/>
+          <Banner active="contact"/>
         </div>
       </header>
       <br/>
       <div className="container">
-        {
-        <SignInContainer/>
-        }
+        <CodigoConfirmacionContainer/>
       </div>
       <br/>
       <div className="container-fluid">
@@ -26,4 +24,4 @@ class InicioSesion extends Component {
   }
 }
 
-export default InicioSesion
+export default CodigoConfirmacion
