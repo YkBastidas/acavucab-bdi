@@ -1,23 +1,20 @@
 import React, {Component} from 'react';
 
-import ShopContainer from '../containers/ShopContainer';
+import MetodoPagoTiendaContainer from '../containers/MetodoPagoTiendaContainer';
 import Banner from '../components/Banner.jsx';
 import Footer from '../components/Footer.jsx';
 
-class Tienda extends Component {
+class MetodoPagoTienda extends Component {
   render() {
     return (<div>
       <header>
         <div className="container">
-          <Banner active="shop"/>
+          <Banner/>
         </div>
       </header>
       <br/>
       <div className="container">
-        {
-        <ShopContainer/>
-        }
-        <hr></hr>
+        <MetodoPagoTiendaContainer/>
       </div>
       <br/>
       <div className="container-fluid">
@@ -27,4 +24,4 @@ class Tienda extends Component {
   }
 }
 
-export default Tienda
+export default MetodoPagoTienda
