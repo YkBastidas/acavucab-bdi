@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import Banner from '../components/Banner.jsx';
 import Footer from '../components/Footer.jsx';
+import BeerTypeContainer from '../containers/BeerTypeContainer';
 
 class TipoCervezas extends Component {
   render() {
@@ -14,7 +15,7 @@ class TipoCervezas extends Component {
       <br/>
       <div className="container">
         {
-          //TODO: BeerTypeContainer}
+        <BeerTypeContainer/>
         }
       </div>
       <br/>
