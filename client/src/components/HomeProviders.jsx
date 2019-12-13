@@ -24,33 +24,25 @@ class HomeProviders extends Component{
             <img src={this.state.image1} alt="Proveedor 1" style={{width: "inherit"}}/>
         </div>
         <div className="justified col-6 align-self-center">
-            <p>
               <h5> All I need is a space suit and I'm ready to go. </h5>
-            </p>
         </div>
         <div className="col-6 margin-bottom">
             <img src={this.state.image2} alt="Proveedor 2" style={{width: "inherit"}}/>
         </div>
         <div className="justified col-6 align-self-center">
-            <p>
             <h5> Are the stars out tonight? I don't know if it's cloudy or bright. </h5>
-            </p>
         </div>
         <div className="col-6 margin-bottom">
             <img src={this.state.image3} alt="Proveedor 3" style={{width: "inherit"}}/>
         </div>
         <div className="justified col-6 align-self-center">
-            <p>
             <h5> And the world keeps spinning. </h5>
-            </p>
         </div>
         <div className="col-6 margin-bottom">
             <img src={this.state.image4} alt="Proveedor 4" style={{width: "inherit"}}/>
         </div>
         <div className="justified col-6 align-self-center">
-            <p>
             <h5> Cold hearted orb that rules the night. </h5>
-            </p>
         </div>
       </section>
     )

@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import axios from 'axios';
 
-import slider1 from '../images/slider1.png'
-import slider2 from '../images/slider2.png'
-import slider3 from '../images/slider3.png'
+import slider1 from '../images/homeSlider1.png'
+import slider2 from '../images/homeSlider2.png'
+import slider3 from '../images/homeSlider3.png'
 import slider4 from '../images/topbeer1.png'
 import slider5 from '../images/topbeer2.png'
 import slider6 from '../images/topbeer3.png'

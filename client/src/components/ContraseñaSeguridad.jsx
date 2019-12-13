@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 
-class ContraseñaSeguridad extends Component{
+class ContrasenhaSeguridad extends Component{
     constructor(props) {
       super(props);
       this.state = {
         title: props.title,
-        
+
     }
 }
 render(){
@@ -20,7 +20,7 @@ render(){
                     <div class="form-group">
                         <label for="exampleInputEmail1">Contraseña</label>
                         <input type="nombre" class="form-control" id="nombre" aria-describedby="nombre" required></input>
-                            
+
                     </div>
                             <div class="col-12 col-sm-7 col-lg-5">
                                 <button type="submit" class="btn btn-primary"><a href="/micuenta" class="button">Guardar Cambios</a></button>
@@ -31,4 +31,4 @@ render(){
     )
 }
 }
-export default ContraseñaSeguridad
+export default ContrasenhaSeguridad

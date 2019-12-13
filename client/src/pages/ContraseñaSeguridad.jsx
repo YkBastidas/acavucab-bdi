@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import ContraseñaSeguridadContainer from '../containers/ContraseñaSeguridadContainer';
+import ContrasenhaSeguridadContainer from '../containers/ContraseñaSeguridadContainer';
 import Banner from '../components/Banner.jsx';
 import Footer from '../components/Footer.jsx';
 
@@ -14,7 +14,7 @@ class ContraseñaSeguridad extends Component {
       </header>
       <br/>
       <div className="container">
-        <ContraseñaSeguridadContainer/>
+        <ContrasenhaSeguridadContainer/>
       </div>
       <br/>
       <div className="container-fluid">

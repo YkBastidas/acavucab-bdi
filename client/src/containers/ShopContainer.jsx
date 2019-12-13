@@ -16,16 +16,16 @@ import classic3 from '../images/classic3.png'
 import classic4 from '../images/classic4.png'
 import classic5 from '../images/classic5.png'
 
-import discount1 from "../images/discount1.png"
-import discount2 from "../images/discount2.png"
-import discount3 from "../images/discount3.png"
-import discount4 from "../images/discount4.png"
-import discount5 from "../images/discount5.png"
+import discount1 from "../images/homeDiscount1.png"
+import discount2 from "../images/homeDiscount2.png"
+import discount3 from "../images/homeDiscount3.png"
+import discount4 from "../images/homeDiscount4.png"
+import discount5 from "../images/homeDiscount5.png"
 
 import member1 from "../images/member1.png"
 import member2 from "../images/member2.png"
-import member3 from "../images/member3.png"       
-        
+import member3 from "../images/member3.png"
+
 import provider1 from "../images/provider1.png"
 import provider2 from "../images/provider2.png"
 
