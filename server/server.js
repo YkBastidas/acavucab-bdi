@@ -1,51 +1,33 @@
-//require('dotenv').config();
+//INITIALIZING THE SERVER
+const express = require('express')
+const path = require('path')
+const bodyParser = require('body-parser')
+const app = express()
+const port = 8000
+const publicPath = path.join(__dirname, '..', 'client', 'build')
 
-const express = require('express'); // framework de node para gestionar rutas/servidor
-const bodyParser = require('body-parser'); // permite leer la data de las forms en req.body
-const path = require('path'); //une fragmentos de url
-const passport = require('passport'); //permite gestionar sesiones del usuario
-const morgan = require('morgan'); //loggea las request en la consola (para debuggear)
-const cookieParser = require('cookie-parser'); //permite leer las cookies
-const cors = require('cors');
-const cookieSession = require('cookie-session');
-var corsOptions = {
-  origin: 'localhost:3000',
-  credentials : true
- }
+app.use(bodyParser.json())
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+)
+;
+app.use(express.static(path.join(publicPath)))
 
-const helmet = require('helmet'); //escribe los headers de las requests
-const publicPath = path.join(__dirname, '..', 'client', 'build');
-const PORT = process.env.PORT || 8000; // numero del puerto a escuchar
-const router = require('./routes/routes.js'); // conecta las rutas
+/* Look for te queries file set the HTTP request method,
+the endpoint URL path, and the relevant function */
+const db = require('./queries.js')
 
+app.get('/ping', (req, res) => {
+  return res.send('pong')
+}) //TESTING THE SERVER
+app.get('/', (req, res) => {
+  res.sendFile(path.join(publicPath, 'index.html'))
+}) //serve the static build of the React app
 
-const app = express();
-
-app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']) 
-
-app.use(bodyParser.urlencoded({extended: true})); 
-app.use(express.static(path.join(publicPath))); //une server y cliente
-app.use(bodyParser.json()); 
-app.use(morgan('dev')); 
-app.use(cookieParser()); 
-app.use(cors(corsOptions));
-app.use(helmet()); 
-
-
-app.use(cookieSession({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false }
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-require('./middleware/passport.js')(passport);
-
-//Usa las rutas
-app.use('/', router);
+/*
 app.use('/bd/tipocerveza', router);
-app.use('/bd/eventos', router);
 app.use('/bd/agregarevento', router);
 app.use('/bd/modificarevento', router);
 app.use('/bd/eliminarevento', router);
@@ -88,36 +70,11 @@ app.use('/bd/eliminardireccion', router);
 app.use('/bd/carrito', router);
 app.use('/bd/metodopago', router);
 app.use('/bd/metodopagotienda', router);
+ */
 
-//mandar todo get a front para react router 
-app.get('*', (req, res) => {
-  console.log(req.sessionID)
-  console.log(`req.session.passport: ${JSON.stringify(req.session.passport)}`)
-  console.log(`req.user: ${JSON.stringify(req.user)}`)
-  res.sendFile(path.join(publicPath, '../client/build/index.html'));
-});
+app.get('/read/eventos', db.getEvents) // GET ALL EVENTS
 
-
-//asd
-//Error 404
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-// Comienza el server en el puerto
-app.listen(PORT, (err) => {
-  if (err) {
-    console.log('Hubo un error conectando el servidor', err);
-  }
-  else { 
-    console.log('Usted se ha conectado en el puerto: ', PORT); 
-  }
-});
-
-module.exports = app;
+//LISTEN THE SERVER IN THE PORT
+app.listen(port, () => {
+  console.log(`App running on port ${port}.`)
+})
