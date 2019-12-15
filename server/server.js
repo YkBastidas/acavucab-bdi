@@ -73,6 +73,7 @@ app.use('/bd/metodopagotienda', router);
  */
 
 app.get('/read/eventos', db.getEvents) // GET ALL EVENTS
+app.get('/read/direcciones', db.getDirecciones) // GET ALL ADDRESSES
 
 //LISTEN THE SERVER IN THE PORT
 app.listen(port, () => {
