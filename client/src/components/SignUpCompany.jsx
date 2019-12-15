@@ -92,7 +92,7 @@ class SignUpCompany extends Component{
       }
     }
   }
-  componentWillMount() {
+  componentDidMount() {
     axios.get('/venezuela.json')
       .then((res)=> {
         // handle success

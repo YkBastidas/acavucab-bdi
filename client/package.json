@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8000/",
   "dependencies": {
     "axios": "^0.18.1",
     "cheeseburger-menu": "0.0.13",
@@ -22,7 +23,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:3000/",
   "eslintConfig": {
     "extends": "react-app"
   },

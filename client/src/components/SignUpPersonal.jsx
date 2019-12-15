@@ -108,7 +108,7 @@ class SignUpPersonal extends Component{
       }
     }
   }
-  componentWillMount() {
+  componentDidMount() {
     axios.get('/venezuela.json')
       .then((res)=> {
         // handle success
@@ -150,7 +150,7 @@ class SignUpPersonal extends Component{
                 help= "true" helptext="Ingrese únicamente los números del RIF sin el prefijo J-."/>
               </div>
               <div className="col-md-2 mb-3">
-                <Input title={"* Doc. de Identidad"} name={"ci"} inputtype={"number"} value={this.props.data.ci} handlerChange={this.props.handleInput} required={"required"} 
+                <Input title={"* Doc. de Identidad"} name={"ci"} inputtype={"number"} value={this.props.data.ci} handlerChange={this.props.handleInput} required={"required"}
                 help= "true" helptext="Ingrese únicamente los números del documento sin prefijo V- o E-."/>{" "}
               </div>
               <div className="col-md-4 mb-3">
