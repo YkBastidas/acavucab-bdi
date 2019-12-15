@@ -198,7 +198,7 @@ class SignUpContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      personalVisible: false,
+      personalVisible: true,
       PersonalData: {
         rif: "", ci: "", name: "", lastName: "", email: "",  password: "", bornDate: "",
         HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
@@ -222,6 +222,9 @@ class SignUpContainer extends Component {
     this.handlePersonalPassword = this.handlePersonalPassword.bind(this);
     this.handlePersonalBornDate = this.handlePersonalBornDate.bind(this);
     this.handlePersonalInput = this.handlePersonalInput.bind(this);
+    this.handleHomeAddress = this.handleHomeAddress.bind(this);
+    this.handleHomeState = this.handleHomeState.bind(this);
+    this.handleHomeCity = this.handleHomeCity.bind(this);
 
     this.handleCompanyEmail = this.handleCompanyEmail.bind(this);
     this.handleCompanyPassword = this.handleCompanyPassword.bind(this);
@@ -328,10 +331,7 @@ class SignUpContainer extends Component {
         ...prevState.PersonalData,
         HomeAddress: {
           ...prevState.PersonalData.HomeAddress,
-          [name]: value,
-          parish: {
-
-          }
+          [name]: value
         }
       }
     }), () => console.log(this.state.PersonalData));

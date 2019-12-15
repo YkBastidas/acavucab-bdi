@@ -6,67 +6,84 @@ import Input from './Input';
 import Button from './Button';
 import DateForm from './DateForm';
 
-function setCity(venezuela, state){
-  let i=0, j=0;
+function setCity(direccion, state){
+  let i=0, primary_key;
+  while (1){
+    if(state !== ""){
+      if (direccion[i].nombre === state){
+        primary_key = direccion[i].clave
+        break;
+      }
+      else
+      i += 1
+    }
+    else
+      break;
+  }
   return(
-    Object.values(venezuela).map((nameState) =>
+    Object.values(direccion).map((direccion) =>
       {
-        if(nameState.estado === state){
-        j=i;
-        return nameState.ciudades.map((nameCity, key) =>
-          <option value={nameCity}>{nameCity}</option>
-          )
-        }
+        if((direccion.fk_direccion === primary_key) && (direccion.tipo === 'Ciudad'))
+          return <option value={direccion.nombre}>{direccion.nombre}</option>
         else{
-          i = i + 1;
           return ("");
         }
       }
-    )[j]
+    )
   )
 }
 
-function setMunicipality(venezuela,state){
-  let i=0, j=0;
+function setMunicipality(direccion, state){
+  let i=0, primary_key;
+  while (1){
+    if(state !== ""){
+      if (direccion[i].nombre === state){
+        primary_key = direccion[i].clave
+        break;
+      }
+      else
+      i += 1
+    }
+    else
+      break;
+  }
   return(
-    Object.values(venezuela).map((nameState) =>
+    Object.values(direccion).map((direccion) =>
       {
-        if(nameState.estado === state){
-        j=i;
-        return nameState.municipios.map((nameMunicipality, key) =>
-          <option value={nameMunicipality.municipio}>{nameMunicipality.municipio}</option>
-          )
-        }
+        if((direccion.fk_direccion === primary_key) && (direccion.tipo === 'Municipio'))
+          return <option value={direccion.nombre}>{direccion.nombre}</option>
         else{
-          i = i + 1;
           return ("");
         }
       }
-    )[j]
+    )
   )
 }
 
-function setParish(venezuela,state, municipality){
-  let i=0, j=0;
+function setParish(direccion, municipality){
+  let i=0, primary_key
+  while (1){
+    if(municipality !== ""){
+      if (direccion[i].nombre === municipality){
+        primary_key = direccion[i].clave
+        break;
+      }
+      else
+      i += 1
+    }
+    else
+      break;
+  }
   return(
-    Object.values(venezuela).map((nameState) =>
+    Object.values(direccion).map((direccion) =>
       {
-        if(nameState.estado === state){
-          j=i;
-          return nameState.municipios.map((nameMunicipality) =>{
-            if(nameMunicipality.municipio === municipality){
-              return nameMunicipality.parroquias.map((nameParish) =>
-                <option value={nameParish}>{nameParish}</option>
-            )}
-            else return ("");
-          })
-        }
+        if((direccion.fk_direccion === primary_key) && (direccion.tipo === 'Parroquia'))
+          return <option value={direccion.nombre}>{direccion.nombre}</option>
         else{
-          i = i + 1;
           return ("");
         }
       }
-    )[j]
+    )
   )
 }
 
@@ -90,42 +107,34 @@ class SignUpPersonal extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      venezuela: {
-        iso_31662: "",
-        estado: "",
-        capital: "",
-        id_estado: "",
-        municipios: {
-          municipio: "",
-          capital: "",
-          parroquias: {
-
-          }
-        },
-        ciudades: {
-
-        }
+      direccion: {
+        clave: "",
+        tipo: "",
+        nombre: "",
+        fk_direccion: ""
       }
     }
   }
   componentDidMount() {
-    axios.get('/venezuela.json')
-      .then((res)=> {
-        // handle success
-        console.log('Callback Axios con direcciones de venezuela');
-        console.log(res.data);
-        this.setState({venezuela: res.data});
-      })
-      .catch(function (error) {
-    // handle error
-    console.log('axios');
-    console.log(error);
-  });
+    axios.get('/read/direcciones')
+    .then((res)=> {
+      // handle success
+      console.log('Callback Axios con direcciones desde la BD');
+      console.log(res.data);
+      this.setState({direccion: res.data})
+    })
+    .catch(function (error) {
+  // handle error
+  console.log('axios');
+  console.log(error);
+});
   }
 
   render(){
-    this.OptionStates = Object.values(this.state.venezuela).map((venezuela, key) =>
-      <option key={venezuela.id_estado} value={venezuela.estado}>{venezuela.estado}</option>
+    this.OptionStates = Object.values(this.state.direccion).map((direccion, key) =>
+          direccion.tipo ==='Estado'
+          ? <option key={direccion.clave} value={direccion.nombre}> {direccion.nombre} </option>
+          : ""
     );
     return(
       <div className="row align-items-center justify-content-center">
@@ -203,7 +212,7 @@ class SignUpPersonal extends Component{
               onChange={this.props.handleHomeCity}
               value={this.props.data.HomeAddress.city}>
                 <option value="" >Seleccione...</option>
-                {setCity(this.state.venezuela, this.props.data.HomeAddress.state)}
+                {setCity(this.state.direccion, this.props.data.HomeAddress.state)}
               </select>
             </div>
             <div className="col-md-4 mb-3">
@@ -212,16 +221,17 @@ class SignUpPersonal extends Component{
               onChange={this.props.handleHomeAddress}
               value={this.props.data.HomeAddress.municipality}>
                 <option value="" >Seleccione...</option>
-                { setMunicipality(this.state.venezuela,this.props.data.HomeAddress.state) }
+                {setMunicipality(this.state.direccion,this.props.data.HomeAddress.state)}
               </select>
             </div>
             <div className="col-md-4 mb-3">
-              <label htmlFor="homeParish"> * Parroquia </label>
-              <select className="custom-select" id="homeParish" name="parish" required
+              <label htmlFor="homeParish"> Parroquia </label>
+              <select className="custom-select" id="homeParish" name="parish"
               onChange={this.props.handleHomeAddress}
               value={this.props.data.HomeAddress.parish}>
                 <option value="" >Seleccione...</option>
-                { setParish(this.state.venezuela, this.props.data.HomeAddress.state, this.props.data.HomeAddress.municipality) }
+                {setParish(this.state.direccion,this.props.data.HomeAddress.municipality)}
+
               </select>
             </div>
             <div className="col-md-4 mb-3">
