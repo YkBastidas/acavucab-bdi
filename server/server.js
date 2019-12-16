@@ -74,6 +74,8 @@ app.use('/bd/metodopagotienda', router);
 
 app.get('/read/eventos', db.getEvents) // GET ALL EVENTS
 app.get('/read/direcciones', db.getDirecciones) // GET ALL ADDRESSES
+app.get('/read/direccionPorClave', db.getDireccionPorClave) // GET ADDRESS BY ID
+app.get('/read/tiendaFisica', db.getTiendaFisica) // GET REAL SHOP DATA
 
 //LISTEN THE SERVER IN THE PORT
 app.listen(port, () => {
