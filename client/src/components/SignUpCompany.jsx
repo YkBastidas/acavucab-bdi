@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+﻿import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 import axios from 'axios';
 
@@ -60,12 +60,25 @@ function setMunicipality(direccion, state){
   )
 }
 
-function setParish(direccion, municipality){
-  let i=0, primary_key
+function setParish(direccion, state, municipality){
+  let j=0, state_primary_key, i=0, primary_key
   while (1){
-    if(municipality !== ""){
-      if (direccion[i].nombre === municipality){
+    if(state !== ""){
+      if (direccion[j].nombre === state){
+        state_primary_key = direccion[j].clave
+        break;
+      }
+      else
+      j += 1
+    }
+    else
+      break;
+  }
+  while (1){
+    if((municipality !== "") && (state !== "")){
+      if ((direccion[i].nombre === municipality) && (direccion[i].fk_direccion === state_primary_key) && (direccion[i].tipo === 'Municipio')){
         primary_key = direccion[i].clave
+        console.log(primary_key)
         break;
       }
       else
@@ -168,14 +181,14 @@ class SignUpCompany extends Component{
             </div>
             <div className="col-md-3 mb-3">
               <Input title={"* Teléfono Principal"} name={"telephone1"} inputtype={"tel"} value={this.props.data.telephone1} handlerChange={this.props.handleInput}
-              help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'"/>
+              help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'" required = {"required"}/>
             </div>
             <div className="col-md-3 mb-3">
-              <Input title={"* Teléfono Secundario"} name={"telephone2"} inputtype={"tel"} value={this.props.data.telephone2} handlerChange={this.props.handleInput}
+              <Input title={"Teléfono Secundario"} name={"telephone2"} inputtype={"tel"} value={this.props.data.telephone2} handlerChange={this.props.handleInput}
                 help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'"/>
             </div>
             <div className="col-md-3 mb-3">
-              <Input title={"* Otro Teléfono"} name={"telephone3"} inputtype={"tel"} value={this.props.data.telephone3} handlerChange={this.props.handleInput}
+              <Input title={"Otro Teléfono"} name={"telephone3"} inputtype={"tel"} value={this.props.data.telephone3} handlerChange={this.props.handleInput}
                 help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'"/>
             </div>
          </div>
@@ -186,7 +199,7 @@ class SignUpCompany extends Component{
            </div>
            <div className="col-md-6 mb-3">
              <Input title={"* Teléfono"} name={"numberContact"} inputtype={"tel"} value={this.props.data.ContactPerson.numberContact} handlerChange={this.props.handleContactPerson}
-               help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'"/>
+               help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'" required={"required"}/>
            </div>
          </div>
           <div className="form-row">
@@ -211,21 +224,37 @@ class SignUpCompany extends Component{
             </div>
             <div className="col-md-4 mb-3">
               <label htmlFor="fiscalMunicipality"> * Municipio </label>
-              <select className="custom-select" id="fiscalMunicipality" name="municipality" required
-              onChange={this.props.handleFiscalAddress}
-              value={this.props.data.FiscalAddress.municipality}>
-                <option value="" >Seleccione...</option>
-                {setMunicipality(this.state.direccion,this.props.data.FiscalAddress.state)}
-              </select>
+              {
+                this.props.data.FiscalAddress.state === 'Dependencias Federales'
+                ? <select className="custom-select" id="fiscalMunicipality" name="municipality"
+                onChange={this.props.handleFiscalAddress}
+                value={this.props.data.FiscalAddress.municipality}>
+                  <option value="No Aplica" >No aplica...</option>
+                </select>
+                : <select className="custom-select" id="fiscalMunicipality" name="municipality" required
+                onChange={this.props.handleFiscalAddress}
+                value={this.props.data.FiscalAddress.municipality}>
+                  <option value="" >Seleccione...</option>
+                  {setMunicipality(this.state.direccion,this.props.data.FiscalAddress.state)}
+                </select>
+              }
             </div>
             <div className="col-md-4 mb-3">
               <label htmlFor="fiscalParish"> * Parroquia </label>
-              <select className="custom-select" id="fiscalParish" name="parish" required
-              onChange={this.props.handleFiscalAddress}
-              value={this.props.data.FiscalAddress.parish}>
-                <option value="" >Seleccione...</option>
-                {setParish(this.state.direccion,this.props.data.FiscalAddress.municipality)}
-              </select>
+              {
+                ((this.props.data.FiscalAddress.state === 'Dependencias Federales') || ((this.props.data.FiscalAddress.state === 'Portuguesa') && (this.props.data.FiscalAddress.municipality === 'Agua Blanca')) || ((this.props.data.FiscalAddress.state === 'Sucre') && (this.props.data.FiscalAddress.municipality === 'Bolívar')))
+                ? <select className="custom-select" id="fiscalParish" name="parish"
+                onChange={this.props.handleFiscalAddress}
+                value={this.props.data.FiscalAddress.parish}>
+                  <option value="No Aplica" >No Aplica...</option>
+                </select>
+                : <select className="custom-select" id="fiscalParish" name="parish"
+                onChange={this.props.handleFiscalAddress}
+                value={this.props.data.FiscalAddress.parish} required>
+                  <option value="" >Seleccione...</option>
+                  {setParish(this.state.direccion,this.props.data.FiscalAddress.state, this.props.data.FiscalAddress.municipality)}
+                </select>
+              }
             </div>
             <div className="col-md-8 mb-3">
                 <Input title={"Avenida"} name={"fiscalAvenue"} inputtype={"text"} value={this.props.data.FiscalAddress.fiscalAvenue} handlerChange={this.props.handleFiscalAddress}/>
@@ -265,21 +294,37 @@ class SignUpCompany extends Component{
             </div>
             <div className="col-md-4 mb-3">
               <label htmlFor="mainMunicipality"> * Municipio </label>
-              <select className="custom-select" id="mainMunicipality" name="municipality" required
-              onChange={this.props.handleMainAddress}
-              value={this.props.data.MainAddress.municipality}>
-                <option value="" >Seleccione...</option>
-                {setMunicipality(this.state.direccion,this.props.data.MainAddress.state)}
-              </select>
+              {
+                this.props.data.MainAddress.state === 'Dependencias Federales'
+                ? <select className="custom-select" id="mainMunicipality" name="municipality"
+                onChange={this.props.handleMainAddress}
+                value={this.props.data.MainAddress.municipality}>
+                  <option value="No Aplica" >No aplica...</option>
+                </select>
+                : <select className="custom-select" id="mainMunicipality" name="municipality" required
+                onChange={this.props.handleMainAddress}
+                value={this.props.data.MainAddress.municipality}>
+                  <option value="" >Seleccione...</option>
+                  {setMunicipality(this.state.direccion,this.props.data.MainAddress.state)}
+                </select>
+              }
             </div>
             <div className="col-md-4 mb-3">
               <label htmlFor="mainParish"> * Parroquia </label>
-              <select className="custom-select" id="mainParish" name="parish" required
-              onChange={this.props.handleMainAddress}
-              value={this.props.data.MainAddress.parish}>
-                <option value="" >Seleccione...</option>
-                {setParish(this.state.direccion,this.props.data.MainAddress.municipality)}
-              </select>
+              {
+                ((this.props.data.MainAddress.state === 'Dependencias Federales') || ((this.props.data.MainAddress.state === 'Portuguesa') && (this.props.data.MainAddress.municipality === 'Agua Blanca')) || ((this.props.data.MainAddress.state === 'Sucre') && (this.props.data.MainAddress.municipality === 'Bolívar')))
+                ? <select className="custom-select" id="mainParish" name="parish"
+                onChange={this.props.handleMainAddress}
+                value={this.props.data.MainAddress.parish}>
+                  <option value="No Aplica" >No Aplica...</option>
+                </select>
+                : <select className="custom-select" id="mainParish" name="parish"
+                onChange={this.props.handleMainAddress}
+                value={this.props.data.MainAddress.parish} required>
+                  <option value="" >Seleccione...</option>
+                  {setParish(this.state.direccion,this.props.data.MainAddress.state, this.props.data.MainAddress.municipality)}
+                </select>
+              }
             </div>
             <div className="col-md-8 mb-3">
                 <Input title={"Avenida"} name={"mainAvenue"} inputtype={"text"} value={this.props.data.MainAddress.mainAvenue} handlerChange={this.props.handleMainAddress}/>
