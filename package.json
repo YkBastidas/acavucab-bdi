@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "RESTful API with Node.js, Express, and PostgreSQL",
   "main": "server.js",
-  "license": "MIT",
+  "license": "ISC",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./server/server.js",
@@ -16,7 +16,6 @@
     "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "author": "",
-  "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.3",
