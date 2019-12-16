@@ -27,46 +27,41 @@ function validate(user) {
   emailEx = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
   webPageEx = /^www+[a-z0-9._%+-]+\.[a-z]{2,}$/
   moneyEx = /^[0-9]+(\.|,){0,1}[0-9]{2}$/
-  namesEx = /^[A-Za-z_\s].*()[^0-9\W]$/
-  numbersEx = /^[0-9].*()[^A-Za-z\s\W]$/
+  namesEx = /^[A-Za-z -]*[^0-9_\W]$/
+  numbersEx = /^[0-9][^A-Za-z_\s\W]*$/
   telephoneEx = /^[(]{0,1}[0]*(2+[0-9]{2}|412|414|424|416|426)[)]{0,1}[\s]{0,1}[0-9]{3}[-\s.]{0,1}[0-9]{4}$/
-  namesAndNumbersEx = /^[A-Za-z_0-9\s].*()[^\W]$/
+  namesAndNumbersEx = /^[A-Za-z0-9 -]*[^_\W]$/
 
   if (user === "personal"){
-    var ci, name, lastName,
-    homeState, homeCity, homeMunicipality, homeParish, homeAvenue,
-    homeBuilding, homeFloor, homeOffice, homeApartment,
-    telephone, cellphone, officePhone, bornDate;
-
     rif = document.getElementById('rif').value;
-    ci = document.getElementById('ci').value;
-    name = document.getElementById('name').value;
-    lastName = document.getElementById('lastName').value;
     email = document.getElementById('email').value;
-
-    homeState = document.getElementById('homeState').value;
-    homeCity = document.getElementById('homeCity').value;
-    homeMunicipality = document.getElementById('homeMunicipality').value;
-    homeParish = document.getElementById('homeParish').value;
-    homeAvenue = document.getElementById('homeAvenue').value;
-    homeBuilding = document.getElementById('homeBuilding').value;
-    homeFloor = document.getElementById('homeFloor').value;
-    homeOffice = document.getElementById('homeOffice').value;
-    homeApartment = document.getElementById('homeApartment').value;
-
     password = document.getElementById('password').value;
-    bornDate = document.getElementById('bornDate').value;
-    telephone = document.getElementById('telephone').value;
-    cellphone = document.getElementById('cellphone').value;
-    officePhone = document.getElementById('officePhone').value;
+
+    var ci = document.getElementById('ci').value,
+    name = document.getElementById('name').value,
+    lastName = document.getElementById('lastName').value,
+    bornDate = document.getElementById('bornDate').value,
+    homeState = document.getElementById('homeState').value,
+    homeCity = document.getElementById('homeCity').value,
+    homeMunicipality= document.getElementById('homeMunicipality').value,
+    homeParish = document.getElementById('homeParish').value,
+    homeAvenue = document.getElementById('homeAvenue').value,
+    homeBuilding = document.getElementById('homeBuilding').value,
+    homeFloor = document.getElementById('homeFloor').value,
+    homeOffice = document.getElementById('homeOffice').value,
+    homeApartment = document.getElementById('homeApartment').value,
+    telephone = document.getElementById('telephoneNumber').value,
+    cellphone = document.getElementById('cellphoneNumber').value,
+    officePhone = document.getElementById('officeNumber').value;
 
     if (rif === "" || ci === "" || name === "" || lastName === "" || email === ""
-    || password === "" || telephone === "") {
-        alert("Por favor, rellene todos los campos obligatorios");
+    || password === "" || telephone === "" || homeState === "" || homeCity === ""
+    || homeMunicipality === "" || homeParish === "") {
+        alert("Por favor, rellene todos los campos obligatorios ('*')");
     } else if (!numbersEx.test(rif)){
         alert("El RIF es inválido")
     } else if (!numbersEx.test(ci)){
-        alert("La CI es inválida")
+        alert("Documento de Identidad inválido")
     } else if (!namesEx.test(name)) {
         alert("El nombre es inválido");
     } else if (!namesEx.test(lastName)) {
@@ -87,67 +82,63 @@ function validate(user) {
         alert("La contraseña es inválida");
     } else if (calculateAge(bornDate) < 18) {
         alert("Debes tener una edad mayor o igual a 18 años para acceder al sistema");
-    } else if (!numbersEx.test(telephone)) {
-        alert("El teléfono de habitación es inválido");
-    } else if ((cellphone !== "") && (!numbersEx.test(cellphone))) {
-        alert("El celular es inválido");
-    } else if ((officePhone !== "") && (!numbersEx.test(officePhone))) {
-        alert("El teléfono de oficina es inválido");
+    } else if (!telephoneEx.test(telephone)) {
+        alert("Teléfono principal inválido");
+    } else if ((cellphone !== "") && (!telephoneEx.test(cellphone))) {
+        alert("Teléfono secundario inválido");
+    } else if ((officePhone !== "") && (!telephoneEx.test(officePhone))) {
+        alert("Teléfono de oficina inválido");
     } else
         return true;
     return false;
   }
   else{
-    var comercialDesignation, businessName, webPage, capital,
-    fiscalState, fiscalCity, fiscalMunicipality, fiscalParish, fiscalAvenue,
-    fiscalBuilding, fiscalFloor, fiscalOffice, fiscalApartment,
-    mainState, mainCity, mainMunicipality, mainParish, mainAvenue,
-    mainBuilding, mainFloor, mainOffice, mainApartment,
-    nameContact, numberContact, telephone1, telephone2, telephone3;
-
     rif = document.getElementById('rif').value;
-    comercialDesignation = document.getElementById('comercialDesignation').value;
-    businessName = document.getElementById('businessName').value;
     email = document.getElementById('email').value;
     password = document.getElementById('password').value;
-    webPage = document.getElementById('webPage').value;
-    capital = document.getElementById('capital').value;
-    telephone1 = document.getElementById('telephone1').value;
-    telephone2 = document.getElementById('telephone2').value;
-    telephone3 = document.getElementById('telephone3').value;
 
-    nameContact = document.getElementById('nameContact').value;
-    numberContact = document.getElementById('numberContact').value;
+    var comercialDesignation = document.getElementById('comercialDesignation').value,
+    businessName = document.getElementById('businessName').value,
+    webPage = document.getElementById('webPage').value,
+    capital = document.getElementById('capital').value,
+    telephone1 = document.getElementById('telephone1').value,
+    telephone2 = document.getElementById('telephone2').value,
+    telephone3 = document.getElementById('telephone3').value,
 
-    fiscalState = document.getElementById('fiscalState').value;
-    fiscalCity = document.getElementById('fiscalCity').value;
-    fiscalMunicipality = document.getElementById('fiscalMunicipality').value;
-    fiscalParish = document.getElementById('fiscalParish').value;
-    fiscalAvenue = document.getElementById('fiscalAvenue').value;
-    fiscalBuilding = document.getElementById('fiscalBuilding').value;
-    fiscalFloor = document.getElementById('fiscalFloor').value;
-    fiscalOffice = document.getElementById('fiscalOffice').value;
-    fiscalApartment = document.getElementById('fiscalApartment').value;
+    nameContact = document.getElementById('nameContact').value,
+    numberContact = document.getElementById('numberContact').value,
 
-    mainState = document.getElementById('mainState').value;
-    mainCity = document.getElementById('mainCity').value;
-    mainMunicipality = document.getElementById('mainMunicipality').value;
-    mainParish = document.getElementById('mainParish').value;
-    mainAvenue = document.getElementById('mainAvenue').value;
-    mainBuilding = document.getElementById('mainBuilding').value;
-    mainFloor = document.getElementById('mainFloor').value;
-    mainOffice = document.getElementById('mainOffice').value;
+    fiscalState = document.getElementById('fiscalState').value,
+    fiscalCity = document.getElementById('fiscalCity').value,
+    fiscalMunicipality= document.getElementById('fiscalMunicipality').value,
+    fiscalParish = document.getElementById('fiscalParish').value,
+    fiscalAvenue = document.getElementById('fiscalAvenue').value,
+    fiscalBuilding = document.getElementById('fiscalBuilding').value,
+    fiscalFloor = document.getElementById('fiscalFloor').value,
+    fiscalOffice = document.getElementById('fiscalOffice').value,
+    fiscalApartment = document.getElementById('fiscalApartment').value,
+
+    mainState = document.getElementById('mainState').value,
+    mainCity = document.getElementById('mainCity').value,
+    mainMunicipality= document.getElementById('mainMunicipality').value,
+    mainParish = document.getElementById('mainParish').value,
+    mainAvenue = document.getElementById('mainAvenue').value,
+    mainBuilding = document.getElementById('mainBuilding').value,
+    mainFloor = document.getElementById('mainFloor').value,
+    mainOffice = document.getElementById('mainOffice').value,
     mainApartment = document.getElementById('mainApartment').value;
 
-    if (rif === "" || comercialDesignation === "" || businessName === "" ||
-    email === "" || password === "" || webPage === "" || capital === "" ||
-    nameContact === "" || numberContact === "" || telephone1 === "")
-    {
-        alert("Por favor, rellene todos los campos obligatorios");
+    if (rif === "" || comercialDesignation === "" || name === "" || businessName === "" || email === ""
+    || password === "" || telephone === "" || fiscalState === "" || fiscalCity === ""
+    || fiscalMunicipality === "" || fiscalParish === "" || mainState === ""
+    || mainCity === "" || mainMunicipality === "" || mainParish === "") {
+        alert("Por favor, rellene todos los campos obligatorios ('*')");
     } else if (!numbersEx.test(rif)){
         alert("El RIF es inválido")
     } else if (!namesAndNumbersEx.test(businessName)) {
         alert("La Razón Social es inválida");
+    } else if (!namesAndNumbersEx.test(comercialDesignation)) {
+        alert("Designación Comercial inválida");
     } else if (!emailEx.test(email)) {
         alert("El correo es inválido");
     } else if ((fiscalAvenue !== "") && (!namesAndNumbersEx.test(fiscalAvenue))) {
@@ -198,7 +189,7 @@ class SignUpContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      personalVisible: false,
+      personalVisible: true,
       PersonalData: {
         rif: "", ci: "", name: "", lastName: "", email: "",  password: "", bornDate: "",
         HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
@@ -222,6 +213,9 @@ class SignUpContainer extends Component {
     this.handlePersonalPassword = this.handlePersonalPassword.bind(this);
     this.handlePersonalBornDate = this.handlePersonalBornDate.bind(this);
     this.handlePersonalInput = this.handlePersonalInput.bind(this);
+    this.handleHomeAddress = this.handleHomeAddress.bind(this);
+    this.handleHomeState = this.handleHomeState.bind(this);
+    this.handleHomeCity = this.handleHomeCity.bind(this);
 
     this.handleCompanyEmail = this.handleCompanyEmail.bind(this);
     this.handleCompanyPassword = this.handleCompanyPassword.bind(this);
@@ -253,7 +247,7 @@ class SignUpContainer extends Component {
       CompanyData: {
         rif: "", comercialDesignation: "", businessName: "",
         email: "", password: "", webPage: "", capital: "",
-        telephone1: "", telephone2: "", telephone3: "",  ContactPerson:{ name: "", number: "" },
+        telephone1: "", telephone2: "", telephone3: "",  ContactPerson:{ nameContact: "", numberContact: "" },
         FiscalAddress: {state:"", city:"", municipality:"", parish:"", fiscalAvenue:"",
                         fiscalBuilding:"", fiscalFloor:"", fiscalOffice:"", fiscalApartment:""},
         MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",
@@ -328,10 +322,7 @@ class SignUpContainer extends Component {
         ...prevState.PersonalData,
         HomeAddress: {
           ...prevState.PersonalData.HomeAddress,
-          [name]: value,
-          parish: {
-
-          }
+          [name]: value
         }
       }
     }), () => console.log(this.state.PersonalData));
@@ -504,9 +495,9 @@ class SignUpContainer extends Component {
 
     console.log(userData);
     if (validation === true)
-      console.log("Usuario válido")
+      alert("Usuario válido")
     else
-      console.log("Usuario no válido")
+      alert("Usuario no válido")
     /* if (validation === true) {
       axios.post('/auth/personal_signup', {
         correo: userData.email,
@@ -539,7 +530,7 @@ class SignUpContainer extends Component {
       CompanyData: {
         rif: "", comercialDesignation: "", businessName: "",
         email: "", password: "", webPage: "", capital: "",
-        telephone1: "", telephone2: "", telephone3: "",  ContactPerson:{ name: "", number: "" },
+        telephone1: "", telephone2: "", telephone3: "",  ContactPerson:{ nameContact: "", numberContact: "" },
         FiscalAddress: {state:"", city:"", municipality:"", parish:"", fiscalAvenue:"",
                         fiscalBuilding:"", fiscalFloor:"", fiscalOffice:"", fiscalApartment:""},
         MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",

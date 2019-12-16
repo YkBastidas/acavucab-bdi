@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+﻿import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 import axios from 'axios';
 
@@ -6,67 +6,97 @@ import Input from './Input';
 import Button from './Button';
 import DateForm from './DateForm';
 
-function setCity(venezuela, state){
-  let i=0, j=0;
+function setCity(direccion, state){
+  let i=0, primary_key;
+  while (1){
+    if(state !== ""){
+      if (direccion[i].nombre === state){
+        primary_key = direccion[i].clave
+        break;
+      }
+      else
+      i += 1
+    }
+    else
+      break;
+  }
   return(
-    Object.values(venezuela).map((nameState) =>
+    Object.values(direccion).map((direccion) =>
       {
-        if(nameState.estado === state){
-        j=i;
-        return nameState.ciudades.map((nameCity, key) =>
-          <option value={nameCity}>{nameCity}</option>
-          )
-        }
+        if((direccion.fk_direccion === primary_key) && (direccion.tipo === 'Ciudad'))
+          return <option value={direccion.nombre}>{direccion.nombre}</option>
         else{
-          i = i + 1;
           return ("");
         }
       }
-    )[j]
+    )
   )
 }
 
-function setMunicipality(venezuela,state){
-  let i=0, j=0;
+function setMunicipality(direccion, state){
+  let i=0, primary_key;
+  while (1){
+    if(state !== ""){
+      if (direccion[i].nombre === state){
+        primary_key = direccion[i].clave
+        break;
+      }
+      else
+      i += 1
+    }
+    else
+      break;
+  }
   return(
-    Object.values(venezuela).map((nameState) =>
+    Object.values(direccion).map((direccion) =>
       {
-        if(nameState.estado === state){
-        j=i;
-        return nameState.municipios.map((nameMunicipality, key) =>
-          <option value={nameMunicipality.municipio}>{nameMunicipality.municipio}</option>
-          )
-        }
+        if((direccion.fk_direccion === primary_key) && (direccion.tipo === 'Municipio'))
+          return <option value={direccion.nombre}>{direccion.nombre}</option>
         else{
-          i = i + 1;
           return ("");
         }
       }
-    )[j]
+    )
   )
 }
 
-function setParish(venezuela,state, municipality){
-  let i=0, j=0;
+function setParish(direccion, state, municipality){
+  let j=0, state_primary_key, i=0, primary_key
+  while (1){
+    if(state !== ""){
+      if (direccion[j].nombre === state){
+        state_primary_key = direccion[j].clave
+        break;
+      }
+      else
+      j += 1
+    }
+    else
+      break;
+  }
+  while (1){
+    if((municipality !== "") && (state !== "")){
+      if ((direccion[i].nombre === municipality) && (direccion[i].fk_direccion === state_primary_key) && (direccion[i].tipo === 'Municipio')){
+        primary_key = direccion[i].clave
+        console.log(primary_key)
+        break;
+      }
+      else
+      i += 1
+    }
+    else
+      break;
+  }
   return(
-    Object.values(venezuela).map((nameState) =>
+    Object.values(direccion).map((direccion) =>
       {
-        if(nameState.estado === state){
-          j=i;
-          return nameState.municipios.map((nameMunicipality) =>{
-            if(nameMunicipality.municipio === municipality){
-              return nameMunicipality.parroquias.map((nameParish) =>
-                <option value={nameParish}>{nameParish}</option>
-            )}
-            else return ("");
-          })
-        }
+        if((direccion.fk_direccion === primary_key) && (direccion.tipo === 'Parroquia'))
+          return <option value={direccion.nombre}>{direccion.nombre}</option>
         else{
-          i = i + 1;
           return ("");
         }
       }
-    )[j]
+    )
   )
 }
 
@@ -90,42 +120,34 @@ class SignUpPersonal extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      venezuela: {
-        iso_31662: "",
-        estado: "",
-        capital: "",
-        id_estado: "",
-        municipios: {
-          municipio: "",
-          capital: "",
-          parroquias: {
-
-          }
-        },
-        ciudades: {
-
-        }
+      direccion: {
+        clave: "",
+        tipo: "",
+        nombre: "",
+        fk_direccion: ""
       }
     }
   }
-  componentWillMount() {
-    axios.get('/venezuela.json')
-      .then((res)=> {
-        // handle success
-        console.log('Callback Axios con direcciones de venezuela');
-        console.log(res.data);
-        this.setState({venezuela: res.data});
-      })
-      .catch(function (error) {
-    // handle error
-    console.log('axios');
-    console.log(error);
-  });
+  componentDidMount() {
+    axios.get('/read/direcciones')
+    .then((res)=> {
+      // handle success
+      console.log('Callback Axios con direcciones desde la BD');
+      console.log(res.data);
+      this.setState({direccion: res.data})
+    })
+    .catch(function (error) {
+  // handle error
+  console.log('axios');
+  console.log(error);
+});
   }
 
   render(){
-    this.OptionStates = Object.values(this.state.venezuela).map((venezuela, key) =>
-      <option key={venezuela.id_estado} value={venezuela.estado}>{venezuela.estado}</option>
+    this.OptionStates = Object.values(this.state.direccion).map((direccion, key) =>
+          direccion.tipo ==='Estado'
+          ? <option key={direccion.clave} value={direccion.nombre}> {direccion.nombre} </option>
+          : ""
     );
     return(
       <div className="row align-items-center justify-content-center">
@@ -150,7 +172,7 @@ class SignUpPersonal extends Component{
                 help= "true" helptext="Ingrese únicamente los números del RIF sin el prefijo J-."/>
               </div>
               <div className="col-md-2 mb-3">
-                <Input title={"* Doc. de Identidad"} name={"ci"} inputtype={"number"} value={this.props.data.ci} handlerChange={this.props.handleInput} required={"required"} 
+                <Input title={"* Doc. de Identidad"} name={"ci"} inputtype={"number"} value={this.props.data.ci} handlerChange={this.props.handleInput} required={"required"}
                 help= "true" helptext="Ingrese únicamente los números del documento sin prefijo V- o E-."/>{" "}
               </div>
               <div className="col-md-4 mb-3">
@@ -162,11 +184,11 @@ class SignUpPersonal extends Component{
            </div>
            <div className="form-row">
              <div className="col-md-4 mb-3">
-               <Input title={"* Correo Electrónico"} name={"email"} inputtype={"email"} value={this.props.data.email} handlerChange={this.props.handleEmail} help="true" helptext="El formato del correo debe ser 'nombreusuario@dominio.extensión'"/>
+               <Input title={"* Correo Electrónico"} name={"email"} inputtype={"email"} value={this.props.data.email} handlerChange={this.props.handleEmail} help="true" helptext="El formato del correo debe ser 'nombreusuario@dominio.extensión' " required={"required"}/>
              </div>
              <div className="col-md-4 mb-3">
                <Input title={"* Contraseña"} name={"password"} inputtype={"password"} value={this.props.data.password} handlerChange={this.props.handlePassword} help= "true"
-               helptext="Tu contraseña debe tener entre 8-20 caracteres, contener por lo menos una letra mayúscula y una minúscula y tener por lo menos 1 caracter especial."/>
+               helptext="Tu contraseña debe tener entre 8-20 caracteres, contener por lo menos una letra mayúscula y una minúscula y tener por lo menos 1 caracter especial." required={"required"}/>
              </div>
              <div className="col-md-4 mb-3">
                <DateForm title={"* Fecha de nacimiento:"} name={"bornDate"} inputtype={"date"} min={"1899-01-01"} max={maxDate()} value={this.props.data.bornDate} handlerChange={this.props.handleBornDate}/>
@@ -174,15 +196,15 @@ class SignUpPersonal extends Component{
           </div>
           <div className="form-row">
             <div className="col-md-4 mb-3">
-              <Input title={"* Teléfono Principal"} name={"telephoneNumber"} inputtype={"tel"} value={this.props.data.telephoneNumber} handlerChange={this.props.handleInput}
-              help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'"/>
+              <Input title={"Teléfono Principal"} name={"telephoneNumber"} inputtype={"tel"} value={this.props.data.telephoneNumber} handlerChange={this.props.handleInput}
+              help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'" required={"required"}/>
             </div>
             <div className="col-md-4 mb-3">
-              <Input title={"* Teléfono Secundario"} name={"cellphoneNumber"} inputtype={"tel"} value={this.props.data.cellphoneNumber} handlerChange={this.props.handleInput}
+              <Input title={"Teléfono Secundario"} name={"cellphoneNumber"} inputtype={"tel"} value={this.props.data.cellphoneNumber} handlerChange={this.props.handleInput}
                 help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'"/>
             </div>
             <div className="col-md-4 mb-3">
-              <Input title={"* Teléfono de Oficina"} name={"officeNumber"} inputtype={"tel"} value={this.props.data.officeNumber} handlerChange={this.props.handleInput}
+              <Input title={"Teléfono de Oficina"} name={"officeNumber"} inputtype={"tel"} value={this.props.data.officeNumber} handlerChange={this.props.handleInput}
                 help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'"/>
             </div>
          </div>
@@ -203,26 +225,42 @@ class SignUpPersonal extends Component{
               onChange={this.props.handleHomeCity}
               value={this.props.data.HomeAddress.city}>
                 <option value="" >Seleccione...</option>
-                {setCity(this.state.venezuela, this.props.data.HomeAddress.state)}
+                {setCity(this.state.direccion, this.props.data.HomeAddress.state)}
               </select>
             </div>
             <div className="col-md-4 mb-3">
               <label htmlFor="homeMunicipality"> * Municipio </label>
-              <select className="custom-select" id="homeMunicipality" name="municipality" required
-              onChange={this.props.handleHomeAddress}
-              value={this.props.data.HomeAddress.municipality}>
-                <option value="" >Seleccione...</option>
-                { setMunicipality(this.state.venezuela,this.props.data.HomeAddress.state) }
-              </select>
+              {
+                this.props.data.HomeAddress.state === 'Dependencias Federales'
+                ? <select className="custom-select" id="homeMunicipality" name="municipality"
+                onChange={this.props.handleHomeAddress}
+                value={this.props.data.HomeAddress.municipality}>
+                  <option value="No Aplica" >No aplica...</option>
+                </select>
+                : <select className="custom-select" id="homeMunicipality" name="municipality" required
+                onChange={this.props.handleHomeAddress}
+                value={this.props.data.HomeAddress.municipality}>
+                  <option value="" >Seleccione...</option>
+                  {setMunicipality(this.state.direccion,this.props.data.HomeAddress.state)}
+                </select>
+              }
             </div>
             <div className="col-md-4 mb-3">
               <label htmlFor="homeParish"> * Parroquia </label>
-              <select className="custom-select" id="homeParish" name="parish" required
-              onChange={this.props.handleHomeAddress}
-              value={this.props.data.HomeAddress.parish}>
-                <option value="" >Seleccione...</option>
-                { setParish(this.state.venezuela, this.props.data.HomeAddress.state, this.props.data.HomeAddress.municipality) }
-              </select>
+              {
+                ((this.props.data.HomeAddress.state === 'Dependencias Federales') || ((this.props.data.HomeAddress.state === 'Portuguesa') && (this.props.data.HomeAddress.municipality === 'Agua Blanca')) || ((this.props.data.HomeAddress.state === 'Sucre') && (this.props.data.HomeAddress.municipality === 'Bolívar')))
+                ? <select className="custom-select" id="homeParish" name="parish"
+                onChange={this.props.handleHomeAddress}
+                value={this.props.data.HomeAddress.parish}>
+                  <option value="No Aplica" >No Aplica...</option>
+                </select>
+                : <select className="custom-select" id="homeParish" name="parish"
+                onChange={this.props.handleHomeAddress}
+                value={this.props.data.HomeAddress.parish} required>
+                  <option value="" >Seleccione...</option>
+                  {setParish(this.state.direccion,this.props.data.HomeAddress.state, this.props.data.HomeAddress.municipality)}
+                </select>
+              }
             </div>
             <div className="col-md-4 mb-3">
                 <Input title={"Avenida"} name={"homeAvenue"} inputtype={"text"} value={this.props.data.HomeAddress.homeAvenue} handlerChange={this.props.handleHomeAddress}/>
