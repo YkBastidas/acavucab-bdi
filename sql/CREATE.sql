@@ -709,7 +709,7 @@ CREATE TABLE public.historico_inventario_cerveza   -- REVISAR la cardinalidad en
      CONSTRAINT pk_clave_historico_inventario_cerveza PRIMARY KEY (clave),
      CONSTRAINT fk_fk_cerveza FOREIGN KEY (fk_cerveza) REFERENCES cerveza_artesanal(clave),
      CONSTRAINT fk_fk_detalle_compra_historico_inventario FOREIGN KEY (fk_detalle_compra) REFERENCES detalle_compra(clave),
-     CONSTRAINT fk_fk_detalle_venta_historico_inventario FOREIGN KEY (fk_detalle_venta) REFERENCES detalle_venta(codigo);
+     CONSTRAINT fk_fk_detalle_venta_historico_inventario FOREIGN KEY (fk_detalle_venta) REFERENCES detalle_venta(codigo),
      CONSTRAINT fk_fk_inventario_historico_inventario FOREIGN KEY (fk_inventario) REFERENCES inventario(clave)
 );
 
