@@ -78,10 +78,3 @@ div input.help:focus + small.helpBlock {
   z-index: 3;
   background: #ddd
  }
-
- span:hover + small.helpBlock {
-   display: block;
-   position: absolute;
-   z-index: 2;
-   background: #ddd;
- }
