@@ -78,7 +78,6 @@ function setParish(direccion, state, municipality){
     if((municipality !== "") && (state !== "")){
       if ((direccion[i].nombre === municipality) && (direccion[i].fk_direccion === state_primary_key) && (direccion[i].tipo === 'Municipio')){
         primary_key = direccion[i].clave
-        console.log(primary_key)
         break;
       }
       else
@@ -184,30 +183,44 @@ class SignUpPersonal extends Component{
            </div>
            <div className="form-row">
              <div className="col-md-4 mb-3">
-               <Input title={"* Correo Electrónico"} name={"email"} inputtype={"email"} value={this.props.data.email} handlerChange={this.props.handleEmail} help="true" helptext="El formato del correo debe ser 'nombreusuario@dominio.extensión' " required={"required"}/>
+               <Input title={"* Nombre de Usuario:"} name={"userName"} inputtype={"text"} value={this.props.data.userName} handlerChange={this.props.handleInput} required={"required"} help= "true" helptext="Su nombre para inicio de sesion, permite letras, números, espacios y guiones"/>{" "}
              </div>
-             <div className="col-md-4 mb-3">
+             <div className="col-md-2 mb-3">
                <Input title={"* Contraseña"} name={"password"} inputtype={"password"} value={this.props.data.password} handlerChange={this.props.handlePassword} help= "true"
                helptext="Tu contraseña debe tener entre 8-20 caracteres, contener por lo menos una letra mayúscula y una minúscula y tener por lo menos 1 caracter especial." required={"required"}/>
              </div>
+             <div className="col-md-2 mb-3">
+               <label htmlFor="gender"> * Género </label>
+               <select className="custom-select" id="gender" name="gender" required
+               onChange={this.props.handleInput}
+               value={this.props.data.gender}>
+                 <option value="" >Seleccione...</option>
+                 <option value="Hombre">Hombre</option>
+                 <option value="Mujer">Mujer</option>
+                 <option value="Otro">Otro</option>
+               </select>
+             </div>
              <div className="col-md-4 mb-3">
-               <DateForm title={"* Fecha de nacimiento:"} name={"bornDate"} inputtype={"date"} min={"1899-01-01"} max={maxDate()} value={this.props.data.bornDate} handlerChange={this.props.handleBornDate}/>
+               <Input title={"* Correo Electrónico"} name={"email"} inputtype={"email"} value={this.props.data.email} handlerChange={this.props.handleEmail} help="true" helptext="El formato del correo debe ser 'nombreusuario@dominio.extensión' " required={"required"}/>
              </div>
           </div>
           <div className="form-row">
-            <div className="col-md-4 mb-3">
+            <div className="col-md-3 mb-3">
+              <DateForm title={"* Fecha de nacimiento:"} name={"bornDate"} inputtype={"date"} min={"1899-01-01"} max={maxDate()} value={this.props.data.bornDate} handlerChange={this.props.handleBornDate}/>
+            </div>
+            <div className="col-md-3 mb-3">
               <Input title={"Teléfono Principal"} name={"telephoneNumber"} inputtype={"tel"} value={this.props.data.telephoneNumber} handlerChange={this.props.handleInput}
               help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'" required={"required"}/>
             </div>
-            <div className="col-md-4 mb-3">
+            <div className="col-md-3 mb-3">
               <Input title={"Teléfono Secundario"} name={"cellphoneNumber"} inputtype={"tel"} value={this.props.data.cellphoneNumber} handlerChange={this.props.handleInput}
                 help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'"/>
             </div>
-            <div className="col-md-4 mb-3">
+            <div className="col-md-3 mb-3">
               <Input title={"Teléfono de Oficina"} name={"officeNumber"} inputtype={"tel"} value={this.props.data.officeNumber} handlerChange={this.props.handleInput}
                 help= "true" helptext="Ejemplo: '(2XX) 123-4567' '(424) 123 4567' '04121234567' '(0412)123-4567' '0424 123.4567'"/>
             </div>
-         </div>
+          </div>
           <div className="form-row">
             <div className="col-12 text-center"> <hr/> <h4> Dirección </h4> </div>
             <div className="col-md-4 mb-3">

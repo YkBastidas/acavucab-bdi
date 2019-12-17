@@ -37,7 +37,6 @@ app.use('/bd/modificarpersonal', router);
 app.use('/bd/añadirpersonal', router);
 app.use('/bd/eliminarpersonal', router);
 app.use('/bd/iniciosesion', router);
-app.use('/bd/registro', router);
 app.use('/bd/contacto', router);
 app.use('/bd/proveedores', router);
 app.use('/bd/fichaproveedor', router);
@@ -75,7 +74,10 @@ app.use('/bd/metodopagotienda', router);
 app.get('/read/eventos', db.getEvents) // GET ALL EVENTS
 app.get('/read/direcciones', db.getDirecciones) // GET ALL ADDRESSES
 app.get('/read/direccionPorClave', db.getDireccionPorClave) // GET ADDRESS BY ID
+app.get('/read/clientePorRif', db.getClientePorRif) // GET ADDRESS BY ID
 app.get('/read/tiendaFisica', db.getTiendaFisica) // GET REAL SHOP DATA
+app.post('/create/registro', db.postRegistro) // CREATE NEW USER
+app.post('/create/direccion', db.postDireccion) // CREATE A NEW ADDRESS
 
 //LISTEN THE SERVER IN THE PORT
 app.listen(port, () => {

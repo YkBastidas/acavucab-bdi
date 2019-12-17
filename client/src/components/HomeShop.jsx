@@ -85,6 +85,21 @@ class HomeShop extends Component{
     // handle error
       return console.log('AXIOS error: '+ error);
     });
+    await axios.get('/read/clientePorRif', {
+      params: {
+        clave : '1'
+      }})
+    .then((res)=>{
+      if(res.data.length === 0){
+        console.log ("Nha")
+        console.log(res.data)
+      }
+      else{
+        console.log(res.data)
+        console.log(res.data)
+      }
+
+    })
   }
   componentWillUnmount() {
   clearInterval(this.interval);

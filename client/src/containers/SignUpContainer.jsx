@@ -40,6 +40,8 @@ function validate(user) {
     var ci = document.getElementById('ci').value,
     name = document.getElementById('name').value,
     lastName = document.getElementById('lastName').value,
+    userName= document.getElementById('userName').value,
+    gender = document.getElementById('gender').value,
     bornDate = document.getElementById('bornDate').value,
     homeState = document.getElementById('homeState').value,
     homeCity = document.getElementById('homeCity').value,
@@ -56,7 +58,7 @@ function validate(user) {
 
     if (rif === "" || ci === "" || name === "" || lastName === "" || email === ""
     || password === "" || telephone === "" || homeState === "" || homeCity === ""
-    || homeMunicipality === "" || homeParish === "") {
+    || homeMunicipality === "" || homeParish === "" || gender === "" || userName === "" || bornDate==="") {
         alert("Por favor, rellene todos los campos obligatorios ('*')");
     } else if (!numbersEx.test(rif)){
         alert("El RIF es inválido")
@@ -66,6 +68,8 @@ function validate(user) {
         alert("El nombre es inválido");
     } else if (!namesEx.test(lastName)) {
         alert("El apellido es inválido");
+    } else if (!namesAndNumbersEx.test(userName)) {
+        alert("Nombre de usuario inválido");
     } else if (!emailEx.test(email)) {
         alert("El correo es inválido");
     } else if ((homeAvenue !== "") && (!namesAndNumbersEx.test(homeAvenue))) {
@@ -183,6 +187,108 @@ function validate(user) {
   }
 }
 
+function recursiveCrear(data, arrayType, arrayDireccion, foreign, i, j){
+  console.log(data);console.log(arrayType);console.log(arrayDireccion);console.log(foreign);
+  console.log(i); console.log(j);
+  while ((i < data.length)&&(j < arrayType.length)){
+    if ((data[i].tipo === arrayType[j])&&(data[i].nombre===arrayDireccion[j])&&(data[i].fk_direccion===foreign)){
+      foreign= data[i].clave
+      console.log(foreign);console.log(i);console.log(j);
+      j=j+1;
+    }
+    else{
+      i=i+1
+    }
+  }
+  if (j < arrayType.length){
+    return axios.post('/create/direccion', {
+      tipo: arrayType[j],
+      nombre: arrayDireccion[j],
+      fk_direccion : foreign
+    }).then((response)=> { // handle success
+      return recursiveCrear(data, arrayType,arrayDireccion, response.data[0].clave,0,j+1)
+      .then((key) => {
+        let array = []
+        return array.unshift(foreign,key)
+      })
+    }).catch(function (error) {
+    // handle error
+      return console.log('AXIOS error: '+ error);
+    });
+  }
+  return foreign
+}
+
+function crearUsuario(typeRIF, userData, foreign){
+  return axios.post('/create/registro', {
+          rif: typeRIF+userData.rif,
+          tipo: 'Natural',
+          fk_direccion: foreign,
+          ci: userData.ci,
+          nombre: userData.name,
+          apellido: userData.lastName,
+          genero: userData.gender,
+          fecha_nacimiento: userData.bornDate
+        }).then((response)=> { // handle success
+          return response.data
+        }).catch(function (error) {
+        // handle error
+          return console.log('AXIOS error: '+ error);
+        })
+}
+function foundDirecciones(arrayDireccion, arrayType){
+  return axios.get('/read/direcciones')
+  .then((response) => {
+    let direcciones = response.data, i = 0, j=0, foreignEstado, foreignCiudad, foreignMunicipio, foreignParroquia
+    while (i < direcciones.length){
+      if ((direcciones[i].tipo === arrayType[j])&&(direcciones[i].nombre===arrayDireccion[j])){
+        foreignEstado = direcciones[i].clave
+        j=j+1
+        break;
+      }
+      else
+      i=i+1
+    }
+    while ((i < direcciones.length)&&(j < arrayType.length)){
+      if ((direcciones[i].tipo === arrayType[j])&&(direcciones[i].nombre===arrayDireccion[j])&&(direcciones[i].fk_direccion===foreignEstado)){
+          foreignCiudad= direcciones[i].clave
+          console.log(foreignEstado);console.log(i);console.log(j);
+          j=j+1;
+          break;
+      }
+      else{
+        i=i+1
+      }
+    }
+    while ((i < direcciones.length)&&(j < arrayType.length)){
+      if ((direcciones[i].tipo === arrayType[j])&&(direcciones[i].nombre===arrayDireccion[j])&&(direcciones[i].fk_direccion===foreignEstado)){
+          foreignMunicipio= direcciones[i].clave
+          console.log(foreignEstado);console.log(i);console.log(j);
+          j=j+1;
+          break;
+      }
+      else{
+        i=i+1
+      }
+    }
+    while ((i < direcciones.length)&&(j < arrayType.length)){
+      if((direcciones[i].tipo ===arrayType[j])&&(direcciones[i].nombre===arrayDireccion[j])&&(direcciones[i].fk_direccion===foreignMunicipio)){
+        foreignParroquia=direcciones[i].clave
+        console.log(foreignParroquia)
+        j=j+1
+        break;
+      }
+      else i=i+1
+    }
+    let foreign = foreignParroquia
+    return recursiveCrear(direcciones, arrayType, arrayDireccion, foreign, i, j)
+  })
+  .catch(function (error) {
+// handle error
+  return console.log('AXIOS error: '+ error);
+  });
+}
+
 axios.defaults.withCredentials = true;
 
 class SignUpContainer extends Component {
@@ -191,7 +297,8 @@ class SignUpContainer extends Component {
     this.state = {
       personalVisible: true,
       PersonalData: {
-        rif: "", ci: "", name: "", lastName: "", email: "",  password: "", bornDate: "",
+        rif: "", ci: "", name: "", lastName: "", userName: "", gender: "",
+        email: "",  password: "", bornDate: "",
         HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
                       homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""},
         telephoneNumber: "", cellphoneNumber: "", officeNumber: ""
@@ -239,7 +346,8 @@ class SignUpContainer extends Component {
   onClick() {
     this.setState({
       PersonalData: {
-        rif: "", ci: "", name: "", lastName: "", email: "",  password: "", bornDate: "",
+        rif: "", ci: "", name: "", lastName: "", userName: "", gender: "",
+        email: "",  password: "", bornDate: "",
         HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
                       homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""},
         telephoneNumber: "", cellphoneNumber: "", officeNumber: ""
@@ -481,46 +589,58 @@ class SignUpContainer extends Component {
     e.preventDefault();
     this.setState({
       PersonalData: {
-        rif: "", ci: "", name: "", lastName: "", email: "",  password: "", bornDate: "",
+        rif: "", ci: "", name: "", lastName: "", userName: "", gender: "",
+        email: "",  password: "", bornDate: "",
         HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
                       homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""},
         telephoneNumber: "", cellphoneNumber: "", officeNumber: ""
       },
     }, () => console.log(this.state.PersonalData));
   }
-  handlePersonalSubmit(e) {
+  async handlePersonalSubmit(e) {
     e.preventDefault();
-    let userData = this.state.PersonalData;
-    let validation = validate("personal");
+    let userData = this.state.PersonalData, typeRIF = 'V', typeDireccion, arrayType = [];
+    let direccion = this.state.PersonalData.HomeAddress, arrayDireccion = [];
 
-    console.log(userData);
-    if (validation === true)
-      alert("Usuario válido")
+    if(direccion.homeApartment !== "") {arrayDireccion.unshift(direccion.homeApartment);
+    typeDireccion = 'Apartamento'; arrayType.unshift(typeDireccion)}
+    if (direccion.homeOffice !== "") {arrayDireccion.unshift(direccion.homeOffice);
+    typeDireccion = 'Oficina';arrayType.unshift(typeDireccion)}
+    if (direccion.homeBuilding !== "") {arrayDireccion.unshift(direccion.homeBuilding);
+    typeDireccion = 'Edificio';arrayType.unshift(typeDireccion)}
+    if (direccion.homeFloor !== "") {arrayDireccion.unshift(direccion.homeFloor);
+    typeDireccion = 'Piso';arrayType.unshift(typeDireccion)}
+    if (direccion.homeAvenue !== "") {arrayDireccion.unshift(direccion.homeAvenue);
+    typeDireccion = 'Avenida';arrayType.unshift(typeDireccion)}
+    if (direccion.parish !== "No Aplica") {arrayDireccion.unshift(direccion.parish);
+    typeDireccion = 'Parroquia';arrayType.unshift(typeDireccion)}
+    if (direccion.municipality!=="No Aplica") {arrayDireccion.unshift(direccion.municipality); typeDireccion='Municipio';arrayType.unshift(typeDireccion)}
+    arrayDireccion.unshift(direccion.state,direccion.city); typeDireccion = 'Ciudad'; arrayType.unshift("Estado",typeDireccion);
+
+    let validation = validate("personal");
+    if (validation === true){ //
+      axios.get('/read/clientePorRif', {
+        params: {
+          clave : userData.rif
+        }}
+      ).then((response) => {
+          if(response.data.length > 0){
+            alert("Este usuario ya está registrado")
+            validation = false
+          }
+          else{
+            return foundDirecciones(arrayDireccion, arrayType)
+          }
+      })
+      .then((foreign)=>{
+        return crearUsuario(typeRIF, userData, foreign)
+      })
+      .catch(function (error) {
+      return console.log('AXIOS error: '+ error);
+    });
+    }
     else
       alert("Usuario no válido")
-    /* if (validation === true) {
-      axios.post('/auth/personal_signup', {
-        correo: userData.email,
-        nombre: userData.name,
-        apellido: userData.lastNames,
-        contrasenha: userData.password,
-        fecha_nacimiento:userData.bornDate
-
-      }).then( (response)=> {
-        // handle success
-        console.log(response);
-        if (!response.data){
-          console.log('ya existe el usuario');
-        } else {
-          console.log(response.data);
-          this.props.history.push('/');
-          return response.data;
-        }
-      });
-    } else {
-      console.log("Not Validated");
-    }
-    */
     return validation;
   }
 
@@ -544,8 +664,9 @@ class SignUpContainer extends Component {
     let validation = validate("company");
 
     console.log(userData);
-    if (validation === true)
-      alert("Usuario válido")
+    if (validation === true){
+
+    }
     else
       alert("Usuario no válido")
     /* if (validation === true) {

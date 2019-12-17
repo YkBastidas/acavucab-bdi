@@ -165,7 +165,7 @@ CREATE SEQUENCE public.secuencia_departamento
 CREATE TABLE public.departamento
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_departamento'::regclass),  
-     nombre varchar(20) NOT NULL,
+     nombre varchar(50) NOT NULL,
      CONSTRAINT pk_clave_departamento PRIMARY KEY (clave)
 );
 
@@ -180,7 +180,7 @@ CREATE SEQUENCE public.secuencia_direccion
 CREATE TABLE public.direccion
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_direccion'),
-     tipo varchar(10) NOT NULL,
+     tipo varchar(15) NOT NULL,
      nombre varchar NOT NULL,
      fk_direccion numeric,
      CONSTRAINT pk_clave_direccion PRIMARY KEY (clave),
@@ -201,7 +201,8 @@ CREATE TABLE public.privilegio
      clave numeric NOT NULL DEFAULT nextval('secuencia_privilegio'::regclass),
      tipo varchar NOT NULL,
      tabla varchar NOT NULL,
-     CONSTRAINT pk_clave_privilegio PRIMARY KEY (clave)
+     CONSTRAINT pk_clave_privilegio PRIMARY KEY (clave),
+     CONSTRAINT chk_tipo_privilegio CHECK (tipo in ('Crear','Consultar','Modificar','Eliminar'))
 );
 
 CREATE SEQUENCE public.secuencia_rol
@@ -215,7 +216,7 @@ CREATE SEQUENCE public.secuencia_rol
 CREATE TABLE public.rol 
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_rol'),
-     nombre varchar(13) NOT NULL,
+     nombre varchar NOT NULL,
      CONSTRAINT pk_clave_rol PRIMARY KEY (clave)
 );
 
@@ -252,10 +253,12 @@ CREATE TABLE public.personal
      apellido varchar(15) NOT NULL,
      ci numeric(9) NOT NULL,
      salario varchar(11) NOT NULL, 
-     cargo varchar(11) NOT NULL,
+     cargo varchar(50) NOT NULL,
+     genero varchar NOT NULL,
      fk_rol numeric,
      CONSTRAINT pk_clave_personal PRIMARY KEY (clave),
-     CONSTRAINT fk_fk_rol_personal FOREIGN KEY (fk_rol) REFERENCES rol(clave)
+     CONSTRAINT fk_fk_rol_personal FOREIGN KEY (fk_rol) REFERENCES rol(clave),
+     CONSTRAINT chk_genero_personal CHECK (genero in ('Hombre','Mujer','Otro'))
 );
 
 CREATE SEQUENCE public.secuencia_motivos_laborales
@@ -290,8 +293,8 @@ CREATE TABLE public.horario
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_horario'::regclass),
      dia varchar NOT NULL,
-     hora_inicio date NOT NULL,
-     hora_fin date NOT NULL,
+     hora_inicio numeric NOT NULL,
+     hora_fin numeric NOT NULL,
      CONSTRAINT pk_clave_horario PRIMARY KEY (clave)
 );
 
@@ -552,31 +555,28 @@ CREATE TABLE public.status_venta
      CONSTRAINT fk_fk_venta_status_venta FOREIGN KEY (fk_venta) REFERENCES venta(nro_factura)
 );
 
-CREATE SEQUENCE public.secuencia_cliente
-     start with 1
-     increment 1
-     minvalue 1
-     maxvalue 150000
-     cycle
-;
-
 CREATE TABLE public.cliente 
 (
-     rif numeric NOT NULL DEFAULT nextval('secuencia_cliente'::regclass),
+     rif varchar(9), 
      tipo varchar(8) NOT NULL,
      fk_direccion_fisica numeric NOT NULL,
      natural_ci numeric(9),
      natural_nombre varchar(15),
      natural_apellido varchar(15),
-     juridico_denominacion_comercial varchar(20),
-     juridico_razon_social varchar(20),
-     juridico_pagina_web varchar(20),
+     natural_genero varchar,
+     natural_fecha_nacimiento date,
+     juridico_denominacion_comercial varchar(30),
+     juridico_razon_social varchar(30),
+     juridico_pagina_web varchar(30),
      juridico_capital numeric,
-     juridico_fk_direccion_fiscal numeric NOT NULL,
+     juridico_fk_direccion_fiscal numeric,
+	 juridico_fk_direccion_principal numeric,
      CONSTRAINT pk_cliente PRIMARY KEY (rif),
      CONSTRAINT chk_tipo_cliente CHECK (tipo in ('Natural','Juridico')),
      CONSTRAINT fk_fk_direccion_fisica_cliente FOREIGN KEY (fk_direccion_fisica) REFERENCES direccion(clave),
-     CONSTRAINT fk_juridico_fk_direccion_fiscal_cliente FOREIGN KEY (juridico_fk_direccion_fiscal) REFERENCES direccion(clave)
+     CONSTRAINT fk_juridico_fk_direccion_fiscal_cliente FOREIGN KEY (juridico_fk_direccion_fiscal) REFERENCES direccion(clave),
+     CONSTRAINT fk_juridico_fk_direccion_principal_cliente FOREIGN KEY (juridico_fk_direccion_principal) REFERENCES direccion(clave),
+	 CONSTRAINT chk_natural_genero_cliente CHECK (natural_genero in ('Hombre','Mujer','Otro'))
 );
 
 CREATE SEQUENCE public.secuencia_usuario
@@ -592,7 +592,7 @@ CREATE TABLE public.usuario
      id numeric NOT NULL DEFAULT nextval('secuencia_usuario'::regclass),
      nombre varchar NOT NULL,
      contrasena varchar NOT NULL,
-     fk_cliente numeric,
+     fk_cliente varchar,
      fk_personal numeric,
      CONSTRAINT pk_id_usuario PRIMARY KEY (id),
      CONSTRAINT fk_fk_cliente_usuario FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
@@ -612,7 +612,7 @@ CREATE TABLE public.comentario_cerveza
      clave numeric NOT NULL DEFAULT nextval('secuencia_comentario_cerveza'::regclass),
      calificacion numeric(1,1) NOT NULL,
      descripcion varchar(100),
-     fk_cliente numeric NOT NULL,
+     fk_cliente varchar NOT NULL,
      fk_cerveza numeric NOT NULL,
      CONSTRAINT pk_comentario_cerveza PRIMARY KEY (clave),
      CONSTRAINT fk_fk_cliente_comentario_cerveza FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
@@ -631,7 +631,7 @@ CREATE TABLE public.correo_electronico
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_correo_electronico'::regclass),
      direccion numeric NOT NULL,
-     fk_cliente numeric NOT NULL,
+     fk_cliente varchar NOT NULL,
      CONSTRAINT pk_clave_correo_electronico PRIMARY KEY (clave),
      CONSTRAINT fk_fk_cliente_correo_electronico FOREIGN KEY (fk_cliente) REFERENCES cliente(rif)
 );
@@ -643,7 +643,7 @@ CREATE TABLE public.compra
      fecha_compra date NOT NULL,
      fk_tienda_fisica numeric,
      fk_tienda_virtual numeric,
-     fk_cliente numeric NOT NULL,
+     fk_cliente varchar NOT NULL,
      CONSTRAINT pk_nro_factura_compra_status PRIMARY KEY (nro_factura),
      CONSTRAINT fk_fk_tienda_fisica_compra FOREIGN KEY (fk_tienda_fisica) REFERENCES tienda(clave),
      CONSTRAINT fk_fk_tienda_virtual_compra FOREIGN KEY (fk_tienda_virtual) REFERENCES tienda(clave),
@@ -727,7 +727,7 @@ CREATE TABLE public.historico_puntos_cliente  --Falta el chck en tipo
      cantidad numeric NOT NULL,
      fecha_cambio date NOT NULL,
      tipo char NOT NULL,
-     fk_cliente numeric NOT NULL,
+     fk_cliente varchar NOT NULL,
      CONSTRAINT pk_clave_historico_puntos_cliente PRIMARY KEY (clave),
      CONSTRAINT fk_fk_cliente_historico_puntos_cliente FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
      CONSTRAINT chk_tipo_historico_puntos_cliente CHECK (tipo in('+','-'))
@@ -746,7 +746,7 @@ CREATE TABLE public.persona_contacto
      clave numeric NOT NULL DEFAULT nextval('secuencia_persona_contacto'::regclass),
      nombre numeric NOT NULL,
      numero numeric NOT NULL,
-     fk_cliente numeric NOT NULL,
+     fk_cliente varchar NOT NULL,
      CONSTRAINT pk_clave_persona_contacto PRIMARY KEY (clave),
      CONSTRAINT fk_fk_cliente_persona_contacto FOREIGN KEY (fk_cliente) REFERENCES cliente(rif)
 );
@@ -763,7 +763,7 @@ CREATE TABLE public.telefono
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_telefono'::regclass),
      numero numeric NOT NULL,
-     fk_cliente numeric,
+     fk_cliente varchar,
      fk_proveedor numeric,
      CONSTRAINT pk_clave_telefono PRIMARY KEY (clave),
      CONSTRAINT fk_fk_cliente_telefono FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
@@ -781,7 +781,7 @@ CREATE SEQUENCE public.secuencia_tipo_pago_credito
 CREATE TABLE public.tipo_pago_credito 
 (
      codigo numeric NOT NULL DEFAULT nextval('secuencia_tipo_pago_credito'::regclass),
-     banco varchar(15),
+     banco varchar(25),
      numero numeric NOT NULL,
      tipo varchar(10) NOT NULL,
      cvc numeric NOT NULL,
@@ -802,7 +802,7 @@ CREATE SEQUENCE public.secuencia_tipo_pago_debito
 CREATE TABLE public.tipo_pago_debito
 (
      codigo numeric NOT NULL DEFAULT nextval('secuencia_tipo_pago_debito'::regclass),
-     banco varchar(15),
+     banco varchar(25),
      numero numeric NOT NULL,
      tipo varchar(10) NOT NULL,
      cvc numeric NOT NULL,
