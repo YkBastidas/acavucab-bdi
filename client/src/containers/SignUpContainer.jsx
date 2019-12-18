@@ -187,39 +187,73 @@ function validate(user) {
   }
 }
 
-function recursiveCrear(data, arrayType, arrayDireccion, foreign, i, j){
-  console.log(data);console.log(arrayType);console.log(arrayDireccion);console.log(foreign);
-  console.log(i); console.log(j);
-  while ((i < data.length)&&(j < arrayType.length)){
-    if ((data[i].tipo === arrayType[j])&&(data[i].nombre===arrayDireccion[j])&&(data[i].fk_direccion===foreign)){
-      foreign= data[i].clave
-      console.log(foreign);console.log(i);console.log(j);
-      j=j+1;
-    }
-    else{
-      i=i+1
-    }
-  }
-  if (j < arrayType.length){
-    return axios.post('/create/direccion', {
-      tipo: arrayType[j],
-      nombre: arrayDireccion[j],
-      fk_direccion : foreign
-    }).then((response)=> { // handle success
-      return recursiveCrear(data, arrayType,arrayDireccion, response.data[0].clave,0,j+1)
-      .then((key) => {
-        let array = []
-        return array.unshift(foreign,key)
-      })
+function foundDirecciones(arrayDireccion, arrayType){
+  return axios.get('/read/direcciones')
+  .then((response) => {
+    return axios.get('/read/direccionPorNombreTipo',{
+      params: {
+        nombre: arrayDireccion[0],
+        tipo: arrayType[0]
+      }
+    })
+    .then((response)=>{
+      return recursiveCrear(response.data, arrayType, arrayDireccion,1,response.data[0].clave)
+    })
+    .catch(function (error){
+      console.log('AXIOS error: '+ error);
+      alert('Error al buscar el Estado')
+      return false
+    })
+  })
+  .catch(function (error) {
+  console.log('AXIOS error: '+ error);
+  alert('Error al buscar las diercciones')
+  return false
+  });
+}
+function recursiveCrear(data, arrayType, arrayDireccion, i,foreign){
+  console.log(arrayType[i], arrayDireccion[i],arrayDireccion, i, foreign)
+    return axios.get('/read/direccionPorNombreTipoFK',{
+      params: {
+        nombre: arrayDireccion[i],
+        tipo: arrayType[i],
+        fk_direccion: foreign
+      }
+    }).then((response)=>{
+      if((response.data.length>0)&&(i < arrayDireccion.length)){
+        console.log('Existe')
+        if(response.data[0].tipo !== 'Ciudad') foreign = response.data[0].clave
+        return recursiveCrear(data,arrayType,arrayDireccion, i+1, foreign)
+      }
+      else if ((i < arrayDireccion.length)){
+        console.log('No existe')
+        axios.post('/create/direccion',{
+          tipo : arrayType[i],
+          nombre: arrayDireccion[i],
+          fk_direccion: foreign
+        })
+        .then((response)=>{
+          console.log(response)
+          foreign=response.data.clave
+          return recursiveCrear(data,arrayType,arrayDireccion, i+1, foreign)
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          alert('Error al crear la dirección')
+          return false
+        })
+      }
+      else {
+        console.log("FINAL: "+foreign)
+        return foreign
+      }
     }).catch(function (error) {
-    // handle error
-      return console.log('AXIOS error: '+ error);
-    });
-  }
-  return foreign
+      console.log('AXIOS error: '+ error);
+      alert('Error al obtener la dirección')
+      return false
+    })
 }
 
-function crearUsuario(typeRIF, userData, foreign){
+function crearCliente(typeRIF, userData, foreign){
   return axios.post('/create/registro', {
           rif: typeRIF+userData.rif,
           tipo: 'Natural',
@@ -232,61 +266,46 @@ function crearUsuario(typeRIF, userData, foreign){
         }).then((response)=> { // handle success
           return response.data
         }).catch(function (error) {
-        // handle error
-          return console.log('AXIOS error: '+ error);
+          console.log('AXIOS error: '+ error);
+          return "error"
         })
 }
-function foundDirecciones(arrayDireccion, arrayType){
-  return axios.get('/read/direcciones')
-  .then((response) => {
-    let direcciones = response.data, i = 0, j=0, foreignEstado, foreignCiudad, foreignMunicipio, foreignParroquia
-    while (i < direcciones.length){
-      if ((direcciones[i].tipo === arrayType[j])&&(direcciones[i].nombre===arrayDireccion[j])){
-        foreignEstado = direcciones[i].clave
-        j=j+1
-        break;
-      }
-      else
-      i=i+1
-    }
-    while ((i < direcciones.length)&&(j < arrayType.length)){
-      if ((direcciones[i].tipo === arrayType[j])&&(direcciones[i].nombre===arrayDireccion[j])&&(direcciones[i].fk_direccion===foreignEstado)){
-          foreignCiudad= direcciones[i].clave
-          console.log(foreignEstado);console.log(i);console.log(j);
-          j=j+1;
-          break;
-      }
-      else{
-        i=i+1
-      }
-    }
-    while ((i < direcciones.length)&&(j < arrayType.length)){
-      if ((direcciones[i].tipo === arrayType[j])&&(direcciones[i].nombre===arrayDireccion[j])&&(direcciones[i].fk_direccion===foreignEstado)){
-          foreignMunicipio= direcciones[i].clave
-          console.log(foreignEstado);console.log(i);console.log(j);
-          j=j+1;
-          break;
-      }
-      else{
-        i=i+1
-      }
-    }
-    while ((i < direcciones.length)&&(j < arrayType.length)){
-      if((direcciones[i].tipo ===arrayType[j])&&(direcciones[i].nombre===arrayDireccion[j])&&(direcciones[i].fk_direccion===foreignMunicipio)){
-        foreignParroquia=direcciones[i].clave
-        console.log(foreignParroquia)
-        j=j+1
-        break;
-      }
-      else i=i+1
-    }
-    let foreign = foreignParroquia
-    return recursiveCrear(direcciones, arrayType, arrayDireccion, foreign, i, j)
+function validarCedula(cedula){
+  return axios.get('/read/clientePorCedula', {
+    params: {
+      clave : cedula
+    }}
+  ).then((response) => {
+    console.log(response)
+    if(response.data.length>0) return true
+    else return false
   })
-  .catch(function (error) {
-// handle error
-  return console.log('AXIOS error: '+ error);
+}
+
+function validarUsuario(userName){
+  return axios.get('/read/usuarioPorNombre', {
+    params: {
+      nombre : userName
+    }}
+  ).then((response) => {
+      console.log(response.data)
+      if(response.data.length > 0) return true
+      else return false
+  }).catch(function (error) {
+    console.log('AXIOS error: '+ error);
+    return 'errorValidateUser'
   });
+}
+function crearUsuario(data){
+  return axios.post('/create/usuario', {
+          nombre: data.userName,
+          contrasena: data.password
+        }).then((response)=> {
+          return true
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          return 'errorCreateUser'
+        })
 }
 
 axios.defaults.withCredentials = true;
@@ -597,7 +616,7 @@ class SignUpContainer extends Component {
       },
     }, () => console.log(this.state.PersonalData));
   }
-  async handlePersonalSubmit(e) {
+  handlePersonalSubmit(e) {
     e.preventDefault();
     let userData = this.state.PersonalData, typeRIF = 'V', typeDireccion, arrayType = [];
     let direccion = this.state.PersonalData.HomeAddress, arrayDireccion = [];
@@ -606,10 +625,10 @@ class SignUpContainer extends Component {
     typeDireccion = 'Apartamento'; arrayType.unshift(typeDireccion)}
     if (direccion.homeOffice !== "") {arrayDireccion.unshift(direccion.homeOffice);
     typeDireccion = 'Oficina';arrayType.unshift(typeDireccion)}
-    if (direccion.homeBuilding !== "") {arrayDireccion.unshift(direccion.homeBuilding);
-    typeDireccion = 'Edificio';arrayType.unshift(typeDireccion)}
     if (direccion.homeFloor !== "") {arrayDireccion.unshift(direccion.homeFloor);
     typeDireccion = 'Piso';arrayType.unshift(typeDireccion)}
+    if (direccion.homeBuilding !== "") {arrayDireccion.unshift(direccion.homeBuilding);
+    typeDireccion = 'Edificio';arrayType.unshift(typeDireccion)}
     if (direccion.homeAvenue !== "") {arrayDireccion.unshift(direccion.homeAvenue);
     typeDireccion = 'Avenida';arrayType.unshift(typeDireccion)}
     if (direccion.parish !== "No Aplica") {arrayDireccion.unshift(direccion.parish);
@@ -618,30 +637,78 @@ class SignUpContainer extends Component {
     arrayDireccion.unshift(direccion.state,direccion.city); typeDireccion = 'Ciudad'; arrayType.unshift("Estado",typeDireccion);
 
     let validation = validate("personal");
-    if (validation === true){ //
-      axios.get('/read/clientePorRif', {
+    let rif = 'V'+userData.rif.toString();
+    if (validation === true){
+      return axios.get('/read/clientePorRif', {
         params: {
-          clave : userData.rif
+          clave : rif
         }}
       ).then((response) => {
+        console.log(rif)
+        console.log("validarRif"); console.log(response)
           if(response.data.length > 0){
-            alert("Este usuario ya está registrado")
-            validation = false
+            alert("RIF de cliente ya está registrado")
+            return 'error'
           }
-          else{
-            return foundDirecciones(arrayDireccion, arrayType)
+          else return false
+      }).then((response)=>{
+        if(response === false)
+          return validarCedula(userData.ci)
+        else return response
+      }).then((response) => {
+        console.log("validarUsuario"); console.log(response)
+        if(response === 'error' ) return response
+        else if (response === true){
+          alert("El documento de identificación está asociado a otro cliente")
+          return 'error'
+        }
+        else return false
+      }).then((response)=>{
+        if (response==='error') return response
+        else if(response === false) return validarUsuario(userData.userName)
+        else {
+          alert("Ha ocurrido un error al validar el usuario")
+          return 'error'
+        }
+      }).then((response) => {
+        console.log("crearUsuario"); console.log(response)
+        if ((response === 'error')) return response
+        else if (response){
+            alert("Nombre de usuario ya en uso")
+            return 'error'
           }
-      })
-      .then((foreign)=>{
-        return crearUsuario(typeRIF, userData, foreign)
-      })
-      .catch(function (error) {
-      return console.log('AXIOS error: '+ error);
-    });
+          else
+            return crearUsuario(userData)
+      }).then((response) => {
+          console.log("foundDirecciones"); console.log(response)
+          if (response === 'error') return response
+          else if (response === 'errorCreateUser') {
+            alert('Error al crear el nuevo usuario, intente de nuevo')
+            return 'error'
+          }
+          else return foundDirecciones(arrayDireccion, arrayType)
+      }).then((foreign)=>{
+        console.log("crearCliente"); console.log(foreign)
+        if((foreign!=='error')&&(foreign!==false)) {
+          return crearCliente(typeRIF, userData, foreign)
+          .then((response)=>{
+            alert("El cliente: "+response.rif+" ha sido creado exitosamente")
+          })
+          .catch(function (error) {
+            alert('Error: No se ha podido registrar al cliente')
+            console.log('AXIOS error: '+ error);
+          })
+        }
+        else {
+          console.log('Error de clave foránea')
+        }
+      }).catch(function (error) {
+        alert('Error: Algo ha fallado, intente nuevamente')
+        console.log('AXIOS error: '+ error);
+      });
     }
     else
-      alert("Usuario no válido")
-    return validation;
+      alert("Usuario no válido");
   }
 
   handleClearCompany(e) {
@@ -669,32 +736,9 @@ class SignUpContainer extends Component {
     }
     else
       alert("Usuario no válido")
-    /* if (validation === true) {
-      axios.post('/auth/personal_signup', {
-        correo: userData.email,
-        nombre: userData.name,
-        apellido: userData.lastNames,
-        contrasenha: userData.password,
-        fecha_nacimiento:userData.bornDate
 
-      }).then( (response)=> {
-        // handle success
-        console.log(response);
-        if (!response.data){
-          console.log('ya existe el usuario');
-        } else {
-          console.log(response.data);
-          this.props.history.push('/');
-          return response.data;
-        }
-      });
-    } else {
-      console.log("Not Validated");
-    }
-    */
     return validation;
   }
-
   render() {
     return (
       <div className=" container">

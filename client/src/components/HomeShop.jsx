@@ -13,7 +13,7 @@ function recursiveDireccion(foreign) {
       console.log('Callback Axios: Obtener dirección completa');
       if(response.data[0].fk_direccion != null){
         joinArray = response.data
-        return recursiveDireccion(joinArray[0].fk_direccion)
+        return recursiveDireccion(parseInt(joinArray[0].fk_direccion))
         .then((array1)=>{
           let array2 = joinArray.concat(array1)
           return array2

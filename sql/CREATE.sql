@@ -246,6 +246,22 @@ CREATE SEQUENCE public.secuencia_personal
      cycle
 ;
 
+CREATE SEQUENCE public.secuencia_usuario
+     start with 1
+     increment 1
+     minvalue 1
+     maxvalue 200000
+     cycle
+;
+
+CREATE TABLE public.usuario  
+(
+     id numeric DEFAULT nextval('secuencia_usuario'::regclass),
+     nombre varchar NOT NULL,
+     contrasena varchar NOT NULL,
+     CONSTRAINT pk_id_usuario PRIMARY KEY (id)   
+);
+
 CREATE TABLE public.personal
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_personal'::regclass),  
@@ -256,8 +272,10 @@ CREATE TABLE public.personal
      cargo varchar(50) NOT NULL,
      genero varchar NOT NULL,
      fk_rol numeric,
+	 fk_usuario numeric,
      CONSTRAINT pk_clave_personal PRIMARY KEY (clave),
      CONSTRAINT fk_fk_rol_personal FOREIGN KEY (fk_rol) REFERENCES rol(clave),
+	 CONSTRAINT fk_personal_usuario FOREIGN KEY (fk_usuario) REFERENCES usuario(id),
      CONSTRAINT chk_genero_personal CHECK (genero in ('Hombre','Mujer','Otro'))
 );
 
@@ -557,7 +575,7 @@ CREATE TABLE public.status_venta
 
 CREATE TABLE public.cliente 
 (
-     rif varchar(9), 
+     rif varchar(15), 
      tipo varchar(8) NOT NULL,
      fk_direccion_fisica numeric NOT NULL,
      natural_ci numeric(9),
@@ -570,33 +588,13 @@ CREATE TABLE public.cliente
      juridico_pagina_web varchar(30),
      juridico_capital numeric,
      juridico_fk_direccion_fiscal numeric,
-	 juridico_fk_direccion_principal numeric,
+	 fk_usuario numeric,
      CONSTRAINT pk_cliente PRIMARY KEY (rif),
      CONSTRAINT chk_tipo_cliente CHECK (tipo in ('Natural','Juridico')),
      CONSTRAINT fk_fk_direccion_fisica_cliente FOREIGN KEY (fk_direccion_fisica) REFERENCES direccion(clave),
      CONSTRAINT fk_juridico_fk_direccion_fiscal_cliente FOREIGN KEY (juridico_fk_direccion_fiscal) REFERENCES direccion(clave),
-     CONSTRAINT fk_juridico_fk_direccion_principal_cliente FOREIGN KEY (juridico_fk_direccion_principal) REFERENCES direccion(clave),
+	 CONSTRAINT fk_cliente_usuario FOREIGN KEY (fk_usuario) REFERENCES usuario(id),
 	 CONSTRAINT chk_natural_genero_cliente CHECK (natural_genero in ('Hombre','Mujer','Otro'))
-);
-
-CREATE SEQUENCE public.secuencia_usuario
-     start with 1
-     increment 1
-     minvalue 1
-     maxvalue 200000
-     cycle
-;
-
-CREATE TABLE public.usuario  
-(
-     id numeric NOT NULL DEFAULT nextval('secuencia_usuario'::regclass),
-     nombre varchar NOT NULL,
-     contrasena varchar NOT NULL,
-     fk_cliente varchar,
-     fk_personal numeric,
-     CONSTRAINT pk_id_usuario PRIMARY KEY (id),
-     CONSTRAINT fk_fk_cliente_usuario FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
-     CONSTRAINT fk_fk_personal_usuario FOREIGN KEY (fk_personal) REFERENCES personal(clave)
 );
 
 CREATE SEQUENCE public.secuencia_comentario_cerveza

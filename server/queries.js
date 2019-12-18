@@ -37,9 +37,9 @@ const getTiendaFisica= (request, response ) => {
 const getDireccionPorClave = (request, response ) => {
   if(request.query != "{}"){
     let direccion = ""
-    let clave = [parseInt(request.query.clave)]
+    let values = [request.query.clave]
     const query = 'SELECT * FROM direccion WHERE clave = $1'
-    pool.query(query, clave, (error, results) => {
+    pool.query(query, values, (error, results) => {
       if (error) {
         throw error
       }
@@ -48,49 +48,106 @@ const getDireccionPorClave = (request, response ) => {
   }
   else response.status(404)
 }
+const getDireccionPorNombreTipoFK = (request, response ) =>{
+  let values = [request.query.nombre, request.query.tipo, request.query.fk_direccion]
+  const query = 'SELECT * FROM direccion WHERE nombre = $1 AND tipo = $2 AND fk_direccion = $3'
+  pool.query(query, values, (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+const getDireccionPorNombreTipo = (request, response ) =>{
+  let values = [request.query.nombre, request.query.tipo]
+  const query = 'SELECT * FROM direccion WHERE nombre = $1 AND tipo = $2'
+  pool.query(query, values, (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
 const getClientePorRif = (request, response) =>{
-    let clave = [request.query.rif]
+    let values = [request.query.clave]
     const query = 'SELECT * FROM cliente WHERE rif = $1'
-    pool.query(query, clave, (error, results) => {
+    pool.query(query, values, (error, results) => {
       if (error) {
         throw error
       }
       response.status(200).json(results.rows)
     })
 }
-
-const postRegistro = (request, response, next) => {
-  let b
-    console.log(request.body);
-    if(request.body.tipo === 'Natural'){
-      const text = 'INSERT INTO public.cliente(rif, tipo, fk_direccion_fisica, natural_ci, natural_nombre, natural_apellido, natural_genero, natural_fecha_nacimiento) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;';
-      const values = [request.body.rif, request.body.tipo, request.body.fk_direccion, request.body.ci, request.body.nombre, request.body.apellido, request.body.genero,request.body.fecha_nacimiento];
-      pool.query(text, values, (error, response) => {
-        if (error) {
-          console.log('ERROR DE REGISTRO: '+error)
-          throw error
-        }
-      });
+const getClientePorCedula = (request, response) =>{
+  let values = [request.query.clave]
+  const query = 'SELECT * FROM cliente WHERE natural_ci = $1'
+  pool.query(query, values, (error, results) => {
+    if (error) {
+      throw error
     }
-    return response.redirect('/');
+    response.status(200).json(results.rows)
+  })
+}
+const getUsuarioPorNombre = (request, response) =>{
+  let values = [request.query.nombre]
+  const query = 'SELECT * FROM usuario WHERE nombre = $1'
+  pool.query(query, values, (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
+const postRegistro = (request, response, next) =>{
+  console.log(request.body);
+  if(request.body.tipo === 'Natural'){
+    const text = 'INSERT INTO public.cliente(rif, tipo, fk_direccion_fisica, natural_ci, natural_nombre, natural_apellido, natural_genero, natural_fecha_nacimiento) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;';
+    const values = [request.body.rif, request.body.tipo, request.body.fk_direccion, request.body.ci, request.body.nombre, request.body.apellido, request.body.genero,request.body.fecha_nacimiento];
+      pool.query(text, values, (error, response) => {
+      if (error) {
+        console.log('ERROR DE REGISTRO: '+error)
+        throw error
+      }
+    });
+  }
+  return response.redirect('/');
 }
 const postDireccion = (request, response) =>{
   console.log(request.body);
   const text = 'INSERT INTO public.direccion(tipo, nombre, fk_direccion) VALUES ($1, $2, $3) RETURNING *;';
   const values = [request.body.tipo, request.body.nombre, request.body.fk_direccion];
-    pool.query(text, values, (error, response) => {
+    pool.query(text, values, (error, results, data) => {
+      response.send(results.data);
       if (error) {
         throw error
       }
     })
+}
+const postUsuario = (request, response, next) => {
+  console.log(request.body);
+  const text = 'INSERT INTO public.usuario(nombre, contrasena) VALUES ($1, $2) RETURNING *;';
+  const values = [request.body.nombre, request.body.contrasena];
+  pool.query(text, values, (error, response) => {
+    if (error) {
+      console.log('ERROR DE REGISTRO: '+error)
+      throw error
+    }
+  })
   return response.redirect('/');
 }
+
 module.exports = {
   getEvents,
   getDirecciones,
   getDireccionPorClave,
+  getDireccionPorNombreTipo,
+  getDireccionPorNombreTipoFK,
   getClientePorRif,
+  getClientePorCedula,
+  getUsuarioPorNombre,
   getTiendaFisica,
+  postUsuario,
   postRegistro,
   postDireccion
 }

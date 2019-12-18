@@ -74,9 +74,15 @@ app.use('/bd/metodopagotienda', router);
 app.get('/read/eventos', db.getEvents) // GET ALL EVENTS
 app.get('/read/direcciones', db.getDirecciones) // GET ALL ADDRESSES
 app.get('/read/direccionPorClave', db.getDireccionPorClave) // GET ADDRESS BY ID
-app.get('/read/clientePorRif', db.getClientePorRif) // GET ADDRESS BY ID
+app.get('/read/direccionPorNombreTipo', db.getDireccionPorNombreTipo) // GET ADDRESS BY Name and Type
+app.get('/read/direccionPorNombreTipoFK', db.getDireccionPorNombreTipoFK) // GET ADDRESS Name and Type and FK
+app.get('/read/clientePorRif', db.getClientePorRif) // GET CLIENTE BY RIF
+app.get('/read/clientePorCedula', db.getClientePorCedula) // GET CLIENTE BY RIF
+app.get('/read/usuarioPorNombre', db.getUsuarioPorNombre) // GET USER BY NAME
 app.get('/read/tiendaFisica', db.getTiendaFisica) // GET REAL SHOP DATA
-app.post('/create/registro', db.postRegistro) // CREATE NEW USER
+
+app.post('/create/usuario', db.postUsuario) //CREATE NEW USER
+app.post('/create/registro', db.postRegistro) // CREATE NEW CLIENT
 app.post('/create/direccion', db.postDireccion) // CREATE A NEW ADDRESS
 
 //LISTEN THE SERVER IN THE PORT
