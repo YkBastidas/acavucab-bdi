@@ -171,6 +171,18 @@ const postTelefonoCliente = (request, response, next) => {
     response.status(201).send(results.rows);
   })
 }
+const postPersonaContacto = (request, response, next) => {
+  console.log(request.body);
+  const text = 'INSERT INTO public.persona_contacto(nombre, numero, fk_cliente) VALUES ($1, $2, $3) RETURNING *;';
+  const values = [request.body.nombre, request.body.numero, request.body.foreignKey];
+  pool.query(text, values, (error, results) => {
+    if (error) {
+      console.log('ERROR DE REGISTRO: '+error)
+      throw error
+    }
+    response.status(201).send(results.rows);
+  })
+}
 
 module.exports = {
   getEvents,
@@ -186,5 +198,6 @@ module.exports = {
   postRegistro,
   postDireccion,
   postEmail,
-  postTelefonoCliente
+  postTelefonoCliente,
+  postPersonaContacto
 }

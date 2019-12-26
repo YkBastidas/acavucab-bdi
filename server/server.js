@@ -86,6 +86,7 @@ app.post('/create/registro', db.postRegistro) // CREATE NEW CLIENT
 app.post('/create/direccion', db.postDireccion) // CREATE A NEW ADDRESS
 app.post('/create/email', db.postEmail) // CREATE A NEW EMAIL
 app.post('/create/telefonoCliente', db.postTelefonoCliente) // CREATE A NEW EMAIL
+app.post('/create/personaContacto', db.postPersonaContacto) // CREATE A NEW CONTACT PERSON
 
 //LISTEN THE SERVER IN THE PORT
 app.listen(port, () => {

@@ -745,7 +745,7 @@ CREATE SEQUENCE public.secuencia_persona_contacto
 CREATE TABLE public.persona_contacto
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_persona_contacto'::regclass),
-     nombre numeric NOT NULL,
+     nombre varchar NOT NULL,
      numero numeric NOT NULL,
      fk_cliente varchar NOT NULL,
      CONSTRAINT pk_clave_persona_contacto PRIMARY KEY (clave),

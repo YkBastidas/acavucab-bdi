@@ -362,6 +362,18 @@ function validarRazonSocial(razonSocial){
     return "error"
   })
 }
+function crearContactPerson(contactData, rif){
+  return axios.post('/create/personaContacto', {
+          nombre: contactData.nameContact,
+          numero: contactData.numberContact,
+          foreignKey: rif
+        }).then((response)=> {
+          return response.data[0].id
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          return 'error'
+        })
+}
 
 axios.defaults.withCredentials = true;
 
@@ -968,8 +980,55 @@ class SignUpContainer extends Component {
         console.log("crearCliente"); console.log(response)
         if((foreignFiscal!=='error')&&(foreignFiscal!==false)) {
           return crearClienteJuridico(typeRIF, userData, foreignFiscal, foreignPrincipal, idUsuario)
+          .then(async (response)=>{
+            let emailResponse = await crearEmail(userData.email, response),
+            contactResponse = await crearContactPerson(userData.ContactPerson, response),
+            telephone1Response = await crearTelefono(userData.telephone1, response),
+            telephone2Response, telephone3Response, array = []
+            array.push(response, emailResponse, contactResponse, telephone1Response)
+            if(userData.telephone2 !== ""){
+              telephone2Response = await crearTelefono(userData.telephone2, response)
+              array.push(telephone2Response)
+            }
+            if (userData.telephone3 !== ""){
+              telephone3Response = await crearTelefono(userData.telephone3, response)
+              array.push(telephone3Response)
+            }
+            return array
+          })
           .then((response)=>{
-            alert("El cliente: "+response+" ha sido creado exitosamente")
+            let max = response.length, i = 1
+            while (i < max){
+              if((response[i] === 'error')&&(i===1)){
+                alert("Error al crear el correo electrónico")
+                break
+              }
+              else if((response[i] === 'error')&&(i===2)){
+                alert("Error al crear la persona de contacto")
+                break
+              }
+              else if((response[i] === 'error')&&(i===3)){
+                alert("Error al crear el teléfono principal")
+                break
+              }
+              else{
+                if(i===4){
+                  if((response[i] === 'error')){
+                    alert("Error al crear el teléfono secundario")
+                    break
+                  }
+                }
+                else if (i===5){
+                  if((response[i] === 'error')){
+                    alert("Error al crear el otro teléfono")
+                    break
+                  }
+                }
+              }
+              i++;
+            }
+            if (i === max)
+              alert("El cliente: "+response[0]+" ha sido creado exitosamente")
           })
           .catch(function (error) {
             alert('Error: No se ha podido registrar al cliente')
