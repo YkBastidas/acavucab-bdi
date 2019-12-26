@@ -187,6 +187,43 @@ function validate(user) {
   }
 }
 
+function validarCedula(cedula){
+  return axios.get('/read/clientePorCedula', {
+    params: {
+      clave : cedula
+    }}
+  ).then((response) => {
+    console.log(response)
+    if(response.data.length>0) return true
+    else return false
+  })
+}
+function validarUsuario(userName){
+  return axios.get('/read/usuarioPorNombre', {
+    params: {
+      nombre : userName
+    }}
+  ).then((response) => {
+      console.log(response.data)
+      if(response.data.length > 0) return true
+      else return false
+  }).catch(function (error) {
+    console.log('AXIOS error: '+ error);
+    return 'errorValidateUser'
+  });
+}
+function crearUsuario(data){
+  return axios.post('/create/usuario', {
+          nombre: data.userName,
+          contrasena: data.password
+        }).then((response)=> {
+          console.log(response.data[0].id)
+          return response.data[0].id
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          return 'errorCreateUser'
+        })
+}
 function foundDirecciones(arrayDireccion, arrayType){
   return axios.get('/read/direcciones')
   .then((response) => {
@@ -252,7 +289,6 @@ function recursiveCrear(data, arrayType, arrayDireccion, i,foreign){
       return false
     })
 }
-
 function crearCliente(typeRIF, userData, foreign, idUsuario){
   return axios.post('/create/registro', {
           rif: typeRIF+userData.rif,
@@ -271,43 +307,60 @@ function crearCliente(typeRIF, userData, foreign, idUsuario){
           return "error"
         })
 }
-function validarCedula(cedula){
+function crearClienteJuridico(typeRIF, userData, foreignFiscal, foreignPrincipal, idUsuario){
+  return axios.post('/create/registro', {
+          tipo: 'Juridico',
+          rif: typeRIF+userData.rif,
+          denominacionComercial: userData.comercialDesignation,
+          razonSocial: userData.businessName,
+          paginaWeb: userData.webPage,
+          capital: userData.capital,
+          fk_usuario: idUsuario,
+          fk_direccionPrincipal: foreignPrincipal,
+          fk_direccionFiscal: foreignFiscal
+        }).then((response)=> { // handle success
+          return response.data[0].rif
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          return "error"
+        })
+}
+function crearEmail(email, rif){
+  return axios.post('/create/email', {
+          correo: email,
+          foreignKey: rif
+        }).then((response)=> {
+          return response.data[0].id
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          return 'error'
+        })
+}
+function crearTelefono(numero, rif){
+  return axios.post('/create/telefonoCliente', {
+          telefono: numero,
+          foreignKey: rif
+        }).then((response)=> {
+          return response.data[0].id
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          return 'error'
+        })
+}
+
+function validarRazonSocial(razonSocial){
   return axios.get('/read/clientePorCedula', {
     params: {
-      clave : cedula
+      razon_social : razonSocial
     }}
   ).then((response) => {
     console.log(response)
     if(response.data.length>0) return true
     else return false
-  })
-}
-
-function validarUsuario(userName){
-  return axios.get('/read/usuarioPorNombre', {
-    params: {
-      nombre : userName
-    }}
-  ).then((response) => {
-      console.log(response.data)
-      if(response.data.length > 0) return true
-      else return false
-  }).catch(function (error) {
+  }).catch(function (error){
     console.log('AXIOS error: '+ error);
-    return 'errorValidateUser'
-  });
-}
-function crearUsuario(data){
-  return axios.post('/create/usuario', {
-          nombre: data.userName,
-          contrasena: data.password
-        }).then((response)=> {
-          console.log(response.data[0].id)
-          return response.data[0].id
-        }).catch(function (error) {
-          console.log('AXIOS error: '+ error);
-          return 'errorCreateUser'
-        })
+    return "error"
+  })
 }
 
 axios.defaults.withCredentials = true;
@@ -326,7 +379,7 @@ class SignUpContainer extends Component {
       },
       CompanyData: {
         rif: "", comercialDesignation: "", businessName: "",
-        email: "", password: "", webPage: "", capital: "",
+        username: "", password: "", email: "", webPage: "", capital: "",
         telephone1: "", telephone2: "", telephone3: "",  ContactPerson:{ nameContact: "", numberContact: "" },
         FiscalAddress: {state:"", city:"", municipality:"", parish:"", fiscalAvenue:"",
                         fiscalBuilding:"", fiscalFloor:"", fiscalOffice:"", fiscalApartment:""},
@@ -622,6 +675,7 @@ class SignUpContainer extends Component {
     e.preventDefault();
     let userData = this.state.PersonalData, typeRIF = 'V', typeDireccion, arrayType = [];
     let direccion = this.state.PersonalData.HomeAddress, arrayDireccion = [];
+    let validation = validate("personal"), rif = 'V'+userData.rif.toString();
 
     if(direccion.homeApartment !== "") {arrayDireccion.unshift(direccion.homeApartment);
     typeDireccion = 'Apartamento'; arrayType.unshift(typeDireccion)}
@@ -638,8 +692,6 @@ class SignUpContainer extends Component {
     if (direccion.municipality!=="No Aplica") {arrayDireccion.unshift(direccion.municipality); typeDireccion='Municipio';arrayType.unshift(typeDireccion)}
     arrayDireccion.unshift(direccion.state,direccion.city); typeDireccion = 'Ciudad'; arrayType.unshift("Estado",typeDireccion);
 
-    let validation = validate("personal");
-    let rif = 'V'+userData.rif.toString();
     if (validation === true){
       return axios.get('/read/clientePorRif', {
         params: {
@@ -711,8 +763,50 @@ class SignUpContainer extends Component {
         console.log("crearCliente"); console.log(response)
         if((foreign!=='error')&&(foreign!==false)) {
           return crearCliente(typeRIF, userData, foreign, idUsuario)
+          .then(async (response)=>{
+            let emailResponse = await crearEmail(userData.email, response),
+            telephoneResponse = await crearTelefono(userData.telephoneNumber, response),
+            cellphoneResponse, officeResponse, array = []
+            array.push(response, emailResponse, telephoneResponse)
+            if(userData.cellphoneNumber !== ""){
+              cellphoneResponse = await crearTelefono(userData.cellphoneNumber, response)
+              array.push(cellphoneResponse)
+            }
+            if (userData.officeNumber !== ""){
+              officeResponse = await crearTelefono(userData.officeNumber, response)
+              array.push(officeResponse)
+            }
+            return array
+          })
           .then((response)=>{
-            alert("El cliente: "+response+" ha sido creado exitosamente")
+            let max = response.length, i = 1
+            while (i < max){
+              if((response[i] === 'error')&&(i===1)){
+                alert("Error al crear el correo electrónico")
+                break
+              }
+              else if((response[i] === 'error')&&(i===2)){
+                alert("Error al crear el teléfono principal")
+                break
+              }
+              else{
+                if(i===3){
+                  if((response[i] === 'error')){
+                    alert("Error al crear el teléfono celular")
+                    break
+                  }
+                }
+                else if (i===4){
+                  if((response[i] === 'error')){
+                    alert("Error al crear el teléfono de oficina")
+                    break
+                  }
+                }
+              }
+              i++;
+            }
+            if (i === max)
+              alert("El cliente: "+response[0]+" ha sido creado exitosamente")
           })
           .catch(function (error) {
             alert('Error: No se ha podido registrar al cliente')
@@ -720,7 +814,7 @@ class SignUpContainer extends Component {
           })
         }
         else {
-          console.log('Error de clave foránea')
+          console.log('Error en el proceso de creación')
         }
       }).catch(function (error) {
         alert('Error: Algo ha fallado, intente nuevamente')
@@ -747,17 +841,152 @@ class SignUpContainer extends Component {
   }
   handleCompanySubmit(e) {
     e.preventDefault();
-    let userData = this.state.CompanyData;
-    let validation = validate("company");
+    let userData = this.state.CompanyData, typeRIF = 'J', typeDireccion, arrayTypeFiscal = [], arrayTypePrincipal = [], direccionFiscal = this.state.CompanyData.FiscalAddress,
+    direccionPrincipal = this.state.CompanyData.MainAddress, arrayDireccionFiscal = [],
+    arrayDireccionPrincipal = [], validation = validate("company"), rif = 'J'+userData.rif.toString();
 
-    console.log(userData);
+    if(direccionFiscal.fiscalApartment !== "") {arrayDireccionFiscal.unshift(direccionFiscal.fiscalApartment);
+    typeDireccion = 'Apartamento'; arrayTypeFiscal.unshift(typeDireccion)}
+    if (direccionFiscal.fiscalOffice !== "") {arrayDireccionFiscal.unshift(direccionFiscal.fiscalOffice);
+    typeDireccion = 'Oficina';arrayTypeFiscal.unshift(typeDireccion)}
+    if (direccionFiscal.fiscalFloor !== "") {arrayDireccionFiscal.unshift(direccionFiscal.fiscalFloor);
+    typeDireccion = 'Piso';arrayTypeFiscal.unshift(typeDireccion)}
+    if (direccionFiscal.fiscalBuilding !== "") {arrayDireccionFiscal.unshift(direccionFiscal.fiscalBuilding);
+    typeDireccion = 'Edificio';arrayTypeFiscal.unshift(typeDireccion)}
+    if (direccionFiscal.fiscalAvenue !== "") {arrayDireccionFiscal.unshift(direccionFiscal.fiscalAvenue);
+    typeDireccion = 'Avenida';arrayTypeFiscal.unshift(typeDireccion)}
+    if (direccionFiscal.parish !== "No Aplica") {arrayDireccionFiscal.unshift(direccionFiscal.parish);
+    typeDireccion = 'Parroquia';arrayTypeFiscal.unshift(typeDireccion)}
+    if (direccionFiscal.municipality!=="No Aplica") {arrayDireccionFiscal.unshift(direccionFiscal.municipality); typeDireccion='Municipio';arrayTypeFiscal.unshift(typeDireccion)}
+    arrayDireccionFiscal.unshift(direccionFiscal.state,direccionFiscal.city); typeDireccion = 'Ciudad'; arrayTypeFiscal.unshift("Estado",typeDireccion);
+
+    if(direccionPrincipal.mainApartment !== "") {arrayDireccionPrincipal.unshift(direccionPrincipal.mainApartment);
+    typeDireccion = 'Apartamento'; arrayTypePrincipal.unshift(typeDireccion)}
+    if (direccionPrincipal.mainOffice !== "") {arrayDireccionPrincipal.unshift(direccionPrincipal.mainOffice);
+    typeDireccion = 'Oficina';arrayTypePrincipal.unshift(typeDireccion)}
+    if (direccionPrincipal.mainFloor !== "") {arrayDireccionPrincipal.unshift(direccionPrincipal.mainFloor);
+    typeDireccion = 'Piso';arrayTypePrincipal.unshift(typeDireccion)}
+    if (direccionPrincipal.mainBuilding !== "") {arrayDireccionPrincipal.unshift(direccionPrincipal.mainBuilding);
+    typeDireccion = 'Edificio';arrayTypePrincipal.unshift(typeDireccion)}
+    if (direccionPrincipal.mainAvenue !== "") {arrayDireccionPrincipal.unshift(direccionPrincipal.mainAvenue);
+    typeDireccion = 'Avenida';arrayTypePrincipal.unshift(typeDireccion)}
+    if (direccionPrincipal.parish !== "No Aplica") {arrayDireccionPrincipal.unshift(direccionPrincipal.parish);
+    typeDireccion = 'Parroquia';arrayTypePrincipal.unshift(typeDireccion)}
+    if (direccionPrincipal.municipality!=="No Aplica") {arrayDireccionPrincipal.unshift(direccionPrincipal.municipality); typeDireccion='Municipio';arrayTypePrincipal.unshift(typeDireccion)}
+    arrayDireccionPrincipal.unshift(direccionPrincipal.state,direccionPrincipal.city); typeDireccion = 'Ciudad'; arrayTypePrincipal.unshift("Estado",typeDireccion);
+
     if (validation === true){
-
+      return axios.get('/read/clientePorRif', {
+        params: {
+          clave : rif
+        }}
+      ).then((response) => {
+        console.log("validarRif"); console.log(response)
+          if(response.data.length > 0){
+            alert("RIF de cliente ya está registrado")
+            return 'error'
+          }
+          else return false
+      }).then((response)=>{
+        console.log("validarRazónSocial"); console.log(response)
+        if(response === false)
+          return validarRazonSocial(userData.businessName)
+        else return response
+      }).then((response) => {
+        if(response === 'error' ) return response
+        else if (response === true){
+          alert("Razón Social ya registrada en el sistema")
+          return 'error'
+        }
+        else return false
+      }).then((response)=>{
+        console.log("validarUsuario"); console.log(response)
+        if (response==='error') return response
+        else if(response === false) return validarUsuario(userData.userName)
+        else {
+          alert("Ha ocurrido un error al validar el usuario")
+          return 'error'
+        }
+      }).then((response) => {
+        console.log("crearUsuario"); console.log(response)
+        if ((response === 'error')) return response
+        else if (response){
+            alert("Nombre de usuario ya en uso")
+            return 'error'
+          }
+          else
+            return crearUsuario(userData)
+      }).then((response) => {
+        let array = []
+          console.log("foundDireccionesFiscal"); console.log(response)
+          if (response === 'error') {
+            array.push(response,'error')
+            return array
+          }
+          else if (response === 'errorCreateUser') {
+            alert('Error al crear el nuevo usuario, intente de nuevo')
+            array.push('error', 'error')
+            return array
+          }
+          else {
+            array.push(response);
+            return foundDirecciones(arrayDireccionFiscal, arrayTypeFiscal)
+            .then((foreign)=>{
+              array.push(foreign);
+              return array
+            })
+            .catch(function (error){
+              array.push("error")
+              return array
+            })
+          }
+      }).then((response)=>{
+        console.log("foundDireccionesPrincipal"); console.log(response)
+        let idUsuario = response[0], foreignFiscal = response[1]
+        if (foreignFiscal === 'error') {
+          response.push('error')
+          return response
+        }
+        else if (idUsuario === 'errorCreateUser') {
+          alert('Error al crear el nuevo usuario, intente de nuevo')
+          response.push('error')
+          return response
+        }
+        else {
+          return foundDirecciones(arrayDireccionPrincipal, arrayTypePrincipal)
+          .then((foreignPrincipal)=>{
+            response.push(foreignPrincipal);
+            return response
+          })
+          .catch(function (error){
+            response.push("error")
+            return response
+          })
+        }
+      }).then((response)=>{
+        let idUsuario = response[0], foreignFiscal = response[1], foreignPrincipal = response[2]
+        console.log("crearCliente"); console.log(response)
+        if((foreignFiscal!=='error')&&(foreignFiscal!==false)) {
+          return crearClienteJuridico(typeRIF, userData, foreignFiscal, foreignPrincipal, idUsuario)
+          .then((response)=>{
+            alert("El cliente: "+response+" ha sido creado exitosamente")
+          })
+          .catch(function (error) {
+            alert('Error: No se ha podido registrar al cliente')
+            console.log('AXIOS error: '+ error);
+          })
+        }
+        else {
+          console.log('Error de clave foránea')
+        }
+      }).catch(function (error) {
+        alert('Error: Algo ha fallado, intente nuevamente')
+        console.log('AXIOS error: '+ error);
+      });
     }
     else
-      alert("Usuario no válido")
+      alert("Usuario no válido");
 
-    return validation;
   }
   render() {
     return (

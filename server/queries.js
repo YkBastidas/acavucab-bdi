@@ -111,6 +111,17 @@ const postRegistro = (request, response, next) =>{
       response.status(201).send(results.rows);
     });
   }
+  else{
+    const text = 'INSERT INTO public.cliente(rif, tipo, fk_direccion_fisica, juridico_denominacion_comercial, juridico_razon_social, juridico_pagina_web, juridico_capital, juridico_fk_direccion_fiscal, fk_usuario) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *;';
+    const values = [request.body.rif, request.body.tipo, request.body.fk_direccionPrincipal, request.body.denominacionComercial, request.body.razonSocial, request.body.paginaWeb, request.body.capital,request.body.fk_direccionFiscal, request.body.fk_usuario];
+      pool.query(text, values, (error, results) => {
+      if (error) {
+        console.log('ERROR DE REGISTRO: '+error)
+        throw error
+      }
+      response.status(201).send(results.rows);
+    });
+  }
 }
 const postDireccion = (request, response) =>{
   console.log(request.body);
@@ -136,6 +147,30 @@ const postUsuario = (request, response, next) => {
     response.status(201).send(results.rows);
   })
 }
+const postEmail = (request, response, next) => {
+  console.log(request.body);
+  const text = 'INSERT INTO public.correo_electronico(direccion, fk_cliente) VALUES ($1, $2) RETURNING *;';
+  const values = [request.body.correo, request.body.foreignKey];
+  pool.query(text, values, (error, results) => {
+    if (error) {
+      console.log('ERROR DE REGISTRO: '+error)
+      throw error
+    }
+    response.status(201).send(results.rows);
+  })
+}
+const postTelefonoCliente = (request, response, next) => {
+  console.log(request.body);
+  const text = 'INSERT INTO public.telefono(numero, fk_cliente) VALUES ($1, $2) RETURNING *;';
+  const values = [request.body.telefono, request.body.foreignKey];
+  pool.query(text, values, (error, results) => {
+    if (error) {
+      console.log('ERROR DE REGISTRO: '+error)
+      throw error
+    }
+    response.status(201).send(results.rows);
+  })
+}
 
 module.exports = {
   getEvents,
@@ -149,5 +184,7 @@ module.exports = {
   getTiendaFisica,
   postUsuario,
   postRegistro,
-  postDireccion
+  postDireccion,
+  postEmail,
+  postTelefonoCliente
 }

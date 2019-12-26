@@ -84,6 +84,8 @@ app.get('/read/tiendaFisica', db.getTiendaFisica) // GET REAL SHOP DATA
 app.post('/create/usuario', db.postUsuario) //CREATE NEW USER
 app.post('/create/registro', db.postRegistro) // CREATE NEW CLIENT
 app.post('/create/direccion', db.postDireccion) // CREATE A NEW ADDRESS
+app.post('/create/email', db.postEmail) // CREATE A NEW EMAIL
+app.post('/create/telefonoCliente', db.postTelefonoCliente) // CREATE A NEW EMAIL
 
 //LISTEN THE SERVER IN THE PORT
 app.listen(port, () => {

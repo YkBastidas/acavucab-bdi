@@ -162,12 +162,15 @@ class SignUpCompany extends Component{
               </div>
            </div>
            <div className="form-row">
-             <div className="col-md-4 mb-3">
-               <Input title={"* Correo Electrónico"} name={"email"} inputtype={"email"} value={this.props.data.email} handlerChange={this.props.handleEmail} help="true" helptext="El formato del correo debe ser 'nombreusuario@dominio.extensión'"/>
+             <div className="col-md-2 mb-3">
+               <Input title={"* Nombre de Usuario:"} name={"userName"} inputtype={"text"} value={this.props.data.userName} handlerChange={this.props.handleInput} required={"required"} help= "true" helptext="Su nombre para inicio de sesion, permite letras, números, espacios y guiones"/>{" "}
+             </div>
+             <div className="col-md-2 mb-3">
+               <Input title={"* Contraseña"} name={"password"} inputtype={"password"} value={this.props.data.password} handlerChange={this.props.handlePassword} help= "true"
+               helptext="Tu contraseña debe tener entre 8-20 caracteres, contener por lo menos una letra mayúscula y una minúscula y tener por lo menos 1 caracter especial." required={"required"}/>
              </div>
              <div className="col-md-4 mb-3">
-               <Input title={"* Contraseña"} name={"password"} inputtype={"password"} value={this.props.data.password} handlerChange={this.props.handlePassword} help= "true"
-               helptext="Tu contraseña debe tener entre 8-20 caracteres, contener por lo menos una letra mayúscula y una minúscula y tener por lo menos 1 caracter especial."/>
+               <Input title={"* Correo Electrónico"} name={"email"} inputtype={"email"} value={this.props.data.email} handlerChange={this.props.handleEmail} help="true" helptext="El formato del correo debe ser 'nombreusuario@dominio.extensión'"/>
              </div>
              <div className="col-md-4 mb-3">
                <Input title={"* Página Web"} name={"webPage"} inputtype={"url"}

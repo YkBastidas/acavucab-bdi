@@ -630,7 +630,7 @@ CREATE SEQUENCE public.secuencia_correo_electronico
 CREATE TABLE public.correo_electronico   
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_correo_electronico'::regclass),
-     direccion numeric NOT NULL,
+     direccion varchar NOT NULL,
      fk_cliente varchar NOT NULL,
      CONSTRAINT pk_clave_correo_electronico PRIMARY KEY (clave),
      CONSTRAINT fk_fk_cliente_correo_electronico FOREIGN KEY (fk_cliente) REFERENCES cliente(rif)
