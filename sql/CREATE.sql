@@ -1,3 +1,18 @@
+CREATE SEQUENCE public.secuencia_historia_cerveza
+     start with 1
+     increment 1
+     minvalue 1
+     maxvalue 20000
+     cycle
+;
+
+CREATE TABLE public.historia_cerveza 
+(
+     clave numeric NOT NULL DEFAULT nextval('secuencia_historia_cerveza'::regclass),
+     descripcion varchar NOT NULL,
+     CONSTRAINT pk_clave_historia_cerveza PRIMARY KEY (clave)
+);
+
 CREATE SEQUENCE public.secuencia_ale
      start with 1
      increment 1
@@ -9,8 +24,10 @@ CREATE SEQUENCE public.secuencia_ale
 CREATE TABLE public.ale
 (
     clave numeric NOT NULL DEFAULT nextval('secuencia_ale'::regclass),
-    tipo varchar(15) NOT NULL,
-    CONSTRAINT pk_clave_ale PRIMARY KEY (clave)
+    tipo varchar NOT NULL,
+    fk_historia_cerveza numeric,
+    CONSTRAINT pk_clave_ale PRIMARY KEY (clave),
+    CONSTRAINT fk_fk_historia_cerveza_ale FOREIGN KEY (fk_historia_cerveza) REFERENCES historia_cerveza(clave)
 );
 
 CREATE SEQUENCE public.secuencia_lager
@@ -24,8 +41,10 @@ CREATE SEQUENCE public.secuencia_lager
 CREATE TABLE public.lager
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_lager'::regclass),
-     tipo varchar(15) NOT NULL,
-     CONSTRAINT pk_clave_lager PRIMARY KEY (clave)
+     tipo varchar NOT NULL,
+     fk_historia_cerveza numeric,
+     CONSTRAINT pk_clave_lager PRIMARY KEY (clave),
+    CONSTRAINT fk_fk_historia_cerveza_ale FOREIGN KEY (fk_historia_cerveza) REFERENCES historia_cerveza(clave)
 );
 
 CREATE SEQUENCE public.secuencia_ingrediente
@@ -55,31 +74,13 @@ CREATE SEQUENCE public.secuencia_cerveza
 CREATE TABLE public.cerveza_artesanal
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_cerveza'::regclass),
-     nombre varchar(15) NOT NULL,
-     descripcion varchar(50) NOT NULL, 
-     precio_unitario numeric NOT NULL,
+     nombre varchar(40) NOT NULL,
+     descripcion varchar, 
      fk_ale numeric,
      fk_lager numeric,
      CONSTRAINT pk_clave_cerveza PRIMARY KEY (clave),
      CONSTRAINT fk_ale_cerveza FOREIGN KEY (fk_ale) REFERENCES ale(clave),
      CONSTRAINT fk_lager_cerveza FOREIGN KEY (fk_lager) REFERENCES lager(clave)
-);
-
-CREATE SEQUENCE public.secuencia_historia_cerveza
-     start with 1
-     increment 1
-     minvalue 1
-     maxvalue 20000
-     cycle
-;
-
-CREATE TABLE public.historia_cerveza 
-(
-     clave numeric NOT NULL DEFAULT nextval('secuencia_historia_cerveza'::regclass),
-     descripcion varchar NOT NULL,
-     fk_cerveza_artesanal numeric NOT NULL,
-     CONSTRAINT pk_clave_historia_cerveza PRIMARY KEY (clave),
-     CONSTRAINT fk_fk_cerveza_artesanal_historia_cerveza FOREIGN KEY (fk_cerveza_artesanal) REFERENCES cerveza_artesanal(clave)
 );
 
 CREATE SEQUENCE public.secuencia_receta
@@ -238,14 +239,6 @@ CREATE TABLE public.rol_privilegio
      CONSTRAINT fk_fk_privilegio_rol_privilegio FOREIGN KEY (fk_privilegio) REFERENCES privilegio(clave)
 );
 
-CREATE SEQUENCE public.secuencia_personal
-     start with 1
-     increment 1
-     minvalue 1
-     maxvalue 500
-     cycle
-;
-
 CREATE SEQUENCE public.secuencia_usuario
      start with 1
      increment 1
@@ -256,11 +249,19 @@ CREATE SEQUENCE public.secuencia_usuario
 
 CREATE TABLE public.usuario  
 (
-     id numeric DEFAULT nextval('secuencia_usuario'::regclass),
+     id numeric NOT NULL DEFAULT nextval('secuencia_usuario'::regclass),
      nombre varchar NOT NULL,
      contrasena varchar NOT NULL,
-     CONSTRAINT pk_id_usuario PRIMARY KEY (id)   
+     CONSTRAINT pk_id_usuario PRIMARY KEY (id)
 );
+
+CREATE SEQUENCE public.secuencia_personal
+     start with 1
+     increment 1
+     minvalue 1
+     maxvalue 500
+     cycle
+;
 
 CREATE TABLE public.personal
 (
@@ -272,10 +273,10 @@ CREATE TABLE public.personal
      cargo varchar(50) NOT NULL,
      genero varchar NOT NULL,
      fk_rol numeric,
-	 fk_usuario numeric,
+     fk_usuario numeric NOT NULL,
      CONSTRAINT pk_clave_personal PRIMARY KEY (clave),
+     CONSTRAINT fk_personal_usuario FOREIGN KEY (fk_usuario) REFERENCES usuario(id),
      CONSTRAINT fk_fk_rol_personal FOREIGN KEY (fk_rol) REFERENCES rol(clave),
-	 CONSTRAINT fk_personal_usuario FOREIGN KEY (fk_usuario) REFERENCES usuario(id),
      CONSTRAINT chk_genero_personal CHECK (genero in ('Hombre','Mujer','Otro'))
 );
 
@@ -588,13 +589,13 @@ CREATE TABLE public.cliente
      juridico_pagina_web varchar(30),
      juridico_capital numeric,
      juridico_fk_direccion_fiscal numeric,
-	 fk_usuario numeric,
+     fk_usuario numeric NOT NULL,
      CONSTRAINT pk_cliente PRIMARY KEY (rif),
      CONSTRAINT chk_tipo_cliente CHECK (tipo in ('Natural','Juridico')),
      CONSTRAINT fk_fk_direccion_fisica_cliente FOREIGN KEY (fk_direccion_fisica) REFERENCES direccion(clave),
      CONSTRAINT fk_juridico_fk_direccion_fiscal_cliente FOREIGN KEY (juridico_fk_direccion_fiscal) REFERENCES direccion(clave),
-	 CONSTRAINT fk_cliente_usuario FOREIGN KEY (fk_usuario) REFERENCES usuario(id),
-	 CONSTRAINT chk_natural_genero_cliente CHECK (natural_genero in ('Hombre','Mujer','Otro'))
+     CONSTRAINT fk_cliente_usuario FOREIGN KEY (fk_usuario) REFERENCES usuario(id),    
+     CONSTRAINT chk_natural_genero_cliente CHECK (natural_genero in ('Hombre','Mujer','Otro'))
 );
 
 CREATE SEQUENCE public.secuencia_comentario_cerveza
@@ -608,13 +609,14 @@ CREATE SEQUENCE public.secuencia_comentario_cerveza
 CREATE TABLE public.comentario_cerveza
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_comentario_cerveza'::regclass),
-     calificacion numeric(1,1) NOT NULL,
+     calificacion numeric(1,0) NOT NULL,
      descripcion varchar(100),
      fk_cliente varchar NOT NULL,
      fk_cerveza numeric NOT NULL,
      CONSTRAINT pk_comentario_cerveza PRIMARY KEY (clave),
      CONSTRAINT fk_fk_cliente_comentario_cerveza FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
-     CONSTRAINT fk_fk_cerveza_comentario_cerveza FOREIGN KEY (fk_cerveza) REFERENCES cerveza_artesanal(clave)
+     CONSTRAINT fk_fk_cerveza_comentario_cerveza FOREIGN KEY (fk_cerveza) REFERENCES cerveza_artesanal(clave),
+     CONSTRAINT chk_calificacion_comentario_cerveza CHECK (calificacion BETWEEN 0 AND 5)
 );
 
 CREATE SEQUENCE public.secuencia_correo_electronico
@@ -660,6 +662,7 @@ CREATE TABLE public.detalle_compra
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_detalle_compra'::regclass),
      cantidad numeric NOT NULL,
+     precio_unitario numeric NOT NULL,
      fk_compra numeric NOT NULL,
      fk_cerveza numeric NOT NULL,
      CONSTRAINT pk_clave_detalle_compra PRIMARY KEY (clave),

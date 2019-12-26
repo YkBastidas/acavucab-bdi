@@ -227,14 +227,14 @@ function recursiveCrear(data, arrayType, arrayDireccion, i,foreign){
       }
       else if ((i < arrayDireccion.length)){
         console.log('No existe')
-        axios.post('/create/direccion',{
+        return axios.post('/create/direccion',{
           tipo : arrayType[i],
           nombre: arrayDireccion[i],
           fk_direccion: foreign
         })
         .then((response)=>{
           console.log(response)
-          foreign=response.data.clave
+          foreign=response.data[0].clave
           return recursiveCrear(data,arrayType,arrayDireccion, i+1, foreign)
         }).catch(function (error) {
           console.log('AXIOS error: '+ error);
@@ -253,7 +253,7 @@ function recursiveCrear(data, arrayType, arrayDireccion, i,foreign){
     })
 }
 
-function crearCliente(typeRIF, userData, foreign){
+function crearCliente(typeRIF, userData, foreign, idUsuario){
   return axios.post('/create/registro', {
           rif: typeRIF+userData.rif,
           tipo: 'Natural',
@@ -262,9 +262,10 @@ function crearCliente(typeRIF, userData, foreign){
           nombre: userData.name,
           apellido: userData.lastName,
           genero: userData.gender,
-          fecha_nacimiento: userData.bornDate
+          fecha_nacimiento: userData.bornDate,
+          fk_usuario: idUsuario
         }).then((response)=> { // handle success
-          return response.data
+          return response.data[0].rif
         }).catch(function (error) {
           console.log('AXIOS error: '+ error);
           return "error"
@@ -301,7 +302,8 @@ function crearUsuario(data){
           nombre: data.userName,
           contrasena: data.password
         }).then((response)=> {
-          return true
+          console.log(response.data[0].id)
+          return response.data[0].id
         }).catch(function (error) {
           console.log('AXIOS error: '+ error);
           return 'errorCreateUser'
@@ -652,11 +654,11 @@ class SignUpContainer extends Component {
           }
           else return false
       }).then((response)=>{
+        console.log("validarCedula"); console.log(response)
         if(response === false)
           return validarCedula(userData.ci)
         else return response
       }).then((response) => {
-        console.log("validarUsuario"); console.log(response)
         if(response === 'error' ) return response
         else if (response === true){
           alert("El documento de identificación está asociado a otro cliente")
@@ -664,6 +666,7 @@ class SignUpContainer extends Component {
         }
         else return false
       }).then((response)=>{
+        console.log("validarUsuario"); console.log(response)
         if (response==='error') return response
         else if(response === false) return validarUsuario(userData.userName)
         else {
@@ -680,19 +683,36 @@ class SignUpContainer extends Component {
           else
             return crearUsuario(userData)
       }).then((response) => {
+        let array = []
           console.log("foundDirecciones"); console.log(response)
-          if (response === 'error') return response
+          if (response === 'error') {
+            array.push(response,'error')
+            return array
+          }
           else if (response === 'errorCreateUser') {
             alert('Error al crear el nuevo usuario, intente de nuevo')
-            return 'error'
+            array.push('error', 'error')
+            return array
           }
-          else return foundDirecciones(arrayDireccion, arrayType)
-      }).then((foreign)=>{
-        console.log("crearCliente"); console.log(foreign)
+          else {
+            array.push(response);
+            return foundDirecciones(arrayDireccion, arrayType)
+            .then((foreign)=>{
+              array.push(foreign);
+              return array
+            })
+            .catch(function (error){
+              array.push("error")
+              return array
+            })
+          }
+      }).then((response)=>{
+        let idUsuario = response[0], foreign = response[1]
+        console.log("crearCliente"); console.log(response)
         if((foreign!=='error')&&(foreign!==false)) {
-          return crearCliente(typeRIF, userData, foreign)
+          return crearCliente(typeRIF, userData, foreign, idUsuario)
           .then((response)=>{
-            alert("El cliente: "+response.rif+" ha sido creado exitosamente")
+            alert("El cliente: "+response+" ha sido creado exitosamente")
           })
           .catch(function (error) {
             alert('Error: No se ha podido registrar al cliente')

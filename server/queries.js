@@ -98,43 +98,43 @@ const getUsuarioPorNombre = (request, response) =>{
     response.status(200).json(results.rows)
   })
 }
-
 const postRegistro = (request, response, next) =>{
   console.log(request.body);
   if(request.body.tipo === 'Natural'){
-    const text = 'INSERT INTO public.cliente(rif, tipo, fk_direccion_fisica, natural_ci, natural_nombre, natural_apellido, natural_genero, natural_fecha_nacimiento) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;';
-    const values = [request.body.rif, request.body.tipo, request.body.fk_direccion, request.body.ci, request.body.nombre, request.body.apellido, request.body.genero,request.body.fecha_nacimiento];
-      pool.query(text, values, (error, response) => {
+    const text = 'INSERT INTO public.cliente(rif, tipo, fk_direccion_fisica, natural_ci, natural_nombre, natural_apellido, natural_genero, natural_fecha_nacimiento, fk_usuario) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *;';
+    const values = [request.body.rif, request.body.tipo, request.body.fk_direccion, request.body.ci, request.body.nombre, request.body.apellido, request.body.genero,request.body.fecha_nacimiento, request.body.fk_usuario];
+      pool.query(text, values, (error, results) => {
       if (error) {
         console.log('ERROR DE REGISTRO: '+error)
         throw error
       }
+      response.status(201).send(results.rows);
     });
   }
-  return response.redirect('/');
 }
 const postDireccion = (request, response) =>{
   console.log(request.body);
   const text = 'INSERT INTO public.direccion(tipo, nombre, fk_direccion) VALUES ($1, $2, $3) RETURNING *;';
   const values = [request.body.tipo, request.body.nombre, request.body.fk_direccion];
-    pool.query(text, values, (error, results, data) => {
-      response.send(results.data);
+    pool.query(text, values, (error, results) => {
       if (error) {
+        console.log('ERROR DE CREACION DE DIRECCION: '+error)
         throw error
       }
+      response.status(201).send(results.rows);
     })
 }
 const postUsuario = (request, response, next) => {
   console.log(request.body);
   const text = 'INSERT INTO public.usuario(nombre, contrasena) VALUES ($1, $2) RETURNING *;';
   const values = [request.body.nombre, request.body.contrasena];
-  pool.query(text, values, (error, response) => {
+  pool.query(text, values, (error, results) => {
     if (error) {
       console.log('ERROR DE REGISTRO: '+error)
       throw error
     }
+    response.status(201).send(results.rows);
   })
-  return response.redirect('/');
 }
 
 module.exports = {
