@@ -136,10 +136,10 @@ class SignUpPersonal extends Component{
       this.setState({direccion: res.data})
     })
     .catch(function (error) {
-  // handle error
-  console.log('axios');
-  console.log(error);
-});
+      // handle error
+      console.log('axios');
+      console.log(error);
+    });
   }
 
   render(){
