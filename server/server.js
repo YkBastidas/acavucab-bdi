@@ -9,7 +9,7 @@ const cors = require('cors');
 const cookieSession = require('cookie-session');
 const helmet = require('helmet'); //escribe los headers de las requests
 var corsOptions = {
-  origin: 'localhost:3000',
+  origin: 'http://localhost:3000',
   credentials : true
  }
 var router = express.Router();
@@ -18,11 +18,12 @@ const app = express()
 const port = 8000 // set application port
 const publicPath = path.join(__dirname, '..', 'client', 'build')
 
+
 app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal'])
 app.use(bodyParser.json()); app.use(cookieParser()); app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({extended: true})) // initialize body-parser to parse incoming parameters requests to req.body
 app.use(express.static(path.join(publicPath)))
-const db = require('./queries.js') // Look for the queries file to set the HTTP request method, the endpoint URL path, and the relevant function
+const db = require('./queries') // Look for the queries file to set the HTTP request method, the endpoint URL path, and the relevant function
 app.use(morgan('dev')); app.use(helmet());
 app.use(cookieSession({
   secret: 'keyboard cat',
@@ -46,7 +47,8 @@ app.get('*', (req, res) => {
 
 //Error 404
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Expose-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header("Access-Control-Allow-Credentials", true);
   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -125,3 +127,5 @@ router.post('/auth/signIn', db.postSignIn) // AUTHENTICATE USER AND LOGIN
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)
 })
+
+//REPORTS

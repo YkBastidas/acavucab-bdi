@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import axios from 'axios';
+import jsreport from 'jsreport-browser-client-dist'
 
 import slider1 from '../images/homeSlider1.png'
 import slider2 from '../images/homeSlider2.png'
@@ -22,12 +23,52 @@ import ProductLine from "../components/ProductLine"
 import SideEvents from "../components/SideEvents"
 import HomeRightSide from "../containers/HomeRightSide"
 
+import Button from "../components/Button"
+
 axios.defaults.withCredentials = true;
 
 export default class HomeContainer extends Component {
+  constructor() {
+    super();
+    this.state = {
+      report: '',
+      reportScript: ''
+    };
+  }
+
+  testReport(e){
+    e.preventDefault()
+    let data = {
+      "template": {
+        "content": "<h1>Hello {{foo}}</h1>",
+        "engine": "handlebars",
+        "recipe": "chrome-pdf"
+      },
+      "data": {
+        "foo": "world"
+      },
+      "options": {
+        "reports": { "save": true }
+      }
+    }
+    fetch('http://localhost:5488/api/report', {
+      method: 'POST', // or 'PUT'
+      body: JSON.stringify(data), // data can be `string` or {object}!
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      credentials: "same-origin",
+    }).then((response)=> {
+      console.log('Reporte Enviado')
+      jsreport.serverUrl = 'http://localhost:5488'
+      jsreport.render(document.getElementById('reportPlaceholder'), data)
+    }).catch(function (error) {
+      console.log('AXIOS error: '+ error);
+      return 'errorReport'
+    })
+  }
 
   render() {
-
     return (
       <section className=" row ">
         <div className="col-xs-1 col-sm-2 col align-self-center">
@@ -47,6 +88,11 @@ export default class HomeContainer extends Component {
         </div>
         <div className="col-sm-4 col align-self-center">
           <HomeRightSide/>
+        </div>
+        <Button action={this.testReport} type={"warning"} title={"Generar Reporte"}
+          buttonStyle={{ width: "100%" }}/>
+        <div id="reportPlaceholder">
+          <p>there should be a report here...</p>
         </div>
       </section >);
   }

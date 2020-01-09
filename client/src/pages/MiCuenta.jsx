@@ -7,6 +7,40 @@ import Banner from '../components/Banner.jsx'
 import Footer from '../components/Footer.jsx'
 import axios from 'axios'
 
+function validarTelefonoContacto(numero, rif){
+  return axios.post('/read/telefonoContactoCliente', {
+          telefono: numero,
+          foreignKey: rif
+        }).then((response)=> {
+          return response.data[0].id
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          return 'error'
+        })
+}
+
+function recursiveDirecciones(foreignCliente){
+  return axios.get('/read/direccionPorClave',{params:{clave: foreignCliente}})
+  .then(async(response)=>{
+    if(response.data[0].tipo !== 'Estado'){
+      let direccionPadre = await recursiveDirecciones(response.data[0].fk_direccion)
+      direccionPadre.push(response.data[0])
+      return direccionPadre
+    }
+    else
+      return response.data
+  })
+  .then((response)=>{
+
+      return response
+  })
+  .catch(function (error){
+      console.log('AXIOS error: '+ error);
+      alert('Error al buscar el Estado')
+      return false
+  })
+}
+
 class MiCuenta extends Component {
   constructor(props) {
     super(props);
@@ -33,6 +67,7 @@ class MiCuenta extends Component {
     }
     this.isLoggedIn = this.isLoggedIn.bind(this)
   }
+
   componentWillMount() {
     axios.get('/read/userInfo',{withCredentials: true
     })
@@ -53,8 +88,7 @@ class MiCuenta extends Component {
 			})
     })
 		.then((res)=>{
-			console.log(res.data)
-			let data = res.data
+			let data = res.data[0]
 			if(data.tipo === 'Natural'){
 				this.setState({NaturalData: {
 					rif: data.rif, ci: data.natural_ci, name: data.natural_nombre, lastName: data.natural_apellido, gender: data.natural_genero, bornDate: data.natural_fecha_nacimiento}, isLoggedIn:true})
@@ -62,34 +96,160 @@ class MiCuenta extends Component {
 			else{
 				this.setState({CompanyData: {
 					rif: data.rif, comercialDesignation: data.juridico_denominacion_comercial, businessName: data.juridico_razon_social, webPage: data.juridico_pagina_web, capital: data.juridico_capital}, isLoggedIn:true, naturalClient: false})
+          console.log(this.state.CompanyData)
 			}
-			return "ok"
+      return data
 		})
+    .then((res)=>{
+      if (res.tipo === 'Natural'){
+        return "codigo"
+      }
+      else{
+        return recursiveDirecciones(res.fk_direccion_fisica)
+      }
+    })
+    .then((res)=>{
+      let direccionPrincipal = res
+      direccionPrincipal.forEach((direccion, index)=>{
+        switch (direccion.tipo) {
+          case 'Estado':
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                MainAddress: {
+                  ...prevState.CompanyData.MainAddress,
+                  state: direccion.nombre
+                }
+              }
+            }))
+            break;
+          case 'Ciudad':
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                MainAddress: {
+                  ...prevState.CompanyData.MainAddress,
+                  city: direccion.nombre
+                }
+              }
+            }))
+            break;
+          case 'Municipio':
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                MainAddress: {
+                  ...prevState.CompanyData.MainAddress,
+                  municipality: direccion.nombre
+                }
+              }
+            }))
+            break;
+          case 'Parroquia':
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                MainAddress: {
+                  ...prevState.CompanyData.MainAddress,
+                  parish: direccion.nombre
+                }
+              }
+            }))
+            break;
+          case 'Avenida':
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                MainAddress: {
+                  ...prevState.CompanyData.MainAddress,
+                  mainAvenue: direccion.nombre
+                }
+              }
+            }))
+            break;
+          case 'Edificio':
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                MainAddress: {
+                  ...prevState.CompanyData.MainAddress,
+                  mainBuilding: direccion.nombre
+                }
+              }
+            }))
+            break;
+          case 'Piso':
+          this.setState(prevState => ({
+            CompanyData: {
+              ...prevState.CompanyData,
+              MainAddress: {
+                ...prevState.CompanyData.MainAddress,
+                mainFloor: direccion.nombre
+              }
+            }
+          }))
+            break;
+          case 'Oficina':
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                MainAddress: {
+                  ...prevState.CompanyData.MainAddress,
+                  mainOffice: direccion.nombre
+                }
+              }
+            }))
+            break;
+          case 'Apartamento':
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                MainAddress: {
+                  ...prevState.CompanyData.MainAddress,
+                  mainApartment: direccion.nombre
+                }
+              }
+            }))
+            break;
+          default:
+            console.log('El tipo de dirección no coincide');
+          }
+      })
+    })
     .catch(function (error) { // handle error
       console.log('axios'); console.log(error);
     });
   }
   isLoggedIn() { this.setState({isLoggedIn:false}) }
+
   render() {
-    return (<div>
-      <header>
+    if (this.state.isLoggedIn){
+      return (<div>
+        <header>
+          <div className="container">
+            <Banner/>
+          </div>
+        </header>
+        <br/>
         <div className="container">
-          <Banner/>
+  				{
+  					this.state.naturalClient
+  					? <NaturalClient userData = {this.state.userData} NaturalData = {this.state.NaturalData} image={client1}/>
+            : <CompanyClient userData = {this.state.userData} CompanyData = {this.state.CompanyData} image={client1}/>
+  				}
         </div>
-      </header>
-      <br/>
-      <div className="container">
-				{
-					this.state.naturalClient
-					? <NaturalClient userData = {this.state.userData} clientData = {this.state.NaturalData} image={client1}/>
-					: <CompanyClient userData = {this.state.userData} clientData = {this.state.CompanyData} image={client1}/>
-				}
-      </div>
-      <br/>
-      <div className="container-fluid">
-        <Footer/>
-      </div>
-    </div>);
+        <br/>
+        <div className="container-fluid">
+          <Footer/>
+        </div>
+      </div>);
+    }
+    else {
+      return (
+        <div></div>
+      );
+    }
+
   }
 }
 
