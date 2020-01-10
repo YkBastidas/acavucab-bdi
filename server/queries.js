@@ -116,6 +116,26 @@ const getUserInfo =  (request, response) => { // GET USER INFO IF VALIDATED
 	console.log('El user es  -->', request.user);
 	response.send(request.user);
 }
+const getTelefonosPorCliente= (request, response ) => {
+  let values = [request.query.foreignKey]
+  const query = "SELECT numero FROM telefono WHERE fk_cliente = $1"
+  pool.query(query, values, (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+const getEmailsPorCliente= (request, response ) => {
+  let values = [request.query.foreignKey]
+  const query = "SELECT direccion FROM correo_electronico WHERE fk_cliente = $1"
+  pool.query(query, values, (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
 
 const getEmpleados= (request, response ) => {
   const query = "SELECT * FROM personal"
@@ -399,15 +419,6 @@ const getComentarioCerveza= (request, response ) => {
     response.status(200).json(results.rows)
   })
 }
-const getCorreoElectronico= (request, response ) => {
-  const query = "SELECT * FROM correo_electronico"
-  pool.query(query, (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
-}
 const getCompra= (request, response ) => {
   const query = "SELECT * FROM compra"
   pool.query(query, (error, results) => {
@@ -455,15 +466,6 @@ const getHistoricoPuntos= (request, response ) => {
 }
 const getPersonaContacto= (request, response ) => {
   const query = "SELECT * FROM persona_contacto"
-  pool.query(query, (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
-}
-const getTelefono= (request, response ) => {
-  const query = "SELECT * FROM telefono"
   pool.query(query, (error, results) => {
     if (error) {
       throw error
@@ -719,6 +721,8 @@ module.exports = {
   getUsuarioPorNombre,
   getTiendaFisica,
 	getUserInfo,
+  getTelefonosPorCliente,
+  getEmailsPorCliente,
 
 	getEmpleados,
   getLager,
@@ -751,14 +755,12 @@ module.exports = {
   getStatus,
   getStatusVenta,
   getComentarioCerveza,
-  getCorreoElectronico,
   getCompra,
   getDetalleCompra,
   getInventario,
   getHistoricoInventario,
   getHistoricoPuntos,
   getPersonaContacto,
-  getTelefono,
   getPagoCredito,
   getPagoDebito,
   getPagoEfectivo,

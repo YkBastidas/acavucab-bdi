@@ -7,18 +7,34 @@ import Banner from '../components/Banner.jsx'
 import Footer from '../components/Footer.jsx'
 import axios from 'axios'
 
-function validarTelefonoContacto(numero, rif){
-  return axios.post('/read/telefonoContactoCliente', {
-          telefono: numero,
-          foreignKey: rif
+function foundTelefonos(foreignCliente){
+  return axios.get('/read/telefonosPorCliente', {
+          params:{foreignKey: foreignCliente}
         }).then((response)=> {
-          return response.data[0].id
+          let index, numbersArray =[]
+          for (index = 0; index < response.data.length; index++) {
+            numbersArray.push(response.data[index])
+          }
+          return numbersArray
         }).catch(function (error) {
           console.log('AXIOS error: '+ error);
           return 'error'
         })
 }
-
+function foundEmails(foreignCliente){
+  return axios.get('/read/emailsPorCliente', {
+          params:{foreignKey: foreignCliente}
+        }).then((response)=> {
+          let index, direccionesArray =[]
+          for (index = 0; index < response.data.length; index++) {
+            direccionesArray.push(response.data[index])
+          }
+          return direccionesArray
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          return 'error'
+        })
+}
 function recursiveDirecciones(foreignCliente){
   return axios.get('/read/direccionPorClave',{params:{clave: foreignCliente}})
   .then(async(response)=>{
@@ -55,7 +71,7 @@ class MiCuenta extends Component {
       },
       CompanyData: {
         rif: "", comercialDesignation: "", businessName: "",
-        username: "", password: "", email: "", webPage: "", capital: "",
+        username: "", password: "", Emails: {email1:""}, webPage: "", capital: "",
         telephone1: "", telephone2: "", telephone3: "",  ContactPerson:{ nameContact: "", numberContact: "" },
         FiscalAddress: {state:"", city:"", municipality:"", parish:"", fiscalAvenue:"",
                         fiscalBuilding:"", fiscalFloor:"", fiscalOffice:"", fiscalApartment:""},
@@ -90,17 +106,50 @@ class MiCuenta extends Component {
 		.then((res)=>{
 			let data = res.data[0]
 			if(data.tipo === 'Natural'){
-				this.setState({NaturalData: {
-					rif: data.rif, ci: data.natural_ci, name: data.natural_nombre, lastName: data.natural_apellido, gender: data.natural_genero, bornDate: data.natural_fecha_nacimiento}, isLoggedIn:true})
+        this.setState(prevState => ({
+          NaturalData: {
+            ...prevState.NaturalData,
+            rif: data.rif, ci: data.natural_ci, name: data.natural_nombre, lastName: data.natural_apellido, gender: data.natural_genero, bornDate: data.natural_fecha_nacimiento
+          },
+          isLoggedIn:true
+        }))
 			}
 			else{
-				this.setState({CompanyData: {
-					rif: data.rif, comercialDesignation: data.juridico_denominacion_comercial, businessName: data.juridico_razon_social, webPage: data.juridico_pagina_web, capital: data.juridico_capital}, isLoggedIn:true, naturalClient: false})
-          console.log(this.state.CompanyData)
+        this.setState(prevState => ({
+          CompanyData: {
+            ...prevState.CompanyData,
+            rif: data.rif, comercialDesignation: data.juridico_denominacion_comercial, businessName: data.juridico_razon_social, webPage: data.juridico_pagina_web, capital: data.juridico_capital
+          },
+          isLoggedIn:true, naturalClient: false
+        }))
 			}
       return data
 		})
-    .then((res)=>{
+    .then(async(res)=>{
+      let arrayNumbers = await foundTelefonos(res.rif)
+      for (let index = 0; index < arrayNumbers.length; index++) {
+        let name = 'telephone'+[index+1], number = arrayNumbers[index].numero
+        console.log(name, number)
+        this.setState(prevState => ({
+          CompanyData: {
+            ...prevState.CompanyData,
+            [name] : number
+          }
+        }))
+      }
+      let arrayEmails = await foundEmails(res.rif)
+      for (let index = 0; index < arrayEmails.length; index++) {
+        let name = 'email'+[index+1], direccion = arrayEmails[index].direccion
+        this.setState(prevState => ({
+          CompanyData: {
+            ...prevState.CompanyData,
+            Emails:{
+              ...prevState.CompanyData.Emails,
+              [name] : direccion
+            }
+          }
+        }))
+      }
       if (res.tipo === 'Natural'){
         return "codigo"
       }
@@ -215,10 +264,11 @@ class MiCuenta extends Component {
             console.log('El tipo de dirección no coincide');
           }
       })
+      console.log(this.state.CompanyData)
     })
     .catch(function (error) { // handle error
       console.log('axios'); console.log(error);
-    });
+    })
   }
   isLoggedIn() { this.setState({isLoggedIn:false}) }
 

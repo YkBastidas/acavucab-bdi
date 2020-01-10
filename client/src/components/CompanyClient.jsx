@@ -1,6 +1,15 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 
+function mostrarCorreos(Emails){
+  let i=0
+  return Object.values(Emails).map((Email) =>
+    {
+      i++
+      return <h5><strong> {'Email '+i+": "+ Email} </strong></h5>
+    })
+}
+
 class CompanyClient extends Component{
   render(){
     return(
@@ -9,31 +18,30 @@ class CompanyClient extends Component{
           <img src={this.props.image} alt="Cliente 1" style={{width: "inherit"}}/>
         </div>
         <div className="justified col-7">
-          <h5><strong>{this.props.userData.nombre}</strong></h5>
-          <h5><strong>{this.props.CompanyData.rif}</strong></h5>
-          <h5><strong>{this.props.CompanyData.comercialDesignation}</strong></h5>
-          <h5><strong>{this.props.CompanyData.businessName}</strong></h5>
-          <h5><strong>{this.props.CompanyData.username}</strong></h5>
-          <h5><strong>{this.props.CompanyData.password}</strong></h5>
-          <h5><strong>{this.props.CompanyData.email}</strong></h5>
-          <h5><strong>{this.props.CompanyData.webPage}</strong></h5>
-          <h5><strong>{this.props.CompanyData.capital}</strong></h5>
-          {/*<h5><strong>{this.props.CompanyData.telephone1}</strong></h5>
-          <h5><strong>{this.props.CompanyData.telephone2}</strong></h5>
-          <h5><strong>{this.props.CompanyData.telephone3}</strong></h5>*/}
+          <h5><strong>Nombre de Usuario: {this.props.userData.nombre}</strong></h5>
+          <h5><strong>RIF: {this.props.CompanyData.rif}</strong></h5>
+          <h5><strong>Designación Comercial: {this.props.CompanyData.comercialDesignation}</strong></h5>
+          <h5><strong>Razón Social: {this.props.CompanyData.businessName}</strong></h5>
+          {mostrarCorreos(this.props.CompanyData.Emails)}
+          <h5><strong>Página Web: {this.props.CompanyData.webPage}</strong></h5>
+          <h5><strong>Capital: {this.props.CompanyData.capital}</strong></h5>
+          <h5><strong>Teléfono Principal: {this.props.CompanyData.telephone1}</strong></h5>
+          {this.props.CompanyData.telephone2
+              ? <h5><strong>Teléfono Secundario: {this.props.CompanyData.telephone2}</strong></h5>
+              : ""
+          }
+          {this.props.CompanyData.telephone3
+              ? <h5><strong>Otro Teléfono: {this.props.CompanyData.telephone3}</strong></h5>
+              : ""
+          }
           {
             this.props.CompanyData.MainAddress
             ?
             <section>
-              <h5><strong>{this.props.CompanyData.MainAddress.state}</strong></h5>
-              <h5><strong>{this.props.CompanyData.MainAddress.city}</strong></h5>
-              <h5><strong>{this.props.CompanyData.MainAddress.municipality}</strong></h5>
-              <h5><strong>{this.props.CompanyData.MainAddress.parish}</strong></h5>
-              <h5><strong>{this.props.CompanyData.MainAddress.mainAvenue}</strong></h5>
-              <h5><strong>{this.props.CompanyData.MainAddress.mainBuilding}</strong></h5>
-              <h5><strong>{this.props.CompanyData.MainAddress.mainFloor}</strong></h5>
-              <h5><strong>{this.props.CompanyData.MainAddress.mainOffice}</strong></h5>
-              <h5><strong>{this.props.CompanyData.MainAddress.mainApartment}</strong></h5>
+              <h5> <strong> Dirección Principal: Estado {this.props.CompanyData.MainAddress.state}, Municipio {this.props.CompanyData.MainAddress.municipality}, Parroquia {this.props.CompanyData.MainAddress.parish}, {this.props.CompanyData.MainAddress.mainAvenue === '' ? "" : 'Avenida '+this.props.CompanyData.MainAddress.mainAvenue+','} {this.props.CompanyData.MainAddress.mainBuilding === '' ? "" : 'Edificio '+this.props.CompanyData.MainAddress.mainBuilding+','} {this.props.CompanyData.MainAddress.mainFloor === '' ? "" : 'Piso '+this.props.CompanyData.MainAddress.mainFloor+','} {this.props.CompanyData.MainAddress.mainOffice === '' ? "" : 'Oficina '+this.props.CompanyData.MainAddress.mainOffice+','} {this.props.CompanyData.MainAddress.mainApartment === '' ? "" : 'Apartamento '+this.props.CompanyData.MainAddress.mainApartment} </strong>
+              </h5>
+
+
             </section>
             :
           <div></div>
@@ -53,7 +61,7 @@ class CompanyClient extends Component{
           <h5><strong>Puntos acumulados: </strong></h5>
           <div className="col-12 margin-bottom">
               <div className="justified col-12">
-                  <div class="sticky" data-sticky data-anchor="content">
+                  <div className="sticky" data-sticky data-anchor="content">
                   <h5><a id="h5link" href = "/pedidos">Pedidos</a></h5>
                   <hr></hr>
                   <h5><a id="h5link" href = "/seguridad">Seguridad</a></h5>

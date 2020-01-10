@@ -113,6 +113,8 @@ router.get('/read/clientePorUserId', db.getClientePorUserID) //GET CLIENTE BY US
 router.get('/read/usuarioPorNombre', db.getUsuarioPorNombre) // GET USER BY NAME
 router.get('/read/tiendaFisica', db.getTiendaFisica) // GET REAL SHOP DATA
 router.get('/read/userInfo', db.getUserInfo) //GET USER INFO IF AUTHENTICATED
+router.get('/read/telefonosPorCliente', db.getTelefonosPorCliente) //GET CLIENT'S TEL NUMBERS
+router.get('/read/emailsPorCliente', db.getEmailsPorCliente) //GET CLIENT'S EMAILS
 
 router.post('/create/usuario', db.postUsuario) //CREATE NEW USER
 router.post('/create/registro', db.postRegistro) // CREATE NEW CLIENT

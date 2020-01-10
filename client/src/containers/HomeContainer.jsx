@@ -51,21 +51,9 @@ export default class HomeContainer extends Component {
         "reports": { "save": true }
       }
     }
-    fetch('http://localhost:5488/api/report', {
-      method: 'POST', // or 'PUT'
-      body: JSON.stringify(data), // data can be `string` or {object}!
-      headers:{
-        'Content-Type': 'application/json'
-      },
-      credentials: "same-origin",
-    }).then((response)=> {
       console.log('Reporte Enviado')
       jsreport.serverUrl = 'http://localhost:5488'
       jsreport.render(document.getElementById('reportPlaceholder'), data)
-    }).catch(function (error) {
-      console.log('AXIOS error: '+ error);
-      return 'errorReport'
-    })
   }
 
   render() {

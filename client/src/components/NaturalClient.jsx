@@ -130,7 +130,7 @@ class NaturalClient extends Component{
           <h5><strong>Puntos acumulados: </strong></h5>
           <div className="col-12 margin-bottom">
             <div className="justified col-12">
-              <div class="sticky" data-sticky data-anchor="content">
+              <div className="sticky" data-sticky data-anchor="content">
                 <h5><a id="h5link" href = "/pedidos">Pedidos</a></h5><hr></hr>
                 <h5><a id="h5link" href = "/seguridad">Seguridad</a></h5><hr></hr>
                 <h5><a id="h5link" href = "/metodopago">Metodos de Pago</a></h5><hr></hr>
