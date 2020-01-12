@@ -115,6 +115,8 @@ router.get('/read/tiendaFisica', db.getTiendaFisica) // GET REAL SHOP DATA
 router.get('/read/userInfo', db.getUserInfo) //GET USER INFO IF AUTHENTICATED
 router.get('/read/telefonosPorCliente', db.getTelefonosPorCliente) //GET CLIENT'S TEL NUMBERS
 router.get('/read/emailsPorCliente', db.getEmailsPorCliente) //GET CLIENT'S EMAILS
+router.get('/read/contactosPorCliente', db.getContactosPorCliente) //GET CLIENT'S EMAILS
+router.get('/read/usuarioPorID', db.getUsuarioPorID) //GER USER BY ID
 
 router.post('/create/usuario', db.postUsuario) //CREATE NEW USER
 router.post('/create/registro', db.postRegistro) // CREATE NEW CLIENT
@@ -124,6 +126,7 @@ router.post('/create/telefonoCliente', db.isLogged, db.postTelefonoCliente) // C
 router.post('/create/personaContacto', db.postPersonaContacto) // CREATE A NEW CONTACT PERSON
 
 router.post('/auth/signIn', db.postSignIn) // AUTHENTICATE USER AND LOGIN
+router.get('/auth/logout', db.getLogout) // CLOSE USER SESSION
 
 //LISTEN THE SERVER IN THE PORT
 app.listen(port, () => {

@@ -8,7 +8,7 @@ const config = {
   password: 'admin',
   port: 5432,
 } //PostgreSQL database configuration
-
+const axios = require('axios');
 const Pool = require('pg').Pool
 const pool = new Pool(config)
 
@@ -20,32 +20,13 @@ module.exports = function (passport) {
 		done(null,user.id);
 	});
 
-	passport.deserializeUser(function(user,donepass) {
-        pool.on('error', (err, client) => {
-            console.error('Unexpected error on idle client', err)
-            process.exit(-1)
-        })
-        pool.connect((err, client, done) => {
-            if (err) throw err
-            client.query('SELECT * FROM usuario WHERE id = $1',[user], (err, res) => {
-                if (err) {
-                    console.log(err.stack)
-                }
-                else {
-                    if (res.rows.length>0){
-                        var user = res.rows[0];
-                            console.log('se deserializo-->', user);
-                            return donepass (null,user);
-                    }
-
-                }
-                donepass(null,false);
-                done();
-            });
-        });
-
-
-	});
+  passport.deserializeUser((id, done) => {
+    axios.get('http://localhost:3000/read/usuarioPorID',{
+            params:{primaryKey: id}
+          })
+    .then(res => done(null, res.data) )
+    .catch(error => done(error, false))
+  });
 
 	passport.use(new LocalStrategy({
     usernameField : 'username',
@@ -68,7 +49,7 @@ module.exports = function (passport) {
                 if (res.rows.length>0){
                     var user = res.rows[0];
 
-                    if (/*bcrypt.compareSync*/password === user.contrasena){
+                    if (password === user.contrasena){
                         console.log(user);
                         return donepass (null,user);
                     }else{

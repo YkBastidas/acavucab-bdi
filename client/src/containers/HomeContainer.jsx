@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+﻿import React, {Component} from 'react';
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import axios from 'axios';
 import jsreport from 'jsreport-browser-client-dist'
@@ -38,18 +38,27 @@ export default class HomeContainer extends Component {
 
   testReport(e){
     e.preventDefault()
+    let response = {
+      "number": "123",
+      "seller": {
+        "name": "Next Step Webs, Inc.",
+        "road": "12345 Sunny Road",
+        "country": "Sunnyville, TX 12345"
+      },
+      "buyer": {
+        "name": "Acme Corp.",
+        "road": "16 Johnson Road",
+        "country": "Paris, France 8060"
+      },
+      "items": [{
+        "name": "Website design",
+        "price": 300
+      }]
+    } //LO QUE OBTIENES DEL AXIOS.GET [RESPONSE]
     let data = {
-      "template": {
-        "content": "<h1>Hello {{foo}}</h1>",
-        "engine": "handlebars",
-        "recipe": "chrome-pdf"
+      "template": {"name": "/samples/Invoice/invoice-main" //NOMBRE DEL TEMPLATE EN JSREPORT
       },
-      "data": {
-        "foo": "world"
-      },
-      "options": {
-        "reports": { "save": true }
-      }
+      "data": response, //LLAMAR A LO QUE OBTUVISTE DEL AXIOS.GET
     }
       console.log('Reporte Enviado')
       jsreport.serverUrl = 'http://localhost:5488'
@@ -66,7 +75,7 @@ export default class HomeContainer extends Component {
         </div>
         <div className="w-100"></div>
         <div className=" col-sm-12 col align-self-center">
-          <Carousel title="Más Buscados" slide1={slider1} slide2={slider2} slide3={slider3}/>
+          <Carousel title="MÃ¡s Buscados" slide1={slider1} slide2={slider2} slide3={slider3}/>
         </div>
         <div className=" col-sm-12 col align-self-center">
           <ProductLine title="Mejores Descuentos" product1={discount1} product2={discount2} product3={discount3} product4={discount4} product5={discount5} />
@@ -79,9 +88,9 @@ export default class HomeContainer extends Component {
         </div>
         <Button action={this.testReport} type={"warning"} title={"Generar Reporte"}
           buttonStyle={{ width: "100%" }}/>
-        <div id="reportPlaceholder">
-          <p>there should be a report here...</p>
-        </div>
+	     <div id="reportPlaceholder">
+	       <p>there should be a report here...</p>
+	     </div>
       </section >);
   }
 

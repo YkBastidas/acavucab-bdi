@@ -18,7 +18,14 @@ function calculateAge(date) {
   return age;
 
 }
-
+function formatPhoneNumber(phoneNumberString) {
+  var cleaned = ('' + phoneNumberString).replace(/\D/g, '')
+  var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+  if (match) {
+    return '(' + match[1] + ') ' + match[2] + '-' + match[3]
+  }
+  return null
+}
 function validate(user) {
   var rif, email, password, passwordEx, emailEx, namesEx, webPageEx, moneyEx,
   telephoneEx, numbersEx, namesAndNumbersEx;
@@ -482,6 +489,7 @@ class SignUpContainer extends Component {
     }), () => console.log(this.state.PersonalData));
   }
   handlePersonalInput(e) {
+    console.log(formatPhoneNumber(this.state.PersonalData.telephoneNumber))
     let value = e.target.value;
     let name = e.target.name;
     this.setState(prevState => ({
@@ -777,16 +785,19 @@ class SignUpContainer extends Component {
           return crearCliente(typeRIF, userData, foreign, idUsuario)
           .then(async (response)=>{
             let emailResponse = await crearEmail(userData.email, response),
-            telephoneResponse = await crearTelefono(userData.telephoneNumber, response),
+            telephoneResponse = await crearTelefono(formatPhoneNumber(userData.telephoneNumber), response),
             cellphoneResponse, officeResponse, array = []
+            alert('Telefono Creado: '+telephoneResponse)
             array.push(response, emailResponse, telephoneResponse)
             if(userData.cellphoneNumber !== ""){
-              cellphoneResponse = await crearTelefono(userData.cellphoneNumber, response)
+              cellphoneResponse = await crearTelefono(formatPhoneNumber(userData.cellphoneNumber), response)
               array.push(cellphoneResponse)
+              alert('Telefono Creado: '+cellphoneResponse)
             }
             if (userData.officeNumber !== ""){
-              officeResponse = await crearTelefono(userData.officeNumber, response)
+              officeResponse = await crearTelefono(formatPhoneNumber(userData.officeNumber), response)
               array.push(officeResponse)
+              alert('Telefono Creado: '+officeResponse)
             }
             return array
           })
@@ -983,15 +994,15 @@ class SignUpContainer extends Component {
           .then(async (response)=>{
             let emailResponse = await crearEmail(userData.email, response),
             contactResponse = await crearContactPerson(userData.ContactPerson, response),
-            telephone1Response = await crearTelefono(userData.telephone1, response),
+            telephone1Response = await crearTelefono(formatPhoneNumber(userData.telephone1), response),
             telephone2Response, telephone3Response, array = []
             array.push(response, emailResponse, contactResponse, telephone1Response)
             if(userData.telephone2 !== ""){
-              telephone2Response = await crearTelefono(userData.telephone2, response)
+              telephone2Response = await crearTelefono(formatPhoneNumber(userData.telephone2), response)
               array.push(telephone2Response)
             }
             if (userData.telephone3 !== ""){
-              telephone3Response = await crearTelefono(userData.telephone3, response)
+              telephone3Response = await crearTelefono(formatPhoneNumber(userData.telephone3), response)
               array.push(telephone3Response)
             }
             return array

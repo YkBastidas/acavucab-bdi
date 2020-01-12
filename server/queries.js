@@ -112,9 +112,12 @@ const getUsuarioPorNombre = (request, response) =>{
   })
 }
 const getUserInfo =  (request, response) => { // GET USER INFO IF VALIDATED
-	console.log('Las cookies son -->', request.cookies);
-	console.log('El user es  -->', request.user);
-	response.send(request.user);
+  if(request.user){
+    console.log('Las cookies son -->', request.cookies);
+  	console.log('El user es  -->', request.user[0]);
+    response.send(request.user[0]);
+  }
+  else response.send('errorNoUser')
 }
 const getTelefonosPorCliente= (request, response ) => {
   let values = [request.query.foreignKey]
@@ -136,7 +139,32 @@ const getEmailsPorCliente= (request, response ) => {
     response.status(200).json(results.rows)
   })
 }
-
+const getContactosPorCliente= (request, response ) => {
+  let values = [request.query.foreignKey]
+  const query = "SELECT * FROM persona_contacto WHERE fk_cliente = $1"
+  pool.query(query, values, (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+const getUsuarioPorID= (request, response ) => {
+  let values = [request.query.primaryKey]
+  const query = "SELECT * FROM usuario WHERE id = $1"
+  pool.query(query, values, (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+const getLogout = (request,response) =>{
+  request.logout();
+  request.session = null;
+  response.send('Sesion finalizada en server')
+}
+/*
 const getEmpleados= (request, response ) => {
   const query = "SELECT * FROM personal"
   pool.query(query, (error, results) => {
@@ -581,7 +609,7 @@ const getDescuento= (request, response ) => {
     response.status(200).json(results.rows)
   })
 }
-
+*/
 const postRegistro = (request, response, next) =>{
   console.log(request.body);
   if(request.body.tipo === 'Natural'){
@@ -708,6 +736,7 @@ const postEvento = (request, response, next) => {
   return response.redirect('/');
 }
 
+
 module.exports = {
   config,
   getEvents,
@@ -723,7 +752,10 @@ module.exports = {
 	getUserInfo,
   getTelefonosPorCliente,
   getEmailsPorCliente,
-
+  getContactosPorCliente,
+  getUsuarioPorID,
+  getLogout,
+/*
 	getEmpleados,
   getLager,
   getAle,
@@ -773,7 +805,7 @@ module.exports = {
   getPago,
   getStatusCompra,
   getDescuento,
-
+*/
   postUsuario,
   postRegistro,
   postDireccion,

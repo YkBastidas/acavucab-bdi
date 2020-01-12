@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 
 import NaturalClient from '../components/NaturalClient'
 import CompanyClient from '../components/CompanyClient'
-import client1 from '../images/client1.png'
 import Banner from '../components/Banner.jsx'
 import Footer from '../components/Footer.jsx'
 import axios from 'axios'
@@ -35,6 +34,23 @@ function foundEmails(foreignCliente){
           return 'error'
         })
 }
+function foundContacts(foreignCliente){
+  return axios.get('/read/contactosPorCliente', {
+          params:{foreignKey: foreignCliente}
+        }).then((response)=> {
+          let index, nombresArray =[], numerosArray =[]
+          for (index = 0; index < response.data.length; index++) {
+            nombresArray.push(response.data[index].nombre)
+          }
+          for (index = 0; index < response.data.length; index++) {
+            numerosArray.push(response.data[index].numero)
+          }
+          return [nombresArray, numerosArray]
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          return 'error'
+        })
+}
 function recursiveDirecciones(foreignCliente){
   return axios.get('/read/direccionPorClave',{params:{clave: foreignCliente}})
   .then(async(response)=>{
@@ -57,6 +73,8 @@ function recursiveDirecciones(foreignCliente){
   })
 }
 
+require('events').EventEmitter.prototype._maxListeners = 100;
+var logged = false
 class MiCuenta extends Component {
   constructor(props) {
     super(props);
@@ -64,15 +82,15 @@ class MiCuenta extends Component {
       userData: {id: '', nombre: '', contrasena: ''},
       NaturalData: {
         rif: "", ci: "", name: "", lastName: "", gender: "",
-        email: "", bornDate: "",
-        HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
-                      homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""},
+        Emails: {email1:""}, bornDate: "",
+        MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",
+                      mainBuilding:"", mainFloor:"", mainOffice:"", mainApartment:""},
         telephoneNumber: "", cellphoneNumber: "", officeNumber: ""
       },
       CompanyData: {
         rif: "", comercialDesignation: "", businessName: "",
         username: "", password: "", Emails: {email1:""}, webPage: "", capital: "",
-        telephone1: "", telephone2: "", telephone3: "",  ContactPerson:{ nameContact: "", numberContact: "" },
+        telephone1: "", telephone2: "", telephone3: "",  ContactPerson:{ contact1: {nameContact: "", numberContact: ""} },
         FiscalAddress: {state:"", city:"", municipality:"", parish:"", fiscalAvenue:"",
                         fiscalBuilding:"", fiscalFloor:"", fiscalOffice:"", fiscalApartment:""},
         MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",
@@ -84,10 +102,14 @@ class MiCuenta extends Component {
     this.isLoggedIn = this.isLoggedIn.bind(this)
   }
 
-  componentWillMount() {
-    axios.get('/read/userInfo',{withCredentials: true
-    })
+  componentDidMount() {
+    axios.get('/read/userInfo',{withCredentials: true})
     .then((res)=> { // handle success
+      console.log(res)
+      if(res.data==='errorNoUser'){
+        throw new Error('NoUser');
+      }
+      logged = true
       console.log('Callback Axios con Data del Usuario')
       console.log(res.data)
       this.setState({userData: res.data, isLoggedIn:true})
@@ -127,46 +149,235 @@ class MiCuenta extends Component {
 		})
     .then(async(res)=>{
       let arrayNumbers = await foundTelefonos(res.rif)
-      for (let index = 0; index < arrayNumbers.length; index++) {
-        let name = 'telephone'+[index+1], number = arrayNumbers[index].numero
-        console.log(name, number)
-        this.setState(prevState => ({
-          CompanyData: {
-            ...prevState.CompanyData,
-            [name] : number
+      if (res.tipo === 'Natural'){
+        for (let index = 0; index < arrayNumbers.length; index++) {
+          let name
+          switch(index){
+            case 0:
+              name = 'telephoneNumber'
+              break;
+            case 1:
+              name = 'cellphoneNumber'
+              break;
+            case 2:
+              name = 'officeNumber'
+              break;
+            default:
+              console.log('Tipo de teléfono no Coincide');
           }
-        }))
+          let number = arrayNumbers[index].numero
+          this.setState(prevState => ({
+            NaturalData: {
+              ...prevState.NaturalData,
+              [name] : number
+            }
+          }))
+        }
+      }
+      else{
+        for (let index = 0; index < arrayNumbers.length; index++) {
+          let name = 'telephone'+[index+1], number = arrayNumbers[index].numero
+          console.log(name, number)
+          this.setState(prevState => ({
+            CompanyData: {
+              ...prevState.CompanyData,
+              [name] : number
+            }
+          }))
+        }
       }
       let arrayEmails = await foundEmails(res.rif)
       for (let index = 0; index < arrayEmails.length; index++) {
         let name = 'email'+[index+1], direccion = arrayEmails[index].direccion
-        this.setState(prevState => ({
-          CompanyData: {
-            ...prevState.CompanyData,
-            Emails:{
-              ...prevState.CompanyData.Emails,
-              [name] : direccion
+        if(res.tipo === 'Natural'){
+          this.setState(prevState => ({
+            NaturalData: {
+              ...prevState.NaturalData,
+              Emails:{
+                ...prevState.NaturalData.Emails,
+                [name] : direccion
+              }
             }
-          }
-        }))
+          }))
+        }
+        else{
+          this.setState(prevState => ({
+            CompanyData: {
+              ...prevState.CompanyData,
+              Emails:{
+                ...prevState.CompanyData.Emails,
+                [name] : direccion
+              }
+            }
+          }))
+        }
+
+      }
+      if(res.tipo === 'Juridico'){
+        let ContactsData = await foundContacts(res.rif)
+        let arrayNameContact = ContactsData[0], arrayNumberContact = ContactsData[1]
+        for (let index = 0; index < arrayNameContact.length; index++) {
+          let name = 'contact'+[index+1], nombre = arrayNameContact[index]
+          this.setState(prevState => ({
+            CompanyData: {
+              ...prevState.CompanyData,
+              ContactPerson:{
+                ...prevState.CompanyData.ContactPerson,
+                [name] : {
+                  ...prevState.CompanyData.ContactPerson[name],
+                  nameContact : nombre
+                }
+              }
+            }
+          }))
+        }
+        for (let index = 0; index < arrayNumberContact.length; index++) {
+          let name = 'contact'+[index+1], numero = arrayNumberContact[index]
+          this.setState(prevState => ({
+            CompanyData: {
+              ...prevState.CompanyData,
+              ContactPerson:{
+                ...prevState.CompanyData.ContactPerson,
+                [name] : {
+                  ...prevState.CompanyData.ContactPerson[name],
+                  numberContact: numero
+                  }
+              }
+            }
+          }))
+          console.log(this.state.CompanyData)
+        }
       }
       if (res.tipo === 'Natural'){
-        return "codigo"
+        let direccionPrincipal = await recursiveDirecciones(res.fk_direccion_fisica)
+        return [direccionPrincipal, 'Natural']
       }
       else{
-        return recursiveDirecciones(res.fk_direccion_fisica)
+        let direccionPrincipal = await recursiveDirecciones(res.fk_direccion_fisica)
+        let direccionFiscal = await recursiveDirecciones(res.juridico_fk_direccion_fiscal)
+        return [direccionPrincipal, direccionFiscal]
       }
     })
     .then((res)=>{
-      let direccionPrincipal = res
+      let direccionPrincipal = res[0], nameData
+      if (res[1] === 'Natural') nameData = 'NaturalData'
+      else{
+        nameData = 'CompanyData'
+        let direccionFiscal = res[1]
+        direccionFiscal.forEach((direccion, index)=>{
+          switch (direccion.tipo) {
+            case 'Estado':
+              this.setState(prevState => ({
+                CompanyData: {
+                  ...prevState.CompanyData,
+                  FiscalAddress: {
+                    ...prevState.CompanyData.FiscalAddress,
+                    state: direccion.nombre
+                  }
+                }
+              }))
+              break;
+            case 'Ciudad':
+              this.setState(prevState => ({
+                CompanyData: {
+                  ...prevState.CompanyData,
+                  FiscalAddress: {
+                    ...prevState.CompanyData.FiscalAddress,
+                    city: direccion.nombre
+                  }
+                }
+              }))
+              break;
+            case 'Municipio':
+              this.setState(prevState => ({
+                CompanyData: {
+                  ...prevState.CompanyData,
+                  FiscalAddress: {
+                    ...prevState.CompanyData.FiscalAddress,
+                    municipality: direccion.nombre
+                  }
+                }
+              }))
+              break;
+            case 'Parroquia':
+              this.setState(prevState => ({
+                CompanyData: {
+                  ...prevState.CompanyData,
+                  FiscalAddress: {
+                    ...prevState.CompanyData.FiscalAddress,
+                    parish: direccion.nombre
+                  }
+                }
+              }))
+              break;
+            case 'Avenida':
+              this.setState(prevState => ({
+                CompanyData: {
+                  ...prevState.CompanyData,
+                  FiscalAddress: {
+                    ...prevState.CompanyData.FiscalAddress,
+                    fiscalAvenue: direccion.nombre
+                  }
+                }
+              }))
+              break;
+            case 'Edificio':
+              this.setState(prevState => ({
+                CompanyData: {
+                  ...prevState.CompanyData,
+                  FiscalAddress: {
+                    ...prevState.CompanyData.FiscalAddress,
+                    fiscalBuilding: direccion.nombre
+                  }
+                }
+              }))
+              break;
+            case 'Piso':
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                FiscalAddress: {
+                  ...prevState.CompanyData.FiscalAddress,
+                  fiscalFloor: direccion.nombre
+                }
+              }
+            }))
+              break;
+            case 'Oficina':
+              this.setState(prevState => ({
+                CompanyData: {
+                  ...prevState.CompanyData,
+                  FiscalAddress: {
+                    ...prevState.CompanyData.FiscalAddress,
+                    fiscalOffice: direccion.nombre
+                  }
+                }
+              }))
+              break;
+            case 'Apartamento':
+              this.setState(prevState => ({
+                CompanyData: {
+                  ...prevState.CompanyData,
+                  FiscalAddress: {
+                    ...prevState.CompanyData.FiscalAddress,
+                    fiscalApartment: direccion.nombre
+                  }
+                }
+              }))
+              break;
+            default:
+              console.log('El tipo de dirección no coincide');
+            }
+        })
+      }
       direccionPrincipal.forEach((direccion, index)=>{
         switch (direccion.tipo) {
           case 'Estado':
             this.setState(prevState => ({
-              CompanyData: {
-                ...prevState.CompanyData,
+              [nameData]: {
+                ...prevState[nameData],
                 MainAddress: {
-                  ...prevState.CompanyData.MainAddress,
+                  ...prevState[nameData].MainAddress,
                   state: direccion.nombre
                 }
               }
@@ -174,10 +385,10 @@ class MiCuenta extends Component {
             break;
           case 'Ciudad':
             this.setState(prevState => ({
-              CompanyData: {
-                ...prevState.CompanyData,
+             [nameData]: {
+                ...prevState[nameData],
                 MainAddress: {
-                  ...prevState.CompanyData.MainAddress,
+                  ...prevState[nameData].MainAddress,
                   city: direccion.nombre
                 }
               }
@@ -185,10 +396,10 @@ class MiCuenta extends Component {
             break;
           case 'Municipio':
             this.setState(prevState => ({
-              CompanyData: {
-                ...prevState.CompanyData,
+             [nameData]: {
+                ...prevState[nameData],
                 MainAddress: {
-                  ...prevState.CompanyData.MainAddress,
+                  ...prevState[nameData].MainAddress,
                   municipality: direccion.nombre
                 }
               }
@@ -196,10 +407,10 @@ class MiCuenta extends Component {
             break;
           case 'Parroquia':
             this.setState(prevState => ({
-              CompanyData: {
-                ...prevState.CompanyData,
+             [nameData]: {
+                ...prevState[nameData],
                 MainAddress: {
-                  ...prevState.CompanyData.MainAddress,
+                  ...prevState[nameData].MainAddress,
                   parish: direccion.nombre
                 }
               }
@@ -207,10 +418,10 @@ class MiCuenta extends Component {
             break;
           case 'Avenida':
             this.setState(prevState => ({
-              CompanyData: {
-                ...prevState.CompanyData,
+             [nameData]: {
+                ...prevState[nameData],
                 MainAddress: {
-                  ...prevState.CompanyData.MainAddress,
+                  ...prevState[nameData].MainAddress,
                   mainAvenue: direccion.nombre
                 }
               }
@@ -218,10 +429,10 @@ class MiCuenta extends Component {
             break;
           case 'Edificio':
             this.setState(prevState => ({
-              CompanyData: {
-                ...prevState.CompanyData,
+             [nameData]: {
+                ...prevState[nameData],
                 MainAddress: {
-                  ...prevState.CompanyData.MainAddress,
+                  ...prevState[nameData].MainAddress,
                   mainBuilding: direccion.nombre
                 }
               }
@@ -229,10 +440,10 @@ class MiCuenta extends Component {
             break;
           case 'Piso':
           this.setState(prevState => ({
-            CompanyData: {
-              ...prevState.CompanyData,
+           [nameData]: {
+              ...prevState[nameData],
               MainAddress: {
-                ...prevState.CompanyData.MainAddress,
+                ...prevState[nameData].MainAddress,
                 mainFloor: direccion.nombre
               }
             }
@@ -240,10 +451,10 @@ class MiCuenta extends Component {
             break;
           case 'Oficina':
             this.setState(prevState => ({
-              CompanyData: {
-                ...prevState.CompanyData,
+             [nameData]: {
+                ...prevState[nameData],
                 MainAddress: {
-                  ...prevState.CompanyData.MainAddress,
+                  ...prevState[nameData].MainAddress,
                   mainOffice: direccion.nombre
                 }
               }
@@ -251,10 +462,10 @@ class MiCuenta extends Component {
             break;
           case 'Apartamento':
             this.setState(prevState => ({
-              CompanyData: {
-                ...prevState.CompanyData,
+             [nameData]: {
+                ...prevState[nameData],
                 MainAddress: {
-                  ...prevState.CompanyData.MainAddress,
+                  ...prevState[nameData].MainAddress,
                   mainApartment: direccion.nombre
                 }
               }
@@ -264,10 +475,19 @@ class MiCuenta extends Component {
             console.log('El tipo de dirección no coincide');
           }
       })
-      console.log(this.state.CompanyData)
     })
     .catch(function (error) { // handle error
-      console.log('axios'); console.log(error);
+      if(error.message === 'NoUser'){
+        console.log('No User Logged In'); console.log(error);
+        return error.message
+      }
+      else{
+        console.log('axios'); console.log(error);
+      }
+    })
+    .finally(()=>{
+      if(logged === false) {this.isLoggedIn(); console.log('No ha iniciado sesión')}
+      else (console.log('Inicio de sesión exitoso'))
     })
   }
   isLoggedIn() { this.setState({isLoggedIn:false}) }
@@ -277,15 +497,15 @@ class MiCuenta extends Component {
       return (<div>
         <header>
           <div className="container">
-            <Banner/>
+            <Banner active = 'profile'/>
           </div>
         </header>
         <br/>
         <div className="container">
   				{
   					this.state.naturalClient
-  					? <NaturalClient userData = {this.state.userData} NaturalData = {this.state.NaturalData} image={client1}/>
-            : <CompanyClient userData = {this.state.userData} CompanyData = {this.state.CompanyData} image={client1}/>
+  					? <NaturalClient userData = {this.state.userData} NaturalData = {this.state.NaturalData}/>
+            : <CompanyClient userData = {this.state.userData} CompanyData = {this.state.CompanyData}/>
   				}
         </div>
         <br/>
