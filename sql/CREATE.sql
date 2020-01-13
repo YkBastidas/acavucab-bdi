@@ -6,7 +6,7 @@ CREATE SEQUENCE public.secuencia_historia_cerveza
      cycle
 ;
 
-CREATE TABLE public.historia_cerveza 
+CREATE TABLE public.historia_cerveza
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_historia_cerveza'::regclass),
      descripcion varchar NOT NULL,
@@ -75,7 +75,7 @@ CREATE TABLE public.cerveza_artesanal
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_cerveza'::regclass),
      nombre varchar(40) NOT NULL,
-     descripcion varchar, 
+     descripcion varchar,
      fk_ale numeric,
      fk_lager numeric,
      CONSTRAINT pk_clave_cerveza PRIMARY KEY (clave),
@@ -91,7 +91,7 @@ CREATE SEQUENCE public.secuencia_receta
      cycle
 ;
 
-CREATE TABLE public.receta 
+CREATE TABLE public.receta
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_receta'::regclass),
      descripcion varchar(50) NOT NULL,
@@ -117,7 +117,7 @@ CREATE TABLE public.receta_ingre
      CONSTRAINT pk_receta_ingrediente PRIMARY KEY (clave),
      CONSTRAINT fk_fk_ingrediente FOREIGN KEY (fk_ingrediente) REFERENCES ingrediente(id),
      CONSTRAINT fk_fk_receta FOREIGN KEY (fk_receta) REFERENCES receta (clave)
-);   
+);
 
 CREATE SEQUENCE public.secuencia_caracteristica
      start with 1
@@ -127,7 +127,7 @@ CREATE SEQUENCE public.secuencia_caracteristica
      cycle
 ;
 
-CREATE TABLE public.caracteristica     
+CREATE TABLE public.caracteristica
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_caracteristica'),
      tipo varchar(15) NOT NULL,
@@ -145,7 +145,7 @@ CREATE SEQUENCE public.secuencia_cerveza_caracteristica
      cycle
 ;
 
-CREATE TABLE public.cerveza_caracteristica 
+CREATE TABLE public.cerveza_caracteristica
 (
      id numeric NOT NULL DEFAULT nextval('secuencia_cerveza_caracteristica'::regclass),
      fk_cerveza numeric NOT NULL,
@@ -165,7 +165,7 @@ CREATE SEQUENCE public.secuencia_departamento
 
 CREATE TABLE public.departamento
 (
-     clave numeric NOT NULL DEFAULT nextval('secuencia_departamento'::regclass),  
+     clave numeric NOT NULL DEFAULT nextval('secuencia_departamento'::regclass),
      nombre varchar(50) NOT NULL,
      CONSTRAINT pk_clave_departamento PRIMARY KEY (clave)
 );
@@ -214,7 +214,7 @@ CREATE SEQUENCE public.secuencia_rol
      cycle
 ;
 
-CREATE TABLE public.rol 
+CREATE TABLE public.rol
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_rol'),
      nombre varchar NOT NULL,
@@ -247,12 +247,14 @@ CREATE SEQUENCE public.secuencia_usuario
      cycle
 ;
 
-CREATE TABLE public.usuario  
+CREATE TABLE public.usuario
 (
      id numeric NOT NULL DEFAULT nextval('secuencia_usuario'::regclass),
      nombre varchar NOT NULL,
      contrasena varchar NOT NULL,
-     CONSTRAINT pk_id_usuario PRIMARY KEY (id)
+     fk_rol numeric ,
+     CONSTRAINT pk_id_usuario PRIMARY KEY (id),
+     CONSTRAINT fk_fk_rol_usuario FOREIGN KEY (fk_rol) REFERENCES rol(clave)
 );
 
 CREATE SEQUENCE public.secuencia_personal
@@ -265,18 +267,18 @@ CREATE SEQUENCE public.secuencia_personal
 
 CREATE TABLE public.personal
 (
-     clave numeric NOT NULL DEFAULT nextval('secuencia_personal'::regclass),  
+     clave numeric NOT NULL DEFAULT nextval('secuencia_personal'::regclass),
      nombre varchar(15) NOT NULL,
      apellido varchar(15) NOT NULL,
      ci numeric(9) NOT NULL,
-     salario varchar(11) NOT NULL, 
+     salario varchar(11) NOT NULL,
      cargo varchar(50) NOT NULL,
      genero varchar NOT NULL,
-     fk_rol numeric,
      fk_usuario numeric NOT NULL,
+     fk_direccion numeric NOT NULL,
      CONSTRAINT pk_clave_personal PRIMARY KEY (clave),
      CONSTRAINT fk_personal_usuario FOREIGN KEY (fk_usuario) REFERENCES usuario(id),
-     CONSTRAINT fk_fk_rol_personal FOREIGN KEY (fk_rol) REFERENCES rol(clave),
+     CONSTRAINT fk_fk_direccion_personal FOREIGN KEY (fk_direccion) REFERENCES direccion(clave),
      CONSTRAINT chk_genero_personal CHECK (genero in ('Hombre','Mujer','Otro'))
 );
 
@@ -308,7 +310,7 @@ CREATE SEQUENCE public.secuencia_horario
      cycle
 ;
 
-CREATE TABLE public.horario 
+CREATE TABLE public.horario
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_horario'::regclass),
      dia varchar NOT NULL,
@@ -350,7 +352,7 @@ CREATE TABLE public.personal_beneficio
      CONSTRAINT fk_fk_personal_personal_beneficio FOREIGN KEY (fk_personal) REFERENCES personal(clave),
      CONSTRAINT fk_fk_beneficio_personal_beneficio FOREIGN KEY (fk_beneficio) REFERENCES beneficio(clave)
 );
- 
+
 CREATE SEQUENCE public.secuencia_personal_horario
      start with 1
      increment 1
@@ -400,7 +402,7 @@ CREATE SEQUENCE public.secuencia_cerveza_proveedor
      cycle
 ;
 
-CREATE TABLE public.cerveza_proveedor 
+CREATE TABLE public.cerveza_proveedor
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_proveedor'::regclass),
      fk_cerveza_artesanal numeric NOT NULL,
@@ -491,7 +493,7 @@ CREATE SEQUENCE public.secuencia_zona
      cycle
 ;
 
-CREATE TABLE public.zona 
+CREATE TABLE public.zona
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_zona'::regclass),
      numero_estante numeric NOT NULL,
@@ -513,10 +515,10 @@ CREATE SEQUENCE public.secuencia_factura
      cycle
 ;
 
-CREATE TABLE public.venta    
+CREATE TABLE public.venta
 (
-     total numeric NOT NULL DEFAULT nextval('secuencia_factura'::regclass),
-     nro_factura numeric NOT NULL,
+     nro_factura numeric NOT NULL DEFAULT nextval('secuencia_factura'::regclass),
+     total numeric NOT NULL,
      fecha date NOT NULL,
      CONSTRAINT pk_nro_factura_venta PRIMARY KEY (nro_factura)
 );
@@ -534,8 +536,9 @@ CREATE TABLE public.detalle_venta     --A su vez, un historico inventario no ten
      codigo numeric NOT NULL DEFAULT nextval('secuencia_detalle_venta'::regclass),
      cantidad numeric NOT NULL,
      precio_unitario numeric NOT NULL,
-     fk_venta numeric NOT NULL,
-     fk_cerveza_proveedor numeric NOT NULL,
+     fk_venta numeric,
+     fk_cerveza_proveedor numeric,
+     fk_historico_inventario numeric,
      CONSTRAINT pk_codigo_detalle_venta PRIMARY KEY (codigo),
      CONSTRAINT fk_fk_venta_detalle_venta FOREIGN KEY (fk_venta) REFERENCES venta(nro_factura),
      CONSTRAINT fk_fk_cerveza_proveedor_detalle_venta FOREIGN KEY (fk_cerveza_proveedor) REFERENCES cerveza_proveedor(clave)
@@ -564,7 +567,7 @@ CREATE SEQUENCE public.secuencia_status_venta
      cycle
 ;
 
-CREATE TABLE public.status_venta  
+CREATE TABLE public.status_venta
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_status_venta'::regclass),
      fk_status numeric NOT NULL,
@@ -574,9 +577,9 @@ CREATE TABLE public.status_venta
      CONSTRAINT fk_fk_venta_status_venta FOREIGN KEY (fk_venta) REFERENCES venta(nro_factura)
 );
 
-CREATE TABLE public.cliente 
+CREATE TABLE public.cliente
 (
-     rif varchar(15), 
+     rif varchar(15),
      tipo varchar(8) NOT NULL,
      fk_direccion_fisica numeric NOT NULL,
      natural_ci numeric(9),
@@ -594,7 +597,7 @@ CREATE TABLE public.cliente
      CONSTRAINT chk_tipo_cliente CHECK (tipo in ('Natural','Juridico')),
      CONSTRAINT fk_fk_direccion_fisica_cliente FOREIGN KEY (fk_direccion_fisica) REFERENCES direccion(clave),
      CONSTRAINT fk_juridico_fk_direccion_fiscal_cliente FOREIGN KEY (juridico_fk_direccion_fiscal) REFERENCES direccion(clave),
-     CONSTRAINT fk_cliente_usuario FOREIGN KEY (fk_usuario) REFERENCES usuario(id),    
+     CONSTRAINT fk_cliente_usuario FOREIGN KEY (fk_usuario) REFERENCES usuario(id),
      CONSTRAINT chk_natural_genero_cliente CHECK (natural_genero in ('Hombre','Mujer','Otro'))
 );
 
@@ -627,7 +630,7 @@ CREATE SEQUENCE public.secuencia_correo_electronico
      cycle
 ;
 
-CREATE TABLE public.correo_electronico   
+CREATE TABLE public.correo_electronico
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_correo_electronico'::regclass),
      direccion varchar NOT NULL,
@@ -636,10 +639,10 @@ CREATE TABLE public.correo_electronico
      CONSTRAINT fk_fk_cliente_correo_electronico FOREIGN KEY (fk_cliente) REFERENCES cliente(rif)
 );
 
-CREATE TABLE public.compra 
-(                          
-     total_pago numeric NOT NULL DEFAULT nextval('secuencia_factura'::regclass),
-     nro_factura numeric NOT NULL,
+CREATE TABLE public.compra
+(
+     nro_factura numeric NOT NULL DEFAULT nextval('secuencia_factura'::regclass),
+     total numeric NOT NULL,
      fecha_compra date NOT NULL,
      fk_tienda_fisica numeric,
      fk_tienda_virtual numeric,
@@ -658,7 +661,7 @@ CREATE SEQUENCE public.secuencia_detalle_compra
      cycle
 ;
 
-CREATE TABLE public.detalle_compra 
+CREATE TABLE public.detalle_compra
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_detalle_compra'::regclass),
      cantidad numeric NOT NULL,
@@ -678,8 +681,8 @@ CREATE SEQUENCE public.secuencia_inventario
      cycle
 ;
 
-CREATE TABLE public.inventario     --Una zona no deberia tener un solo inventario? No se guarda historico por pasillos, una repisa y un estante tienen mas de un producto entonces?
-(                                 
+CREATE TABLE public.inventario
+(
      clave numeric NOT NULL DEFAULT nextval('secuencia_inventario'::regclass),
      cantidad numeric NOT NULL,
      fk_evento numeric,
@@ -697,7 +700,7 @@ CREATE SEQUENCE public.secuencia_historico_inventario_cerveza
      cycle
 ;
 
-CREATE TABLE public.historico_inventario_cerveza   -- REVISAR la cardinalidad entre inventario e historico inventario 
+CREATE TABLE public.historico_inventario_cerveza
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_historico_inventario_cerveza'::regclass),
      cant_disponible numeric NOT NULL,
@@ -722,16 +725,18 @@ CREATE SEQUENCE public.secuencia_historico_puntos_cliente
      cycle
 ;
 
-CREATE TABLE public.historico_puntos_cliente  --Falta el chck en tipo
+CREATE TABLE public.historico_puntos_cliente
 (
      clave numeric NOT NULL DEFAULT nextval('historico_puntos_cliente'::regclass),
      cantidad numeric NOT NULL,
      fecha_cambio date NOT NULL,
      tipo char NOT NULL,
      fk_cliente varchar NOT NULL,
+     fk_historico_puntos numeric,
      CONSTRAINT pk_clave_historico_puntos_cliente PRIMARY KEY (clave),
      CONSTRAINT fk_fk_cliente_historico_puntos_cliente FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
-     CONSTRAINT chk_tipo_historico_puntos_cliente CHECK (tipo in('+','-'))
+     CONSTRAINT chk_tipo_historico_puntos_cliente CHECK (tipo in('+','-','0')),
+     CONSTRAINT fk_fk_historico_puntos_historico_puntos_cliente FOREIGN KEY (fk_historico_puntos) REFERENCES historico_puntos_cliente(clave)
 );
 
 CREATE SEQUENCE public.secuencia_persona_contacto
@@ -746,7 +751,7 @@ CREATE TABLE public.persona_contacto
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_persona_contacto'::regclass),
      nombre varchar NOT NULL,
-     numero numeric NOT NULL,
+     numero varchar NOT NULL,
      fk_cliente varchar NOT NULL,
      CONSTRAINT pk_clave_persona_contacto PRIMARY KEY (clave),
      CONSTRAINT fk_fk_cliente_persona_contacto FOREIGN KEY (fk_cliente) REFERENCES cliente(rif)
@@ -763,12 +768,14 @@ CREATE SEQUENCE public.secuencia_telefono
 CREATE TABLE public.telefono
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_telefono'::regclass),
-     numero numeric NOT NULL,
+     numero varchar NOT NULL,
      fk_cliente varchar,
      fk_proveedor numeric,
+     fk_personal numeric,
      CONSTRAINT pk_clave_telefono PRIMARY KEY (clave),
      CONSTRAINT fk_fk_cliente_telefono FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
-     CONSTRAINT fk_fk_proveedor_cliente FOREIGN KEY (fk_proveedor) REFERENCES proveedor(rif)
+     CONSTRAINT fk_fk_proveedor_cliente FOREIGN KEY (fk_proveedor) REFERENCES proveedor(rif),
+     CONSTRAINT fk_fk_personal_telefono FOREIGN KEY (fk_personal) REFERENCES personal(clave)
 );
 
 CREATE SEQUENCE public.secuencia_tipo_pago_credito
@@ -779,7 +786,7 @@ CREATE SEQUENCE public.secuencia_tipo_pago_credito
      cycle
 ;
 
-CREATE TABLE public.tipo_pago_credito 
+CREATE TABLE public.tipo_pago_credito
 (
      codigo numeric NOT NULL DEFAULT nextval('secuencia_tipo_pago_credito'::regclass),
      banco varchar(25),
@@ -788,6 +795,8 @@ CREATE TABLE public.tipo_pago_credito
      cvc numeric NOT NULL,
      nombre_impreso varchar NOT NULL,
      cedula numeric NOT NULL,
+     fk_cliente varchar,
+     CONSTRAINT fk_fk_cliente_tipo_pago_credito FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
      CONSTRAINT pk_codigo_tipo_pago_credito PRIMARY KEY (codigo),
      CONSTRAINT chk_tipo_tipo_pago_credito CHECK (tipo in('Visa','Mastercard'))
 );
@@ -809,6 +818,8 @@ CREATE TABLE public.tipo_pago_debito
      cvc numeric NOT NULL,
      nombre_impreso varchar NOT NULL,
      cedula numeric NOT NULL,
+     fk_cliente varchar,
+     CONSTRAINT fk_fk_cliente_tipo_pago_credito FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
      CONSTRAINT pk_codigo_tipo_pago_debito PRIMARY KEY (codigo),
      CONSTRAINT chk_tipo_tipo_pago_debito CHECK (tipo in('Maestro'))
 );
@@ -827,10 +838,12 @@ CREATE TABLE public.tipo_pago_efectivo     --Revisar FK de TODOS tipo_pago
      banco varchar(15),
      denominacion numeric NOT NULL,
      cantidad numeric NOT NULL,
+     fk_cliente varchar,
+     CONSTRAINT fk_fk_cliente_tipo_pago_credito FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
      CONSTRAINT pk_codigo_tipo_pago_efectivo PRIMARY KEY (codigo)
 );
 
-CREATE SEQUENCE public.secuencia_tipo_pago_cheque 
+CREATE SEQUENCE public.secuencia_tipo_pago_cheque
      start with 1
      increment 1
      minvalue 1
@@ -844,6 +857,8 @@ CREATE TABLE public.tipo_pago_cheque
      banco varchar(15),
      numero_cuenta numeric NOT NULL,
      numero_cheque numeric NOT NULL,
+     fk_cliente varchar,
+     CONSTRAINT fk_fk_cliente_tipo_pago_credito FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
      CONSTRAINT pk_codigo_tipo_pago_cheque PRIMARY KEY (codigo)
 );
 
@@ -855,7 +870,7 @@ CREATE SEQUENCE public.secuencia_historico_tasa
      cycle
 ;
 
-CREATE TABLE public.historico_tasa 
+CREATE TABLE public.historico_tasa
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_historico_tasa'::regclass),
      numero_cambio numeric NOT NULL,
@@ -872,12 +887,14 @@ CREATE SEQUENCE public.secuencia_tipo_pago_divisa
      cycle
 ;
 
-CREATE TABLE public.tipo_pago_divisa  
+CREATE TABLE public.tipo_pago_divisa
 (
      codigo numeric NOT NULL DEFAULT nextval('secuencia_tipo_pago_divisa'::regclass),
      banco varchar(15),
      tipo varchar(10) NOT NULL,
      fk_historico_tasa numeric NOT NULL,
+     fk_cliente varchar,
+     CONSTRAINT fk_fk_cliente_tipo_pago_credito FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
      CONSTRAINT pk_codigo_tipo_pago_divisa PRIMARY KEY(codigo),
      CONSTRAINT fk_fk_historico_tasa_tipo_pago_divisa FOREIGN KEY (fk_historico_tasa) REFERENCES historico_tasa(clave)
 );
@@ -907,12 +924,14 @@ CREATE SEQUENCE public.secuencia_tipo_pago_puntos
      cycle
 ;
 
-CREATE TABLE public.tipo_pago_puntos  
+CREATE TABLE public.tipo_pago_puntos
 (
      codigo numeric NOT NULL DEFAULT nextval('secuencia_tipo_pago_puntos'::regclass),
      banco varchar(15),
      tipo varchar(10) NOT NULL,
      fk_historico_valor_puntos numeric NOT NULL,
+     fk_cliente varchar,
+     CONSTRAINT fk_fk_cliente_tipo_pago_credito FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
      CONSTRAINT pk_codigo_tipo_pago_puntos PRIMARY KEY (codigo),
      CONSTRAINT fk_fk_historico_valor_puntos_tipo_pago_puntos FOREIGN KEY (fk_historico_valor_puntos) REFERENCES historico_valor_puntos(clave)
 );
@@ -925,7 +944,7 @@ CREATE SEQUENCE public.secuencia_cuota_afiliacion
      cycle
 ;
 
-CREATE TABLE public.cuota_afiliacion  
+CREATE TABLE public.cuota_afiliacion
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_cuota_afiliacion'::regclass),
      inversion numeric NOT NULL,
@@ -942,7 +961,7 @@ CREATE SEQUENCE public.secuencia_pago
      cycle
 ;
 
-CREATE TABLE public.pago 
+CREATE TABLE public.pago
 (
      codigo numeric NOT NULL DEFAULT nextval('secuencia_pago'::regclass),
      monto numeric NOT NULL,
@@ -994,7 +1013,7 @@ CREATE SEQUENCE public.secuencia_descuento
 ;
 
 CREATE TABLE public.descuento   --Cambie fecha, a fecha_inicio, deberiamos colocar un atributo que sea porcentaje, que sea el porcentaje de descuento, y registrar con precio o porcentaje
-(                              
+(
      clave numeric NOT NULL DEFAULT nextval('secuencia_descuento'::regclass),
      fecha_inicio date NOT NULL,
      precio numeric NOT NULL,

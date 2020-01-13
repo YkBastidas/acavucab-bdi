@@ -114,9 +114,12 @@ router.get('/read/usuarioPorNombre', db.getUsuarioPorNombre) // GET USER BY NAME
 router.get('/read/tiendaFisica', db.getTiendaFisica) // GET REAL SHOP DATA
 router.get('/read/userInfo', db.getUserInfo) //GET USER INFO IF AUTHENTICATED
 router.get('/read/telefonosPorCliente', db.getTelefonosPorCliente) //GET CLIENT'S TEL NUMBERS
+router.get('/read/telefonosPorPersonal', db.getTelefonosPorPersonal) //GET PERSONAL'S TEL NUMBERS
 router.get('/read/emailsPorCliente', db.getEmailsPorCliente) //GET CLIENT'S EMAILS
 router.get('/read/contactosPorCliente', db.getContactosPorCliente) //GET CLIENT'S EMAILS
-router.get('/read/usuarioPorID', db.getUsuarioPorID) //GER USER BY ID
+router.get('/read/usuarioPorID', db.getUsuarioPorID) //GET USER BY ID
+router.get('/read/personalPorUserID', db.getPersonalPorUserID) //GET PERSONAL BY USER ID
+router.get('/read/rolPorID', db.getRolPorUserID) //GET USER ROLE BY IT'S ID
 
 router.post('/create/usuario', db.postUsuario) //CREATE NEW USER
 router.post('/create/registro', db.postRegistro) // CREATE NEW CLIENT

@@ -29,7 +29,7 @@ class EmailComp extends Component{
 class Contact extends Component{
   render(){
     return(
-      <h5><strong> {'Contacto '+this.props.i+": "+ this.props.nameContact + ' ('+this.props.numberContact+')'} </strong></h5>
+      <h5><strong> {'Contacto '+this.props.i+": "+ this.props.nameContact + ' - '+this.props.numberContact+''} </strong></h5>
     )
   }
 }
@@ -75,11 +75,11 @@ class CompanyClient extends Component{
           <h5><strong>Puntos acumulados: </strong></h5>
         </div>
         <div className="col-4">
-          <a class="btn btn-outline-dark btn-lg btn-block" href="/pedidos" role="button">Pedidos</a>
-          <a class="btn btn-outline-dark btn-lg btn-block" href="/seguridad" role="button">Seguridad</a>
-          <a class="btn btn-outline-dark btn-lg btn-block" href="/metodopago" role="button">Metodos de Pago</a>
-          <a class="btn btn-outline-dark btn-lg btn-block" href="/direccion" role="button">Direccion</a>
-          <a class="btn btn-outline-dark btn-lg btn-block" href="/carnet" role="button">Carnet de Afiliacion</a>
+          <a className="btn btn-outline-dark btn-lg btn-block" href="/pedidos" role="button">Pedidos</a>
+          <a className="btn btn-outline-dark btn-lg btn-block" href="/seguridad" role="button">Seguridad</a>
+          <a className="btn btn-outline-dark btn-lg btn-block" href="/metodopago" role="button">Metodos de Pago</a>
+          <a className="btn btn-outline-dark btn-lg btn-block" href="/direccion" role="button">Direccion</a>
+          <a className="btn btn-outline-dark btn-lg btn-block" href="/carnet" role="button">Carnet de Afiliacion</a>
         </div>
       </section>
     )

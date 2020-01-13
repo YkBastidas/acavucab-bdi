@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import NaturalClient from '../components/NaturalClient'
 import CompanyClient from '../components/CompanyClient'
+import PersonalAccount from '../components/PersonalAccount'
 import Banner from '../components/Banner.jsx'
 import Footer from '../components/Footer.jsx'
 import axios from 'axios'
@@ -9,6 +10,20 @@ import axios from 'axios'
 function foundTelefonos(foreignCliente){
   return axios.get('/read/telefonosPorCliente', {
           params:{foreignKey: foreignCliente}
+        }).then((response)=> {
+          let index, numbersArray =[]
+          for (index = 0; index < response.data.length; index++) {
+            numbersArray.push(response.data[index])
+          }
+          return numbersArray
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          return 'error'
+        })
+}
+function foundTelefonosPersonal(foreignPersonal){
+  return axios.get('/read/telefonosPorPersonal', {
+          params:{foreignKey: foreignPersonal}
         }).then((response)=> {
           let index, numbersArray =[]
           for (index = 0; index < response.data.length; index++) {
@@ -51,8 +66,8 @@ function foundContacts(foreignCliente){
           return 'error'
         })
 }
-function recursiveDirecciones(foreignCliente){
-  return axios.get('/read/direccionPorClave',{params:{clave: foreignCliente}})
+function recursiveDirecciones(foreignDireccion){
+  return axios.get('/read/direccionPorClave',{params:{clave: foreignDireccion}})
   .then(async(response)=>{
     if(response.data[0].tipo !== 'Estado'){
       let direccionPadre = await recursiveDirecciones(response.data[0].fk_direccion)
@@ -63,7 +78,6 @@ function recursiveDirecciones(foreignCliente){
       return response.data
   })
   .then((response)=>{
-
       return response
   })
   .catch(function (error){
@@ -72,14 +86,38 @@ function recursiveDirecciones(foreignCliente){
       return false
   })
 }
+function personalPorUser(idUsuario){
+  return axios.get('/read/personalPorUserID',{
+    params: {
+      fk_usuario : idUsuario
+    }})
+  .then((res)=>{
+    return res
+  })
+  .catch(function (error){//handle error
+    console.log('axios'); console.log(error)
+  })
+}
+function rolPorID(idRol){
+  return axios.get('/read/rolPorID',{
+    params: {
+      fk_rol : idRol
+    }})
+  .then((res)=>{
+    return res.data[0]
+  })
+  .catch(function (error){//handle error
+    console.log('axios'); console.log(error)
+  })
+}
 
 require('events').EventEmitter.prototype._maxListeners = 100;
-var logged = false
+var logged = false, noRender= true
 class MiCuenta extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userData: {id: '', nombre: '', contrasena: ''},
+      userData: {id: '', nombre: '', contrasena: '', fk_rol:''},
       NaturalData: {
         rif: "", ci: "", name: "", lastName: "", gender: "",
         Emails: {email1:""}, bornDate: "",
@@ -96,8 +134,15 @@ class MiCuenta extends Component {
         MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",
                         mainBuilding:"", mainFloor:"", mainOffice:"", mainApartment:""}
       },
+      PersonalData: {
+        nombre: "", apellido: "", ci:"", salario:"", cargo:"", genero:"",
+        telephone1:"", telephone2:"", telephone3:"", rol:"",
+        MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",
+                      mainBuilding:"", mainFloor:"", mainOffice:"", mainApartment:""}
+      },
       isLoggedIn:false,
 			naturalClient: true,
+      personal: false,
     }
     this.isLoggedIn = this.isLoggedIn.bind(this)
   }
@@ -113,6 +158,7 @@ class MiCuenta extends Component {
       console.log('Callback Axios con Data del Usuario')
       console.log(res.data)
       this.setState({userData: res.data, isLoggedIn:true})
+      console.log(this.state)
       return this.state.userData.id
     })
     .then((res)=>{
@@ -120,14 +166,31 @@ class MiCuenta extends Component {
         params: {
           fk_usuario : res
         }})
-			.then((res)=>{return res})
+			.then(async (res)=>{
+        if(res.data.length>0) return res
+        else {
+          this.setState({personal: true})
+          return await personalPorUser(this.state.userData.id)
+        }
+      })
 			.catch(function (error){//handle error
 				console.log('axios'); console.log(error)
 			})
     })
-		.then((res)=>{
+		.then(async(res)=>{
 			let data = res.data[0]
-			if(data.tipo === 'Natural'){
+      if(this.state.personal === true){
+        let rol = await rolPorID(this.state.userData.fk_rol)
+        this.setState(prevState => ({
+          PersonalData: {
+            ...prevState.PersonalData,
+            nombre: data.nombre, apellido: data.apellido, ci:data.ci, salario:data.salario,
+            cargo:data.cargo, genero:data.genero, rol: rol.nombre
+          },
+          isLoggedIn:true
+        }))
+      }
+			else if(data.tipo === 'Natural'){
         this.setState(prevState => ({
           NaturalData: {
             ...prevState.NaturalData,
@@ -148,7 +211,11 @@ class MiCuenta extends Component {
       return data
 		})
     .then(async(res)=>{
-      let arrayNumbers = await foundTelefonos(res.rif)
+      let personalState = this.state.personal, arrayNumbers
+      if(personalState === true) {
+        arrayNumbers = await foundTelefonosPersonal(res.clave)
+      }
+      else arrayNumbers = await foundTelefonos(res.rif)
       if (res.tipo === 'Natural'){
         for (let index = 0; index < arrayNumbers.length; index++) {
           let name
@@ -177,90 +244,105 @@ class MiCuenta extends Component {
       else{
         for (let index = 0; index < arrayNumbers.length; index++) {
           let name = 'telephone'+[index+1], number = arrayNumbers[index].numero
-          console.log(name, number)
-          this.setState(prevState => ({
-            CompanyData: {
-              ...prevState.CompanyData,
-              [name] : number
-            }
-          }))
+          if(personalState === true){
+            this.setState(prevState => ({
+              PersonalData: {
+                ...prevState.PersonalData,
+                [name] : number
+              }
+            }))
+          }
+          else{
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                [name] : number
+              }
+            }))
+          }
         }
       }
-      let arrayEmails = await foundEmails(res.rif)
-      for (let index = 0; index < arrayEmails.length; index++) {
-        let name = 'email'+[index+1], direccion = arrayEmails[index].direccion
-        if(res.tipo === 'Natural'){
-          this.setState(prevState => ({
-            NaturalData: {
-              ...prevState.NaturalData,
-              Emails:{
-                ...prevState.NaturalData.Emails,
-                [name] : direccion
-              }
-            }
-          }))
-        }
-        else{
-          this.setState(prevState => ({
-            CompanyData: {
-              ...prevState.CompanyData,
-              Emails:{
-                ...prevState.CompanyData.Emails,
-                [name] : direccion
-              }
-            }
-          }))
-        }
-
-      }
-      if(res.tipo === 'Juridico'){
-        let ContactsData = await foundContacts(res.rif)
-        let arrayNameContact = ContactsData[0], arrayNumberContact = ContactsData[1]
-        for (let index = 0; index < arrayNameContact.length; index++) {
-          let name = 'contact'+[index+1], nombre = arrayNameContact[index]
-          this.setState(prevState => ({
-            CompanyData: {
-              ...prevState.CompanyData,
-              ContactPerson:{
-                ...prevState.CompanyData.ContactPerson,
-                [name] : {
-                  ...prevState.CompanyData.ContactPerson[name],
-                  nameContact : nombre
-                }
-              }
-            }
-          }))
-        }
-        for (let index = 0; index < arrayNumberContact.length; index++) {
-          let name = 'contact'+[index+1], numero = arrayNumberContact[index]
-          this.setState(prevState => ({
-            CompanyData: {
-              ...prevState.CompanyData,
-              ContactPerson:{
-                ...prevState.CompanyData.ContactPerson,
-                [name] : {
-                  ...prevState.CompanyData.ContactPerson[name],
-                  numberContact: numero
-                  }
-              }
-            }
-          }))
-          console.log(this.state.CompanyData)
-        }
-      }
-      if (res.tipo === 'Natural'){
-        let direccionPrincipal = await recursiveDirecciones(res.fk_direccion_fisica)
-        return [direccionPrincipal, 'Natural']
+      if(personalState === true){
+        let direccionPrincipal = await recursiveDirecciones(res.fk_direccion)
+        return [direccionPrincipal, 'Personal']
       }
       else{
-        let direccionPrincipal = await recursiveDirecciones(res.fk_direccion_fisica)
-        let direccionFiscal = await recursiveDirecciones(res.juridico_fk_direccion_fiscal)
-        return [direccionPrincipal, direccionFiscal]
+        let arrayEmails = await foundEmails(res.rif)
+        for (let index = 0; index < arrayEmails.length; index++) {
+          let name = 'email'+[index+1], direccion = arrayEmails[index].direccion
+          if(res.tipo === 'Natural'){
+            this.setState(prevState => ({
+              NaturalData: {
+                ...prevState.NaturalData,
+                Emails:{
+                  ...prevState.NaturalData.Emails,
+                  [name] : direccion
+                }
+              }
+            }))
+          }
+          else{
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                Emails:{
+                  ...prevState.CompanyData.Emails,
+                  [name] : direccion
+                }
+              }
+            }))
+          }
+        }
+        if(res.tipo === 'Juridico'){
+          let ContactsData = await foundContacts(res.rif)
+          let arrayNameContact = ContactsData[0], arrayNumberContact = ContactsData[1]
+          for (let index = 0; index < arrayNameContact.length; index++) {
+            let name = 'contact'+[index+1], nombre = arrayNameContact[index]
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                ContactPerson:{
+                  ...prevState.CompanyData.ContactPerson,
+                  [name] : {
+                    ...prevState.CompanyData.ContactPerson[name],
+                    nameContact : nombre
+                  }
+                }
+              }
+            }))
+          }
+          for (let index = 0; index < arrayNumberContact.length; index++) {
+            let name = 'contact'+[index+1], numero = arrayNumberContact[index]
+            this.setState(prevState => ({
+              CompanyData: {
+                ...prevState.CompanyData,
+                ContactPerson:{
+                  ...prevState.CompanyData.ContactPerson,
+                  [name] : {
+                    ...prevState.CompanyData.ContactPerson[name],
+                    numberContact: numero
+                    }
+                }
+              }
+            }))
+            console.log(this.state.CompanyData)
+          }
+        }
+        if (res.tipo === 'Natural'){
+          let direccionPrincipal = await recursiveDirecciones(res.fk_direccion_fisica)
+          return [direccionPrincipal, 'Natural']
+        }
+        else{
+          let direccionPrincipal = await recursiveDirecciones(res.fk_direccion_fisica)
+          let direccionFiscal = await recursiveDirecciones(res.juridico_fk_direccion_fiscal)
+          return [direccionPrincipal, direccionFiscal]
+        }
       }
     })
     .then((res)=>{
       let direccionPrincipal = res[0], nameData
-      if (res[1] === 'Natural') nameData = 'NaturalData'
+      if(res[1]=== 'Personal') nameData = 'PersonalData'
+      else if (res[1] === 'Natural') nameData = 'NaturalData'
       else{
         nameData = 'CompanyData'
         let direccionFiscal = res[1]
@@ -486,14 +568,14 @@ class MiCuenta extends Component {
       }
     })
     .finally(()=>{
-      if(logged === false) {this.isLoggedIn(); console.log('No ha iniciado sesión')}
+      if(logged === false) {noRender=false; this.isLoggedIn(); console.log('No ha iniciado sesión'); }
       else (console.log('Inicio de sesión exitoso'))
     })
   }
   isLoggedIn() { this.setState({isLoggedIn:false}) }
 
   render() {
-    if (this.state.isLoggedIn){
+    if (this.state.isLoggedIn && noRender === true){
       return (<div>
         <header>
           <div className="container">
@@ -503,9 +585,11 @@ class MiCuenta extends Component {
         <br/>
         <div className="container">
   				{
-  					this.state.naturalClient
-  					? <NaturalClient userData = {this.state.userData} NaturalData = {this.state.NaturalData}/>
-            : <CompanyClient userData = {this.state.userData} CompanyData = {this.state.CompanyData}/>
+            this.state.personal
+            ? <PersonalAccount userData = {this.state.userData} PersonalData = {this.state.PersonalData}/>
+  					: this.state.naturalClient
+              ? <NaturalClient userData = {this.state.userData} NaturalData = {this.state.NaturalData}/>
+              : <CompanyClient userData = {this.state.userData} CompanyData = {this.state.CompanyData}/>
   				}
         </div>
         <br/>
@@ -514,13 +598,17 @@ class MiCuenta extends Component {
         </div>
       </div>);
     }
-    else {
-      return (
-        <div></div>
-      );
+    else if (noRender === false){
+      setTimeout(function(){
+        window.location = "/iniciosesion"
+      }, 2000);
+      return(
+        <div> <h2> La página no existe, será redirigido en breve </h2> </div>
+      )
     }
-
+    else{
+      return(<div></div>)
+    }
   }
 }
-
 export default MiCuenta

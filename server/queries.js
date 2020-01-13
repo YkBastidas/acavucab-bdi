@@ -129,6 +129,16 @@ const getTelefonosPorCliente= (request, response ) => {
     response.status(200).json(results.rows)
   })
 }
+const getTelefonosPorPersonal= (request, response ) => {
+  let values = [request.query.foreignKey]
+  const query = "SELECT numero FROM telefono WHERE fk_personal = $1"
+  pool.query(query, values, (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
 const getEmailsPorCliente= (request, response ) => {
   let values = [request.query.foreignKey]
   const query = "SELECT direccion FROM correo_electronico WHERE fk_cliente = $1"
@@ -152,6 +162,26 @@ const getContactosPorCliente= (request, response ) => {
 const getUsuarioPorID= (request, response ) => {
   let values = [request.query.primaryKey]
   const query = "SELECT * FROM usuario WHERE id = $1"
+  pool.query(query, values, (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+const getPersonalPorUserID=(request, response) =>{
+  let values = [request.query.fk_usuario]
+  const query = "SELECT * FROM personal WHERE fk_usuario = $1"
+  pool.query(query, values, (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+const getRolPorUserID=(request, response) =>{
+  let values = [request.query.fk_rol]
+  const query = "SELECT nombre FROM rol WHERE clave = $1"
   pool.query(query, values, (error, results) => {
     if (error) {
       throw error
@@ -751,9 +781,12 @@ module.exports = {
   getTiendaFisica,
 	getUserInfo,
   getTelefonosPorCliente,
+  getTelefonosPorPersonal,
   getEmailsPorCliente,
   getContactosPorCliente,
   getUsuarioPorID,
+  getPersonalPorUserID,
+  getRolPorUserID,
   getLogout,
 /*
 	getEmpleados,
