@@ -24,7 +24,7 @@ function setCity(direccion, state){
     Object.values(direccion).map((direccion) =>
       {
         if((direccion.fk_direccion === primary_key) && (direccion.tipo === 'Ciudad'))
-          return <option value={direccion.nombre}>{direccion.nombre}</option>
+          return <option key={direccion.clave} value={direccion.nombre}>{direccion.nombre}</option>
         else{
           return ("");
         }
@@ -51,7 +51,7 @@ function setMunicipality(direccion, state){
     Object.values(direccion).map((direccion) =>
       {
         if((direccion.fk_direccion === primary_key) && (direccion.tipo === 'Municipio'))
-          return <option value={direccion.nombre}>{direccion.nombre}</option>
+          return <option key={direccion.clave} value={direccion.nombre}>{direccion.nombre}</option>
         else{
           return ("");
         }
@@ -78,7 +78,6 @@ function setParish(direccion, state, municipality){
     if((municipality !== "") && (state !== "")){
       if ((direccion[i].nombre === municipality) && (direccion[i].fk_direccion === state_primary_key) && (direccion[i].tipo === 'Municipio')){
         primary_key = direccion[i].clave
-        console.log(primary_key)
         break;
       }
       else
@@ -91,7 +90,7 @@ function setParish(direccion, state, municipality){
     Object.values(direccion).map((direccion) =>
       {
         if((direccion.fk_direccion === primary_key) && (direccion.tipo === 'Parroquia'))
-          return <option value={direccion.nombre}>{direccion.nombre}</option>
+          return <option key={direccion.clave} value={direccion.nombre}>{direccion.nombre}</option>
         else{
           return ("");
         }
@@ -145,6 +144,16 @@ class SignUpCompany extends Component{
         <div className="col-6 text-center bg-success text-white rounded-pill margin-bottom">
           <h2> Persona Jurídica </h2>
         </div>
+        { this.props.employee
+          ?<div className="col-6 text-center bg-secondary text-dark rounded-pill margin-bottom">
+            <h4>
+              <button className="btn btn-link" onClick={this.props.onClickEmployee}>
+                Personal
+              </button>
+            </h4>
+          </div>
+          : ""
+        }
         <div className="col-12 margin-top">
           <form onSubmit={this.props.handleSubmit} className="needs-validation formulary">
             <h4 className="text-center"> Datos de la Empresa </h4>

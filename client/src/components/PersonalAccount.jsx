@@ -1,5 +1,30 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
+import ReactDOM from 'react-dom'
+
+import SignUpContainer from '../containers/SignUpContainer'
+import Button from './Button'
+
+function ventanaCrearUsuario(){
+  return(
+    <section className="row">
+      <div className="col-12">
+        <SignUpContainer.WrappedComponent personal={true}/>
+      </div>
+    </section>
+  )
+}
+
+function renderOption(id){
+  let elementHTML = document.getElementById('optionSelected')
+  switch(id){
+    case('createUserButton'):
+      ReactDOM.render(ventanaCrearUsuario(), elementHTML);
+      break
+    default:
+      elementHTML.innerHTML = 'No encontró la opción'
+  }
+}
 
 class PersonalAccount extends Component{
   render(){
@@ -32,14 +57,30 @@ class PersonalAccount extends Component{
             }
           <h5><strong>Puntos acumulados: </strong></h5>
         </div>
-        <div className="col-4">
-          OPCIONES ROL : {this.props.PersonalData.rol}
-          <a className="btn btn-outline-dark btn-lg btn-block" href="/pedidos" role="button">Pedidos</a>
-          <a className="btn btn-outline-dark btn-lg btn-block" href="/seguridad" role="button">Seguridad</a>
-          <a className="btn btn-outline-dark btn-lg btn-block" href="/metodopago" role="button">Metodos de Pago</a>
-          <a className="btn btn-outline-dark btn-lg btn-block" href="/direccion" role="button">Direccion</a>
-          <a className="btn btn-outline-dark btn-lg btn-block" href="/carnet" role="button">Carnet de Afiliacion</a>
+        <div className="w-100"></div>
+        <div className="col-12 mb-3">
+          <h5> <strong> OPCIONES ROL : {this.props.PersonalData.rol} </strong></h5>
+          <div className="row">
+            <div className ="col-3">
+              <Button id="createUserButton" title="Crear Usuario" type="options" action={(event)=>{
+                  event.preventDefault(); renderOption('createUserButton')}} buttonStyle={{width:"100%"}}/>
+            </div>
+            <div className ="col-3">
+              <a className="btn btn-outline-dark btn-lg btn-block" href="/metodopago" role="button">Metodos de Pago</a>
+            </div>
+            <div className ="col-3">
+              <a className="btn btn-outline-dark btn-lg btn-block" href="/direccion" role="button">Direccion</a>
+            </div>
+            <div className ="col-3">
+              <a className="btn btn-outline-dark btn-lg btn-block" href="/carnet" role="button">Carnet de Afiliacion</a>
+            </div>
+          </div>
         </div>
+      <div className="col-12">
+        <div id="optionSelected">
+
+        </div>
+      </div>
       </section>
     )
   }

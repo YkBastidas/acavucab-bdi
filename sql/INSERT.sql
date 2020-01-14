@@ -1,4 +1,4 @@
-INSERT INTO public.direccion (tipo, nombre) VALUES
+﻿INSERT INTO public.direccion (tipo, nombre) VALUES
 ('Estado', 'Amazonas'),
 ('Estado', 'Anzoátegui'),
 ('Estado', 'Apure'),
@@ -2019,6 +2019,10 @@ INSERT INTO public.direccion (fk_direccion, tipo, nombre) VALUES
 (2009, 'Edificio', 'Valparaiso'),
 (2010, 'Piso', '16'),
 (2011, 'Apartamento', '1604');
+(1976, 'Avenida', 'Teherán Urb Montalban'),
+(2014, 'Edificio', 'Laboratorios'),
+(2010, 'Piso', '2'),
+(2011, 'Oficina', 'INF001');
 
 INSERT INTO public.rol(nombre) VALUES
 ('Jefe de pasillo'),
@@ -2038,6 +2042,7 @@ INSERT INTO public.usuario (nombre,contrasena, fk_rol) VALUES
 ('gPromo1', 'Personal1!', 3),
 ('cajero1', 'Personal1!', 8),
 ('rh1', 'Personal1!', 9);
+
 
 INSERT INTO public.usuario (nombre,contrasena) VALUES
 ('JhonDoe18', 'Cliente1!'),

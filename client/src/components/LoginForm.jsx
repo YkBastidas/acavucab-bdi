@@ -35,7 +35,7 @@ class LoginForm extends Component{
             </div>
             <div className="form-row">
               <div className="col-md-6 mb-3">
-                <Button action={this.props.handleSubmit} type={"primary"} title={"Crear Cuenta"}
+                <Button action={this.props.handleSubmit} type={"primary"} title={"Iniciar Sesión"}
                   buttonStyle={{ width: "100%" }}/>
               </div>
               <div className="col-md-6 mb-3">

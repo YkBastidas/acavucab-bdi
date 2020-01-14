@@ -5,7 +5,16 @@ import axios from 'axios';
 
 import SignUpPersonal from '../components/SignUpPersonal';
 import SignUpCompany from '../components/SignUpCompany';
+import SignUpEmployee from '../components/SignUpEmployee'
 
+
+function getRoles(){
+  return axios.get('/read/roles')
+    .then((response) =>{
+      return response
+    })
+    .catch((error)=>{console.log(error)})
+}
 function calculateAge(date) {
 
   var today = new Date();
@@ -28,7 +37,11 @@ function formatPhoneNumber(phoneNumberString) {
 }
 function validate(user) {
   var rif, email, password, passwordEx, emailEx, namesEx, webPageEx, moneyEx,
-  telephoneEx, numbersEx, namesAndNumbersEx;
+  telephoneEx, numbersEx, namesAndNumbersEx,
+  ci = document.getElementById('ci').value,name = document.getElementById('name').value, lastName = document.getElementById('lastName').value, userName= document.getElementById('userName').value, gender = document.getElementById('gender').value, homeState = document.getElementById('homeState').value,
+  homeCity = document.getElementById('homeCity').value, homeMunicipality= document.getElementById('homeMunicipality').value, homeParish = document.getElementById('homeParish').value,
+  homeAvenue = document.getElementById('homeAvenue').value, homeBuilding = document.getElementById('homeBuilding').value, homeFloor = document.getElementById('homeFloor').value,
+  homeOffice = document.getElementById('homeOffice').value, homeApartment = document.getElementById('homeApartment').value;
 
   passwordEx = /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,20}$/
   emailEx = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
@@ -42,26 +55,11 @@ function validate(user) {
   if (user === "personal"){
     rif = document.getElementById('rif').value;
     email = document.getElementById('email').value;
-    password = document.getElementById('password').value;
-
-    var ci = document.getElementById('ci').value,
-    name = document.getElementById('name').value,
-    lastName = document.getElementById('lastName').value,
-    userName= document.getElementById('userName').value,
-    gender = document.getElementById('gender').value,
-    bornDate = document.getElementById('bornDate').value,
-    homeState = document.getElementById('homeState').value,
-    homeCity = document.getElementById('homeCity').value,
-    homeMunicipality= document.getElementById('homeMunicipality').value,
-    homeParish = document.getElementById('homeParish').value,
-    homeAvenue = document.getElementById('homeAvenue').value,
-    homeBuilding = document.getElementById('homeBuilding').value,
-    homeFloor = document.getElementById('homeFloor').value,
-    homeOffice = document.getElementById('homeOffice').value,
-    homeApartment = document.getElementById('homeApartment').value,
+    password = document.getElementById('password').value
+    var bornDate = document.getElementById('bornDate').value,
     telephone = document.getElementById('telephoneNumber').value,
     cellphone = document.getElementById('cellphoneNumber').value,
-    officePhone = document.getElementById('officeNumber').value;
+    officePhone = document.getElementById('officeNumber').value
 
     if (rif === "" || ci === "" || name === "" || lastName === "" || email === ""
     || password === "" || telephone === "" || homeState === "" || homeCity === ""
@@ -103,7 +101,7 @@ function validate(user) {
         return true;
     return false;
   }
-  else{
+  else if (user === "company"){
     rif = document.getElementById('rif').value;
     email = document.getElementById('email').value;
     password = document.getElementById('password').value;
@@ -192,6 +190,42 @@ function validate(user) {
         return true;
     return false;
   }
+  else {
+    password = document.getElementById('password').value;
+    var telephonePersonal = document.getElementById('telephone1').value,
+    salario = document.getElementById('salario').value,
+    cargo = document.getElementById('cargo').value,
+    rol = document.getElementById('rol').value;
+    if (ci === "" || name === "" || lastName === "" || password === "" || telephonePersonal === "" || gender === "" || userName === "" || salario==="" || cargo ==="" || rol === "" || homeState === "" || homeCity === "" || homeMunicipality === "" || homeParish === "") {
+      alert("Por favor, rellene todos los campos obligatorios ('*')");
+    } else if (!numbersEx.test(ci)){
+        alert("Documento de Identidad inválido")
+    } else if (!namesEx.test(name)) {
+        alert("El nombre es inválido");
+    } else if (!namesEx.test(lastName)) {
+        alert("El apellido es inválido");
+    } else if (!namesAndNumbersEx.test(userName)) {
+        alert("Nombre de usuario inválido");
+    } else if (!passwordEx.test(password)) {
+        alert("La contraseña es inválida");
+    } else if (!telephoneEx.test(telephonePersonal)) {
+        alert("Teléfono principal inválido");
+    } else if (!moneyEx.test(salario)) {
+        alert("El monto del salario es inválido");
+    } else if ((homeAvenue !== "") && (!namesAndNumbersEx.test(homeAvenue))) {
+        alert("La avenida es inválida");
+    } else if ((homeBuilding !== "") && (!namesAndNumbersEx.test(homeBuilding))) {
+        alert("El edificio es inválido");
+    } else if ((homeFloor !== "") && (!namesAndNumbersEx.test(homeFloor))) {
+        alert("El piso es inválido");
+    } else if ((homeOffice !== "") && (!namesAndNumbersEx.test(homeOffice))) {
+        alert("La oficina es inválida");
+    } else if ((homeApartment !== "") && (!namesAndNumbersEx.test(homeApartment))) {
+        alert("El apartamento es inválido");
+    } else
+        return true;
+    return false;
+  }
 }
 
 function validarCedula(cedula){
@@ -200,7 +234,6 @@ function validarCedula(cedula){
       clave : cedula
     }}
   ).then((response) => {
-    console.log(response)
     if(response.data.length>0) return true
     else return false
   })
@@ -211,7 +244,6 @@ function validarUsuario(userName){
       nombre : userName
     }}
   ).then((response) => {
-      console.log(response.data)
       if(response.data.length > 0) return true
       else return false
   }).catch(function (error) {
@@ -222,9 +254,9 @@ function validarUsuario(userName){
 function crearUsuario(data){
   return axios.post('/create/usuario', {
           nombre: data.userName,
-          contrasena: data.password
+          contrasena: data.password,
+          rol: data.rolId
         }).then((response)=> {
-          console.log(response.data[0].id)
           return response.data[0].id
         }).catch(function (error) {
           console.log('AXIOS error: '+ error);
@@ -256,7 +288,6 @@ function foundDirecciones(arrayDireccion, arrayType){
   });
 }
 function recursiveCrear(data, arrayType, arrayDireccion, i,foreign){
-  console.log(arrayType[i], arrayDireccion[i],arrayDireccion, i, foreign)
     return axios.get('/read/direccionPorNombreTipoFK',{
       params: {
         nombre: arrayDireccion[i],
@@ -265,19 +296,16 @@ function recursiveCrear(data, arrayType, arrayDireccion, i,foreign){
       }
     }).then((response)=>{
       if((response.data.length>0)&&(i < arrayDireccion.length)){
-        console.log('Existe')
         if(response.data[0].tipo !== 'Ciudad') foreign = response.data[0].clave
         return recursiveCrear(data,arrayType,arrayDireccion, i+1, foreign)
       }
       else if ((i < arrayDireccion.length)){
-        console.log('No existe')
         return axios.post('/create/direccion',{
           tipo : arrayType[i],
           nombre: arrayDireccion[i],
           fk_direccion: foreign
         })
         .then((response)=>{
-          console.log(response)
           foreign=response.data[0].clave
           return recursiveCrear(data,arrayType,arrayDireccion, i+1, foreign)
         }).catch(function (error) {
@@ -287,7 +315,6 @@ function recursiveCrear(data, arrayType, arrayDireccion, i,foreign){
         })
       }
       else {
-        console.log("FINAL: "+foreign)
         return foreign
       }
     }).catch(function (error) {
@@ -348,7 +375,7 @@ function crearTelefono(numero, rif){
           telefono: numero,
           foreignKey: rif
         }).then((response)=> {
-          return response.data[0].id
+          return response.data[0].clave
         }).catch(function (error) {
           console.log('AXIOS error: '+ error);
           return 'error'
@@ -361,7 +388,6 @@ function validarRazonSocial(razonSocial){
       razon_social : razonSocial
     }}
   ).then((response) => {
-    console.log(response)
     if(response.data.length>0) return true
     else return false
   }).catch(function (error){
@@ -382,32 +408,103 @@ function crearContactPerson(contactData, rif){
         })
 }
 
+function validarCedulaEmpleado(cedula){
+  return axios.get('/read/empleadoPorCedula', {
+    params: {
+      clave : cedula
+    }}
+  ).then((response) => {
+    if(response.data.length>0) return true
+    else return false
+  })
+}
+function crearEmpleado(userData, foreign, idUsuario){
+  return axios.post('/create/registroEmpleado', {
+          nombre: userData.name,
+          apellido: userData.lastName,
+          ci: userData.ci,
+          salario: userData.salario,
+          cargo: userData.cargo,
+          genero: userData.gender,
+          fk_usuario: idUsuario,
+          fk_direccion: foreign
+        }).then((response)=> { // handle success
+          return response.data[0].clave
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          return "error"
+        })
+}
+function crearTelefonoPersonal(numero, rif){
+  return axios.post('/create/telefonoPersonal', {
+          telefono: numero,
+          foreignKey: rif
+        }).then((response)=> {
+          return response.data[0].clave
+        }).catch(function (error) {
+          console.log('AXIOS error: '+ error);
+          return 'error'
+        })
+}
+
 axios.defaults.withCredentials = true;
 
 class SignUpContainer extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      personalVisible: true,
-      PersonalData: {
-        rif: "", ci: "", name: "", lastName: "", userName: "", gender: "",
-        email: "",  password: "", bornDate: "",
-        HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
-                      homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""},
-        telephoneNumber: "", cellphoneNumber: "", officeNumber: ""
-      },
-      CompanyData: {
-        rif: "", comercialDesignation: "", businessName: "",
-        username: "", password: "", email: "", webPage: "", capital: "",
-        telephone1: "", telephone2: "", telephone3: "",  ContactPerson:{ nameContact: "", numberContact: "" },
-        FiscalAddress: {state:"", city:"", municipality:"", parish:"", fiscalAvenue:"",
-                        fiscalBuilding:"", fiscalFloor:"", fiscalOffice:"", fiscalApartment:""},
-        MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",
-                        mainBuilding:"", mainFloor:"", mainOffice:"", mainApartment:""}
+    if (this.props.personal){
+      this.state = {
+        personalVisible: true, employeeVisible: false,
+        PersonalData: {
+          rif: "", ci: "", name: "", lastName: "", userName: "", gender: "",
+          email: "",  password: "", bornDate: "",
+          HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
+                        homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""},
+          telephoneNumber: "", cellphoneNumber: "", officeNumber: "", rolId: "10"
+        },
+        CompanyData: {
+          rif: "", comercialDesignation: "", businessName: "",
+          username: "", password: "", email: "", webPage: "", capital: "", rolId:"10",
+          telephone1: "", telephone2: "", telephone3: "", ContactPerson:{ nameContact: "", numberContact: "" },
+          FiscalAddress: {state:"", city:"", municipality:"", parish:"", fiscalAvenue:"",
+                          fiscalBuilding:"", fiscalFloor:"", fiscalOffice:"", fiscalApartment:""},
+          MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",
+                          mainBuilding:"", mainFloor:"", mainOffice:"", mainApartment:""}
+        },
+        EmployeeData: {
+          ci: "", name: "", lastName: "", userName: "", gender: "",
+          password: "", telephone1: "", cargo:"", salario:"", rol:"", rolId:"",
+          HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
+                        homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""}
+        }
       }
-    };
+    }
+    else{
+      this.state = {
+        personalVisible: true, employeeVisible: false,
+        PersonalData: {
+          rif: "", ci: "", name: "", lastName: "", userName: "", gender: "",
+          email: "",  password: "", bornDate: "",
+          HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
+                        homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""},
+          telephoneNumber: "", cellphoneNumber: "", officeNumber: "", rol: "10"
+        },
+        CompanyData: {
+          rif: "", comercialDesignation: "", businessName: "",
+          username: "", password: "", email: "", webPage: "", capital: "", rol:"10",
+          telephone1: "", telephone2: "", telephone3: "", ContactPerson:{ nameContact: "", numberContact: "" },
+          FiscalAddress: {state:"", city:"", municipality:"", parish:"", fiscalAvenue:"",
+                          fiscalBuilding:"", fiscalFloor:"", fiscalOffice:"", fiscalApartment:""},
+          MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",
+                          mainBuilding:"", mainFloor:"", mainOffice:"", mainApartment:""}
+        }
+      }
+    }
 
     this.onClick = this.onClick.bind(this);
+    this.onClickEmployee = this.onClickEmployee.bind(this);
+    this.onClickNatural = this.onClickNatural.bind(this);
+    this.onClickJuridico = this.onClickJuridico.bind(this);
 
     this.handlePersonalEmail = this.handlePersonalEmail.bind(this);
     this.handlePersonalPassword = this.handlePersonalPassword.bind(this);
@@ -434,9 +531,19 @@ class SignUpContainer extends Component {
 
     this.handleClearPersonal = this.handleClearPersonal.bind(this);
     this.handleClearCompany = this.handleClearCompany.bind(this);
+
+    this.handleEmployeeRole = this.handleEmployeeRole.bind(this);
+    this.handleEmployeePassword = this.handleEmployeePassword.bind(this);
+    this.handleEmployeeInput = this.handleEmployeeInput.bind(this);
+    this.handleEmployeeSubmit = this.handleEmployeeSubmit.bind(this);
+    this.handleClearEmployee = this.handleClearEmployee.bind(this);
+    this.handleHomeAddressEmp = this.handleHomeAddressEmp.bind(this);
+    this.handleHomeStateEmp = this.handleHomeStateEmp.bind(this);
+    this.handleHomeCityEmp = this.handleHomeCityEmp.bind(this);
   }
 
-  onClick() {
+  onClick(e) {
+    e.preventDefault()
     this.setState({
       PersonalData: {
         rif: "", ci: "", name: "", lastName: "", userName: "", gender: "",
@@ -456,7 +563,100 @@ class SignUpContainer extends Component {
       }
     })
     this.setState(prevState => ({
-      personalVisible: !prevState.personalVisible
+      personalVisible: !prevState.personalVisible,
+    }))
+  }
+
+  onClickEmployee(e) {
+    e.preventDefault()
+    this.setState({
+      PersonalData: {
+        rif: "", ci: "", name: "", lastName: "", userName: "", gender: "",
+        email: "",  password: "", bornDate: "",
+        HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
+                      homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""},
+        telephoneNumber: "", cellphoneNumber: "", officeNumber: ""
+      },
+      CompanyData: {
+        rif: "", comercialDesignation: "", businessName: "",
+        email: "", password: "", webPage: "", capital: "",
+        telephone1: "", telephone2: "", telephone3: "",  ContactPerson:{ nameContact: "", numberContact: "" },
+        FiscalAddress: {state:"", city:"", municipality:"", parish:"", fiscalAvenue:"",
+                        fiscalBuilding:"", fiscalFloor:"", fiscalOffice:"", fiscalApartment:""},
+        MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",
+                        mainBuilding:"", mainFloor:"", mainOffice:"", mainApartment:""}
+      },
+      EmployeeData: {
+        ci: "", name: "", lastName: "", userName: "", gender: "",
+        email: "",  password: "", telephone1: "", cargo:"", salario:"", rol:"",
+        HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
+                      homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""}
+      }
+    })
+    this.setState(prevState => ({
+      employeeVisible: !prevState.employeeVisible
+    }))
+  }
+  onClickJuridico(e) {
+    e.preventDefault()
+    this.setState({
+      PersonalData: {
+        rif: "", ci: "", name: "", lastName: "", userName: "", gender: "",
+        email: "",  password: "", bornDate: "",
+        HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
+                      homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""},
+        telephoneNumber: "", cellphoneNumber: "", officeNumber: ""
+      },
+      CompanyData: {
+        rif: "", comercialDesignation: "", businessName: "",
+        email: "", password: "", webPage: "", capital: "",
+        telephone1: "", telephone2: "", telephone3: "",  ContactPerson:{ nameContact: "", numberContact: "" },
+        FiscalAddress: {state:"", city:"", municipality:"", parish:"", fiscalAvenue:"",
+                        fiscalBuilding:"", fiscalFloor:"", fiscalOffice:"", fiscalApartment:""},
+        MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",
+                        mainBuilding:"", mainFloor:"", mainOffice:"", mainApartment:""}
+      },
+      EmployeeData: {
+        ci: "", name: "", lastName: "", userName: "", gender: "",
+        email: "",  password: "", telephone1: "", cargo:"", salario:"", rol:"",
+        HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
+                      homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""}
+      }
+    })
+    this.setState(prevState => ({
+      employeeVisible: !prevState.employeeVisible,
+      personalVisible: false
+    }))
+  }
+  onClickNatural(e) {
+    e.preventDefault()
+    this.setState({
+      PersonalData: {
+        rif: "", ci: "", name: "", lastName: "", userName: "", gender: "",
+        email: "",  password: "", bornDate: "",
+        HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
+                      homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""},
+        telephoneNumber: "", cellphoneNumber: "", officeNumber: ""
+      },
+      CompanyData: {
+        rif: "", comercialDesignation: "", businessName: "",
+        email: "", password: "", webPage: "", capital: "",
+        telephone1: "", telephone2: "", telephone3: "",  ContactPerson:{ nameContact: "", numberContact: "" },
+        FiscalAddress: {state:"", city:"", municipality:"", parish:"", fiscalAvenue:"",
+                        fiscalBuilding:"", fiscalFloor:"", fiscalOffice:"", fiscalApartment:""},
+        MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",
+                        mainBuilding:"", mainFloor:"", mainOffice:"", mainApartment:""}
+      },
+      EmployeeData: {
+        ci: "", name: "", lastName: "", userName: "", gender: "",
+        email: "",  password: "", telephone1: "", cargo:"", salario:"", rol:"",
+        HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
+                      homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""}
+      }
+    })
+    this.setState(prevState => ({
+      employeeVisible: !prevState.employeeVisible,
+      personalVisible: true
     }))
   }
 
@@ -489,7 +689,6 @@ class SignUpContainer extends Component {
     }), () => console.log(this.state.PersonalData));
   }
   handlePersonalInput(e) {
-    console.log(formatPhoneNumber(this.state.PersonalData.telephoneNumber))
     let value = e.target.value;
     let name = e.target.name;
     this.setState(prevState => ({
@@ -718,15 +917,12 @@ class SignUpContainer extends Component {
           clave : rif
         }}
       ).then((response) => {
-        console.log(rif)
-        console.log("validarRif"); console.log(response)
           if(response.data.length > 0){
             alert("RIF de cliente ya está registrado")
             return 'error'
           }
           else return false
       }).then((response)=>{
-        console.log("validarCedula"); console.log(response)
         if(response === false)
           return validarCedula(userData.ci)
         else return response
@@ -738,7 +934,6 @@ class SignUpContainer extends Component {
         }
         else return false
       }).then((response)=>{
-        console.log("validarUsuario"); console.log(response)
         if (response==='error') return response
         else if(response === false) return validarUsuario(userData.userName)
         else {
@@ -746,7 +941,6 @@ class SignUpContainer extends Component {
           return 'error'
         }
       }).then((response) => {
-        console.log("crearUsuario"); console.log(response)
         if ((response === 'error')) return response
         else if (response){
             alert("Nombre de usuario ya en uso")
@@ -756,7 +950,6 @@ class SignUpContainer extends Component {
             return crearUsuario(userData)
       }).then((response) => {
         let array = []
-          console.log("foundDirecciones"); console.log(response)
           if (response === 'error') {
             array.push(response,'error')
             return array
@@ -780,24 +973,20 @@ class SignUpContainer extends Component {
           }
       }).then((response)=>{
         let idUsuario = response[0], foreign = response[1]
-        console.log("crearCliente"); console.log(response)
         if((foreign!=='error')&&(foreign!==false)) {
           return crearCliente(typeRIF, userData, foreign, idUsuario)
           .then(async (response)=>{
             let emailResponse = await crearEmail(userData.email, response),
             telephoneResponse = await crearTelefono(formatPhoneNumber(userData.telephoneNumber), response),
             cellphoneResponse, officeResponse, array = []
-            alert('Telefono Creado: '+telephoneResponse)
             array.push(response, emailResponse, telephoneResponse)
             if(userData.cellphoneNumber !== ""){
               cellphoneResponse = await crearTelefono(formatPhoneNumber(userData.cellphoneNumber), response)
               array.push(cellphoneResponse)
-              alert('Telefono Creado: '+cellphoneResponse)
             }
             if (userData.officeNumber !== ""){
               officeResponse = await crearTelefono(formatPhoneNumber(userData.officeNumber), response)
               array.push(officeResponse)
-              alert('Telefono Creado: '+officeResponse)
             }
             return array
           })
@@ -837,7 +1026,7 @@ class SignUpContainer extends Component {
           })
         }
         else {
-          console.log('Error en el proceso de creación')
+          alert('Error en el proceso de creación')
         }
       }).catch(function (error) {
         alert('Error: Algo ha fallado, intente nuevamente')
@@ -904,14 +1093,12 @@ class SignUpContainer extends Component {
           clave : rif
         }}
       ).then((response) => {
-        console.log("validarRif"); console.log(response)
           if(response.data.length > 0){
             alert("RIF de cliente ya está registrado")
             return 'error'
           }
           else return false
       }).then((response)=>{
-        console.log("validarRazónSocial"); console.log(response)
         if(response === false)
           return validarRazonSocial(userData.businessName)
         else return response
@@ -923,7 +1110,6 @@ class SignUpContainer extends Component {
         }
         else return false
       }).then((response)=>{
-        console.log("validarUsuario"); console.log(response)
         if (response==='error') return response
         else if(response === false) return validarUsuario(userData.userName)
         else {
@@ -931,7 +1117,6 @@ class SignUpContainer extends Component {
           return 'error'
         }
       }).then((response) => {
-        console.log("crearUsuario"); console.log(response)
         if ((response === 'error')) return response
         else if (response){
             alert("Nombre de usuario ya en uso")
@@ -941,7 +1126,6 @@ class SignUpContainer extends Component {
             return crearUsuario(userData)
       }).then((response) => {
         let array = []
-          console.log("foundDireccionesFiscal"); console.log(response)
           if (response === 'error') {
             array.push(response,'error')
             return array
@@ -964,7 +1148,6 @@ class SignUpContainer extends Component {
             })
           }
       }).then((response)=>{
-        console.log("foundDireccionesPrincipal"); console.log(response)
         let idUsuario = response[0], foreignFiscal = response[1]
         if (foreignFiscal === 'error') {
           response.push('error')
@@ -988,7 +1171,6 @@ class SignUpContainer extends Component {
         }
       }).then((response)=>{
         let idUsuario = response[0], foreignFiscal = response[1], foreignPrincipal = response[2]
-        console.log("crearCliente"); console.log(response)
         if((foreignFiscal!=='error')&&(foreignFiscal!==false)) {
           return crearClienteJuridico(typeRIF, userData, foreignFiscal, foreignPrincipal, idUsuario)
           .then(async (response)=>{
@@ -1047,7 +1229,7 @@ class SignUpContainer extends Component {
           })
         }
         else {
-          console.log('Error de clave foránea')
+          alert('Error de clave foránea')
         }
       }).catch(function (error) {
         alert('Error: Algo ha fallado, intente nuevamente')
@@ -1058,18 +1240,219 @@ class SignUpContainer extends Component {
       alert("Usuario no válido");
 
   }
+
+  handleEmployeePassword(e) {
+    let value = e.target.value;
+    this.setState(prevState => ({
+      EmployeeData: {
+        ...prevState.EmployeeData,
+        password: value
+
+      }
+    }), () => console.log(this.state.EmployeeData));
+  }
+  async handleEmployeeRole(e) {
+    let value = e.target.value;
+    let name = e.target.name;
+    let roles = await getRoles()
+    let rol = roles.data, rolId
+    rol.some((element) => {
+      if (element.nombre === value){
+        rolId = element.clave; return true
+      }
+      else return false
+    })
+    this.setState(prevState => ({
+      EmployeeData: {
+        ...prevState.EmployeeData,
+        [name]: value,
+        rolId: rolId
+      }
+    }), () => console.log(this.state.EmployeeData));
+  }
+  handleEmployeeInput(e) {
+    let value = e.target.value;
+    let name = e.target.name;
+    this.setState(prevState => ({
+      EmployeeData: {
+        ...prevState.EmployeeData,
+        [name]: value
+      }
+    }), () => console.log(this.state.EmployeeData));
+  }
+  handleClearEmployee(e) {
+    e.preventDefault();
+    this.setState({
+      EmployeeData: {
+        ci: "", name: "", lastName: "", userName: "", gender: "",
+        email: "",  password: "", telephone1: "", cargo:"", salario:"", rol:""
+      },
+    }, () => console.log(this.state.EmployeeData));
+  }
+  handleEmployeeSubmit(e) {
+    e.preventDefault();
+    let userData = this.state.EmployeeData, typeDireccion, arrayType = [];
+    let direccion = this.state.EmployeeData.HomeAddress, arrayDireccion = [];
+    let validation = validate("employee")
+
+    if(direccion.homeApartment !== "") {arrayDireccion.unshift(direccion.homeApartment);
+    typeDireccion = 'Apartamento'; arrayType.unshift(typeDireccion)}
+    if (direccion.homeOffice !== "") {arrayDireccion.unshift(direccion.homeOffice);
+    typeDireccion = 'Oficina';arrayType.unshift(typeDireccion)}
+    if (direccion.homeFloor !== "") {arrayDireccion.unshift(direccion.homeFloor);
+    typeDireccion = 'Piso';arrayType.unshift(typeDireccion)}
+    if (direccion.homeBuilding !== "") {arrayDireccion.unshift(direccion.homeBuilding);
+    typeDireccion = 'Edificio';arrayType.unshift(typeDireccion)}
+    if (direccion.homeAvenue !== "") {arrayDireccion.unshift(direccion.homeAvenue);
+    typeDireccion = 'Avenida';arrayType.unshift(typeDireccion)}
+    if (direccion.parish !== "No Aplica") {arrayDireccion.unshift(direccion.parish);
+    typeDireccion = 'Parroquia';arrayType.unshift(typeDireccion)}
+    if (direccion.municipality!=="No Aplica") {arrayDireccion.unshift(direccion.municipality); typeDireccion='Municipio';arrayType.unshift(typeDireccion)}
+    arrayDireccion.unshift(direccion.state,direccion.city); typeDireccion = 'Ciudad'; arrayType.unshift("Estado",typeDireccion);
+
+    if (validation === true){
+      return validarCedulaEmpleado(userData.ci)
+      .then((response) => {
+        if(response === 'error' ) return response
+        else if (response === true){
+          alert("El documento de identificación está asociado a otro empleado")
+          return 'error'
+        }
+        else return false
+      }).then((response)=>{
+        if (response==='error') return response
+        else if(response === false) return validarUsuario(userData.userName)
+        else {
+          alert("Ha ocurrido un error al validar el usuario")
+          return 'error'
+        }
+      }).then((response) => {
+        if ((response === 'error')) return response
+        else if (response){
+            alert("Nombre de usuario ya en uso")
+            return 'error'
+          }
+          else
+            return crearUsuario(userData)
+      }).then((response) => {
+        let array = []
+          if (response === 'error') {
+            array.push(response,'error')
+            return array
+          }
+          else if (response === 'errorCreateUser') {
+            alert('Error al crear el nuevo usuario, intente de nuevo')
+            array.push('error', 'error')
+            return array
+          }
+          else {
+            array.push(response);
+            return foundDirecciones(arrayDireccion, arrayType)
+            .then((foreign)=>{
+              array.push(foreign);
+              return array
+            })
+            .catch(function (error){
+              array.push("error")
+              return array
+            })
+          }
+      }).then((response)=>{
+        let idUsuario = response[0], foreign = response[1]
+        if((foreign!=='error')&&(foreign!==false)) {
+          return crearEmpleado(userData, foreign, idUsuario)
+          .then(async (response)=>{
+            let telephoneResponse = await crearTelefonoPersonal(formatPhoneNumber(userData.telephone1), response),
+            array = []
+            array.push(response, telephoneResponse)
+            return array
+          })
+          .then((response)=>{
+            let max = response.length, i = 1
+            while (i < max){
+              if((response[i] === 'error')&&(i===1)){
+                alert("Error al crear el teléfono principal")
+                break
+              }
+              i++;
+            }
+            if (i === max)
+              alert("El empleado: "+response[0]+" ha sido creado exitosamente")
+          })
+          .catch(function (error) {
+            alert('Error: No se ha podido registrar al cliente')
+            console.log('AXIOS error: '+ error);
+          })
+        }
+        else {
+          alert('Error en el proceso de creación')
+        }
+      }).catch(function (error) {
+        alert('Error: Algo ha fallado, intente nuevamente')
+        console.log('AXIOS error: '+ error);
+      });
+    }
+    else
+      alert("Usuario no válido");
+  }
+  handleHomeStateEmp(e) {
+    let value = e.target.value;
+    let name = e.target.name;
+    this.setState(prevState => ({
+      EmployeeData: {
+        ...prevState.EmployeeData,
+        HomeAddress: {
+          ...prevState.EmployeeData.HomeAddress,
+          [name]: value,
+          municipality: "",
+          parish: {
+
+          }
+        }
+      }
+    }), () => console.log(this.state.EmployeeData));
+  }
+  handleHomeCityEmp(e) {
+    let value = e.target.value;
+    let name = e.target.name;
+    this.setState(prevState => ({
+      EmployeeData: {
+        ...prevState.EmployeeData,
+        HomeAddress: {
+          ...prevState.EmployeeData.HomeAddress,
+          [name]: value
+        }
+      }
+    }), () => console.log(this.state.EmployeeData));
+  }
+  handleHomeAddressEmp(e) {
+    let value = e.target.value;
+    let name = e.target.name;
+    this.setState(prevState => ({
+      EmployeeData: {
+        ...prevState.EmployeeData,
+        HomeAddress: {
+          ...prevState.EmployeeData.HomeAddress,
+          [name]: value
+        }
+      }
+    }), () => console.log(this.state.EmployeeData));
+  }
+
   render() {
     return (
       <div className=" container">
         {
-          this.state.personalVisible
-          ? <SignUpPersonal data= {this.state.PersonalData} onClick={this.onClick} handleSubmit={this.handlePersonalSubmit} handleEmail={this.handlePersonalEmail} handlePassword={this.handlePersonalPassword} handleBornDate={this.handlePersonalBornDate} handleInput={this.handlePersonalInput} handleClearForm={this.handleClearPersonal}
-          handleHomeAddress = {this.handleHomeAddress} handleHomeState = {this.handleHomeState}
-          handleHomeCity = {this.handleHomeCity}/>
-
-        : <SignUpCompany data = {this.state.CompanyData} onClick={this.onClick} handleSubmit={this.handleCompanySubmit} handleEmail={this.handleCompanyEmail} handlePassword={this.handleCompanyPassword}  handleInput={this.handleCompanyInput}
-        handleContactPerson={this.handleContactPerson} handleClearForm={this.handleClearCompany} handleFiscalAddress = {this.handleFiscalAddress} handleFiscalState = {this.handleFiscalState} handleFiscalCity = {this.handleFiscalCity} handleMainAddress = {this.handleMainAddress}    handleMainState = {this.handleMainState} handleMainCity = {this.handleMainCity}
-        />
+          this.props.personal
+          ? this.state.employeeVisible
+            ? <SignUpEmployee data={this.state.EmployeeData} onClickNatural={this.onClickNatural} onClickJuridico={this.onClickJuridico} handleSubmit={this.handleEmployeeSubmit} handlePassword={this.handleEmployeePassword} handleInput={this.handleEmployeeInput} handleRole={this.handleEmployeeRole} handleClearForm={this.handleClearEmployee} handleHomeAddress={this.handleHomeAddressEmp}
+            handleHomeState={this.handleHomeStateEmp} handleHomeCity={this.handleHomeCityEmp}/>
+            : this.state.personalVisible
+              ? <SignUpPersonal data= {this.state.PersonalData} onClick={this.onClick} onClickEmployee={this.onClickEmployee} handleSubmit={this.handlePersonalSubmit} handleEmail={this.handlePersonalEmail} handlePassword={this.handlePersonalPassword} handleBornDate={this.handlePersonalBornDate} handleInput={this.handlePersonalInput} handleClearForm={this.handleClearPersonal} handleHomeAddress = {this.handleHomeAddress} handleHomeState = {this.handleHomeState} handleHomeCity={this.handleHomeCity} employee ={true}/>
+              : <SignUpCompany data = {this.state.CompanyData} onClick={this.onClick} onClickEmployee={this.onClickEmployee} handleSubmit={this.handleCompanySubmit} handleEmail={this.handleCompanyEmail} handlePassword={this.handleCompanyPassword}  handleInput={this.handleCompanyInput}        handleContactPerson={this.handleContactPerson} handleClearForm={this.handleClearCompany} handleFiscalAddress = {this.handleFiscalAddress} handleFiscalState = {this.handleFiscalState} handleFiscalCity = {this.handleFiscalCity} handleMainAddress = {this.handleMainAddress}    handleMainState = {this.handleMainState} handleMainCity = {this.handleMainCity} employee ={true}/>
+          : this.state.personalVisible
+              ? <SignUpPersonal data= {this.state.PersonalData} onClick={this.onClick} onClickEmployee={this.onClickEmployee} handleSubmit={this.handlePersonalSubmit} handleEmail={this.handlePersonalEmail} handlePassword={this.handlePersonalPassword} handleBornDate={this.handlePersonalBornDate} handleInput={this.handlePersonalInput} handleClearForm={this.handleClearPersonal} handleHomeAddress = {this.handleHomeAddress} handleHomeState = {this.handleHomeState} handleHomeCity = {this.handleHomeCity} employee ={false}/>
+            : <SignUpCompany data = {this.state.CompanyData} onClick={this.onClick} onClickEmployee={this.onClickEmployee} handleSubmit={this.handleCompanySubmit} handleEmail={this.handleCompanyEmail} handlePassword={this.handleCompanyPassword}  handleInput={this.handleCompanyInput}        handleContactPerson={this.handleContactPerson} handleClearForm={this.handleClearCompany} handleFiscalAddress = {this.handleFiscalAddress} handleFiscalState = {this.handleFiscalState} handleFiscalCity = {this.handleFiscalCity} handleMainAddress = {this.handleMainAddress}    handleMainState = {this.handleMainState} handleMainCity = {this.handleMainCity} employee ={false}/>
         }
       </div >)
   }

@@ -1,4 +1,4 @@
-//INITIALIZING THE SERVER CONSTANTS
+﻿//INITIALIZING THE SERVER CONSTANTS
 const express = require('express') // invoke an instance of express application.
 const path = require('path')
 const bodyParser = require('body-parser')
@@ -108,7 +108,7 @@ router.get('/read/direccionPorClave', db.getDireccionPorClave) // GET ADDRESS BY
 router.get('/read/direccionPorNombreTipo', db.getDireccionPorNombreTipo) // GET ADDRESS BY Name and Type
 router.get('/read/direccionPorNombreTipoFK', db.getDireccionPorNombreTipoFK) // GET ADDRESS Name and Type and FK
 router.get('/read/clientePorRif', db.getClientePorRif) // GET CLIENTE BY RIF
-router.get('/read/clientePorCedula', db.getClientePorCedula) // GET CLIENTE BY RIF
+router.get('/read/clientePorCedula', db.getClientePorCedula) // GET CLIENTE BY CI
 router.get('/read/clientePorUserId', db.getClientePorUserID) //GET CLIENTE BY USER ID
 router.get('/read/usuarioPorNombre', db.getUsuarioPorNombre) // GET USER BY NAME
 router.get('/read/tiendaFisica', db.getTiendaFisica) // GET REAL SHOP DATA
@@ -120,13 +120,17 @@ router.get('/read/contactosPorCliente', db.getContactosPorCliente) //GET CLIENT'
 router.get('/read/usuarioPorID', db.getUsuarioPorID) //GET USER BY ID
 router.get('/read/personalPorUserID', db.getPersonalPorUserID) //GET PERSONAL BY USER ID
 router.get('/read/rolPorID', db.getRolPorUserID) //GET USER ROLE BY IT'S ID
+router.get('/read/empleadoPorCedula', db.getEmpleadoPorCedula) // GET EMPLOYEE BY CI
+router.get('/read/roles', db.getRoles) // GET ALL ROLES
 
 router.post('/create/usuario', db.postUsuario) //CREATE NEW USER
 router.post('/create/registro', db.postRegistro) // CREATE NEW CLIENT
 router.post('/create/direccion', db.postDireccion) // CREATE A NEW ADDRESS
 router.post('/create/email', db.postEmail) // CREATE A NEW EMAIL
-router.post('/create/telefonoCliente', db.isLogged, db.postTelefonoCliente) // CREATE A NEW EMAIL
+router.post('/create/telefonoCliente', db.isLogged, db.postTelefonoCliente) // CREATE A NEW PHONE FOR CLIENT
 router.post('/create/personaContacto', db.postPersonaContacto) // CREATE A NEW CONTACT PERSON
+router.post('/create/registroEmpleado', db.postEmpleado) //CREATE A NEW EMPLOYEE
+router.post('/create/telefonoPersonal', db.postTelefonoPersonal) //CREATE A NEW PHONE FOR EMPLOYEE
 
 router.post('/auth/signIn', db.postSignIn) // AUTHENTICATE USER AND LOGIN
 router.get('/auth/logout', db.getLogout) // CLOSE USER SESSION
@@ -135,5 +139,3 @@ router.get('/auth/logout', db.getLogout) // CLOSE USER SESSION
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)
 })
-
-//REPORTS

@@ -189,6 +189,24 @@ const getRolPorUserID=(request, response) =>{
     response.status(200).json(results.rows)
   })
 }
+const getEmpleadoPorCedula = (request, response) =>{
+  let values = [request.query.clave]
+  const query = 'SELECT * FROM personal WHERE ci = $1'
+  pool.query(query, values, (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+const getRoles = (request, response) => {
+  pool.query('SELECT * FROM rol', (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
 const getLogout = (request,response) =>{
   request.logout();
   request.session = null;
@@ -679,8 +697,8 @@ const postDireccion = (request, response) =>{
 }
 const postUsuario = (request, response, next) => {
   console.log(request.body);
-  const text = 'INSERT INTO public.usuario(nombre, contrasena) VALUES ($1, $2) RETURNING *;';
-  const values = [request.body.nombre, request.body.contrasena];
+  const text = 'INSERT INTO public.usuario(nombre, contrasena, fk_rol) VALUES ($1, $2, $3) RETURNING *;';
+  const values = [request.body.nombre, request.body.contrasena, request.body.rol];
   pool.query(text, values, (error, results) => {
     if (error) {
       console.log('ERROR DE REGISTRO: '+error)
@@ -742,18 +760,29 @@ const postSignIn = (req, res, next) => {
 	})(req, res, next)
 }
 const postEmpleado = (request, response, next) => {
-  console.log(request.body);
-  const text = 'INSERT INTO public.personal(nombre, apellido, ci, salario, cargo, genero) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;';
-  const values = [request.body.nombre, request.body.apellido, request.body.ci, request.body.salario, request.body.cargo, request.body.genero];
-  pool.query(text, values, (error, response) => {
+  const text = 'INSERT INTO public.personal(nombre, apellido, ci, salario, cargo, genero, fk_usuario, fk_direccion) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;';
+  const values = [request.body.nombre, request.body.apellido, request.body.ci, request.body.salario, request.body.cargo, request.body.genero, request.body.fk_usuario, request.body.fk_direccion];
+  pool.query(text, values, (error, results) => {
     if (error) {
       console.log('ERROR DE REGISTRO: '+error)
       throw error
     }
+    response.status(201).send(results.rows);
   })
-  return response.redirect('/');
 }
-const postEvento = (request, response, next) => {
+const postTelefonoPersonal = (request, response, next) => {
+  console.log(request.body);
+  const text = 'INSERT INTO public.telefono(numero, fk_personal) VALUES ($1, $2) RETURNING *;';
+  const values = [request.body.telefono, request.body.foreignKey];
+  pool.query(text, values, (error, results) => {
+    if (error) {
+      console.log('ERROR DE REGISTRO: '+error)
+      throw error
+    }
+    response.status(201).send(results.rows);
+  })
+}
+/*const postEvento = (request, response, next) => {
   console.log(request.body);
   const text = 'INSERT INTO public.personal(fecha_inicio, fecha_fin, nombre, cant_entrada_vendida, cant_entrada_disponible) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
   const values = [request.body.fecha_inicio, request.body.fecha_fin, request.body.nombre, request.body.cant_entrada_vendida, request.body.cant_entrada_disponible];
@@ -764,7 +793,7 @@ const postEvento = (request, response, next) => {
     }
   })
   return response.redirect('/');
-}
+}*/
 
 
 module.exports = {
@@ -787,6 +816,8 @@ module.exports = {
   getUsuarioPorID,
   getPersonalPorUserID,
   getRolPorUserID,
+  getEmpleadoPorCedula,
+  getRoles,
   getLogout,
 /*
 	getEmpleados,
@@ -846,6 +877,8 @@ module.exports = {
   postTelefonoCliente,
   postPersonaContacto,
 	postSignIn,
+  postEmpleado,
+  postTelefonoPersonal,
 	//AUTH
 	isLogged : function(req, res, next){
 		if (req.isAuthenticated()) {
