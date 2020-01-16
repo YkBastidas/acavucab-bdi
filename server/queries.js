@@ -3,7 +3,7 @@ const config = {
   user: 'postgres',
   host: 'localhost',
   database: 'ACAVUCAB',
-  password: 'admin',
+  password: 'admin', //170599
   port: 5432,
 } //PostgreSQL database configuration
 
@@ -274,6 +274,14 @@ const getCantidadPorIdCerveza = (request, response) =>{
   const text = 'SELECT cant_disponible from historico_inventario_cerveza where fk_cerveza=$1 order by fecha_inicio DESC limit 1'
   const values = [request.query.fk_cerveza]
   pool.query(text, values, (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+const getUsuarios = (request, response) =>{
+  pool.query('SELECT * FROM usuario', (error, results) => {
     if (error) {
       throw error
     }
@@ -926,8 +934,8 @@ const postCompra = (request, response, next) => {
   return response.redirect('/');
 }
 const postDetalleCompra = (request,response,next) => { //REVISAR
-  const text = 'INSERT INTO public.detalle_compra (cantidad,precio_unitario,fk_compra,fk_historico_inventario) VALUES ($1,$2,$3,$4) RETURNING codigo'
-  const values = [request.body.cantidad,request.body.precio_unitario,request.body.fk_compra,request.body.fk_historico_inventario]
+  const text = 'INSERT INTO public.detalle_compra (cantidad,k_compra,fk_historico_inventario) VALUES ($1,$2,$3,$4) RETURNING codigo'
+  const values = [request.body.cantidad,request.body.fk_compra,request.body.fk_historico_inventario]
   pool.query(text,values, (error,response) => {
     if(error){
       console.log('ERROR DE REGISTRO: '+error)
@@ -949,7 +957,7 @@ const postStatusCompra = (request,response,next) => {
 }
 const postTarjetaCredito = (request,response,next) => {
   console.log(request.body);
-  const text = 'INSERT (banco,numero,tipo,cvc,nombre_impreso,cedula,fk_cliente) INTO public.tipo_pago_credito VALUES ($1,$2,$3,$4,$5,$6,$7)';
+  const text = 'INSERT (banco,numero,tipo,cvc,nombre_impreso,cedula,fk_cliente) INTO public.tipo_pago_credito VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING codigo';
   const values = [request.body.banco,request.body.numero,request.body.tipo,request.body.cvc,request.body.nombre_impreso,request.body.cedula,request.body.fk_cliente];
   pool.query(text,values,(error,response) => {
     if(error){
@@ -961,7 +969,7 @@ const postTarjetaCredito = (request,response,next) => {
 }
 const postTarjetaDebito = (request,response,next) => {
   console.log(request.body);
-  const text = 'INSERT (banco,numero,tipo,cvc,nombre_impreso,cedula,fk_cliente) INTO public.tipo_pago_debito VALUES ($1,$2,$3,$4,$5,$6,$7)';
+  const text = 'INSERT (banco,numero,tipo,cvc,nombre_impreso,cedula,fk_cliente) INTO public.tipo_pago_debito VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING codigo';
   const values = [request.body.banco,request.body.numero,request.body.tipo,request.body.cvc,request.body.nombre_impreso,request.body.cedula,request.body.fk_cliente];
   pool.query(text,values,(error,response) => {
     if(error){
@@ -972,7 +980,7 @@ const postTarjetaDebito = (request,response,next) => {
   })
 }
 const postEfectivo = (request,response,next) => {
-  const text = 'INSERT (denominacion,cantidad,fk_cliente) INTO public.tipo_pago_efectivo VALUES ($1,$2,$3)';
+  const text = 'INSERT (denominacion,cantidad,fk_cliente) INTO public.tipo_pago_efectivo VALUES ($1,$2,$3) RETURNING codigo';
   const values = [request.body.denominacion,request.body.cantidad,request.body.fk_cliente];
   pool.query(text,values,(error,response) => {
     if(error){
@@ -983,7 +991,7 @@ const postEfectivo = (request,response,next) => {
   })
 }
 const postCheque = (request,response,next) => {
-  const text = 'INSERT (banco,numero_cuenta,numero_cheque,fk_cliente) INTO public.tipo_pago_cheque VALUES ($1,$2,$3,$4)';
+  const text = 'INSERT (banco,numero_cuenta,numero_cheque,fk_cliente) INTO public.tipo_pago_cheque VALUES ($1,$2,$3,$4) RETURNING codigo';
   const values = [request.body.banco,request.body.numero_cuenta,request.body.numero_cheque,request.body.fk_cliente];
   pool.query(text,values,(error,response) => {
     if(error){
@@ -994,7 +1002,7 @@ const postCheque = (request,response,next) => {
   })
 }
 const postDivisa = (request,response,next) => {
-  const text = 'INSERT (tipo,fk_historico_tasa,fk_cliente,cantidad) INTO public.tipo_pago_divisa VALUES ($1,$2,$3,$4)';
+  const text = 'INSERT (tipo,fk_historico_tasa,fk_cliente,cantidad) INTO public.tipo_pago_divisa VALUES ($1,$2,$3,$4) RETURNING codigo';
   const values = [request.body.tipo,request.body.fk_historico_tasa,request.body.fk_cliente,request.body.cantidad];
   pool.query(text,values,(error,response) => {
     if(error){
@@ -1006,7 +1014,7 @@ const postDivisa = (request,response,next) => {
 }
 const postPagoPuntos = (request,response,next) => {
   console.log(request.body);
-  const text = 'INSERT (cantidad,fk_historico_valor_puntos,fk_cliente) INTO public.tipo_pago_puntos VALUES ($1,$2,$3)';
+  const text = 'INSERT (cantidad,fk_historico_valor_puntos,fk_cliente) INTO public.tipo_pago_puntos VALUES ($1,$2,$3) RETURNING codigo';
   const values = [request.body.cantidad,request.body.fk_historico_valor_puntos,request.body.fk_cliente];
   pool.query(text,values,(error,response) => {
     if(error){
@@ -1065,7 +1073,7 @@ const putHistoricoInventarioCerveza = (request,response,next) => {
 }
 const putTotalFactura = (request,response,next) => {
   console.log(request.body)
-  if(request.body.tipo==venta){
+  if(request.body.tipo=='Venta'){
    const text = 'UPDATE venta SET total=$1 WHERE nro_factura=$2'
    const values = [request.body.total,request.body.nro_factura]
    pool.query(text,values,(error,response)=> {
@@ -1148,6 +1156,7 @@ module.exports = {
   getTasaPuntosActual,
   getCervezas,
   getCantidadPorIdCerveza,
+  getUsuarios,
   getLogout,
   /*
 	getEmpleados,

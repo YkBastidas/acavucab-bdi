@@ -3584,3 +3584,7 @@ INSERT INTO public.historico_inventario_cerveza(cant_disponible, fecha_inicio, f
   (floor(random()*(500-2000))+2000, '15/01/2020', 17),
   (floor(random()*(500-2000))+2000, '15/01/2020', 18),
   (floor(random()*(500-2000))+2000, '15/01/2020', 19);
+
+  INSERT INTO public.tienda(
+  	tipo, fisica_nombre, fk_fisica_direccion)
+  	VALUES ('fisica', 'ACAVUCAB Shop', 2016);

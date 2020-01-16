@@ -11,6 +11,7 @@ import ShopPaymentCheque from '../components/ShopPaymentCheque';
 import ShopPaymentEfectivo from '../components/ShopPaymentEfectivo';
 
 axios.defaults.withCredentials = true;
+var logged = false;
 
 function crearCompra(rif, tienda_fisica, tienda_virtual) {
   return axios.post('/create/compra', {
@@ -115,27 +116,71 @@ function crearCheque(rif, ChequeData) {
     return 'error'
   })
 }
+function crearEfectivo(rif, EfectivoData) {
+  return axios.post('/create/cash', {
+    cantidad: EfectivoData.cantidad,
+    denominacion: EfectivoData.denominacion,
+    fk_cliente: rif
+  }).then((response) => {
+    return response.data[0].id
+  }).catch(function(error) {
+    console.log('AXIOS error: ' + error);
+    return 'error'
+  })
+}
+function getMontoFactura(nrofactura){
+
+}
+
+function getClientePK(usuario) {
+  return axios.get('/read/clientePorUserId', {
+    params: {fk_usuario: usuario}
+  }).then((response) => {
+    return response.data[0]
+  }).catch(function(error) {
+    console.log('AXIOS error: ' + error);
+    return 'error'
+  })
+}
 
 class MetodoPagoTiendaContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      creditoVisible: true,
+      visible : { credito : true, debito: "", puntos:"", divisa:"", cheque:"", efectivo:""}, isLoggedIn: "",
+      userData: {id: '', nombre: '', contrasena: '', fk_rol:''},
+      ClientData: {rif: ""},
+      NaturalData: {
+        rif: "", ci: "", name: "", lastName: "", userName: "", gender: "",
+        email: "",  password: "", bornDate: "",
+        HomeAddress: {state:"", city:"", municipality:"", parish:"", homeAvenue:"",
+                      homeBuilding:"", homeFloor:"", homeOffice:"", homeApartment:""},
+        telephoneNumber: "", cellphoneNumber: "", officeNumber: "", rol: "10"
+      },
+      CompanyData: {
+        rif: "", comercialDesignation: "", businessName: "",
+        userName: "", password: "", email: "", webPage: "", capital: "", rol:"10",
+        telephone1: "", telephone2: "", telephone3: "", ContactPerson:{ nameContact: "", numberContact: "" },
+        FiscalAddress: {state:"", city:"", municipality:"", parish:"", fiscalAvenue:"",
+                        fiscalBuilding:"", fiscalFloor:"", fiscalOffice:"", fiscalApartment:""},
+        MainAddress: {state:"", city:"", municipality:"", parish:"", mainAvenue:"",
+                        mainBuilding:"", mainFloor:"", mainOffice:"", mainApartment:""}
+      },
       CreditoData: {
-        banco: "",
-        numero: "",
-        cvc: "",
-        nombre_impreso: "",
-        ci: "",
-        tipo: ""
+        "cc-banco": "",
+        "cc-name": "",
+        "cc-ci": "",
+        "cc-number": "",
+        "cc-cvc": "",
+        "cc-expiration": ""
       },
       DebitoData: {
-        banco: "",
-        numero: "",
-        cvc: "",
-        nombre_impreso: "",
-        ci: "",
-        tipo: ""
+        "dc-banco": "",
+        "dc-name": "",
+        "dc-ci": "",
+        "dc-number": "",
+        "dc-expiration": "",
+        "dc-cvc": ""
       },
       PuntosData: {
         cantidad: "",
@@ -159,18 +204,8 @@ class MetodoPagoTiendaContainer extends Component {
 
     this.onClick = this.onClick.bind(this);
 
-    this.handleBancoCredito = this.handleBancoCredito.bind(this);
-    this.handleNumeroCredito = this.handleNumeroCredito.bind(this);
-    this.handleCVCCredito = this.handleCVCCredito.bind(this);
-    this.handleNombreImpresoCredito = this.handleNombreImpresoCredito.bind(this);
-    this.handleCICredito = this.handleCICredito.bind(this);
-
-    this.handleBancoDebito = this.handleBancoDebito.bind(this);
-    this.handleNumeroDebito = this.handleNumeroDebito.bind(this);
-    this.handleCVCDebito = this.handleCVCDebito.bind(this);
-    this.handleNombreImpresoDebito = this.handleNombreImpresoDebito.bind(this);
-    this.handleCIDebito = this.handleCIDebito.bind(this);
-    this.handleExpiracionDebito = this.handleExpiracionDebito.bind(this);
+    this.handleCredito = this.handleCredito.bind(this);
+    this.handleDebito = this.handleDebito.bind(this);
 
     this.handleCantidadDivisa = this.handleCantidadDivisa.bind(this);
     this.handleTipoDivisa = this.handleTipoDivisa.bind(this);
@@ -185,7 +220,7 @@ class MetodoPagoTiendaContainer extends Component {
     this.handleDivisaSubmit = this.handleDivisaSubmit.bind(this);
     this.handleEfectivoSubmit = this.handleEfectivoSubmit.bind(this);
     this.handleChequeSubmit = this.handleChequeSubmit.bind(this);
-    this.handleCreditoSubmit.this.handleCreditoSubmit.bind(this);
+    this.handleCreditoSubmit = this.handleCreditoSubmit.bind(this);
     this.handleDebitoSubmit = this.handleDebitoSubmit.bind(this);
     this.handlePuntosSubmit = this.handlePuntosSubmit.bind(this);
 
@@ -235,105 +270,23 @@ class MetodoPagoTiendaContainer extends Component {
 
     }))
   }
-  handleBancoCredito(e) {
+  handleCredito(e) {
     let value = e.target.value;
+    let name = e.targer.name;
     this.setState(prevState => ({
       CreditoData: {
         ...prevState.CreditoData,
-        banco: value
+        [name]: value
       }
     }), () => console.log(this.state.CreditoData));
   }
-  handleNumeroCredito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      CreditoData: {
-        ...prevState.CreditoData,
-        numero: value
-      }
-    }), () => console.log(this.state.CreditoData));
-  }
-  handleNombreImpresoCredito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      CreditoData: {
-        ...prevState.CreditoData,
-        nombre_impreso: value
-      }
-    }), () => console.log(this.state.CreditoData));
-  }
-  handleCICredito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      CreditoData: {
-        ...prevState.CreditoData,
-        ci: value
-      }
-    }), () => console.log(this.state.CreditoData));
-  }
-  handleCVCCredito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      CreditoData: {
-        ...prevState.CreditoData,
-        cvc: value
-      }
-    }), () => console.log(this.state.CreditoData));
-  }
-
-  //TIPO PAGO DEBITO
-
-  handleBancoDebito(e) {
+  handleDebito(e) {
+    let name = e.target.name;
     let value = e.target.value;
     this.setState(prevState => ({
       DebitoData: {
         ...prevState.DebitoData,
-        banco: value
-      }
-    }), () => console.log(this.state.DebitoData));
-  }
-  handleNumeroDebito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      DebitoData: {
-        ...prevState.DebitoData,
-        numero: value
-      }
-    }), () => console.log(this.state.DebitoData));
-  }
-  handleNombreImpresoDebito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      DebitoData: {
-        ...prevState.DebitoData,
-        nombre_impreso: value
-      }
-    }), () => console.log(this.state.DebitoData));
-  }
-  handleCIDebito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      DebitoData: {
-        ...prevState.DebitoData,
-        ci: value
-      }
-    }), () => console.log(this.state.DebitoData));
-  }
-  handleCVCDebito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      DebitoData: {
-        ...prevState.DebitoData,
-        cvc: value
-      }
-    }), () => console.log(this.state.DebitoData));
-  }
-  handleExpiracionDebito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      DebitoData: {
-        ...prevState.DebitoData,
-        expiracion: value
+        [name]: value
       }
     }), () => console.log(this.state.DebitoData));
   }
@@ -421,27 +374,30 @@ class MetodoPagoTiendaContainer extends Component {
       }
     }), () => console.log(this.state.EfectivoData))
   }
+
+
+  //HANDLE SUBMITS
   handleCreditoSubmit(e) {
     e.preventDefault();
-    let creditcard = this.state.CreditoData;
-    if (creditcard.cvc == '') {
+    let creditcard = this.state.CreditoData,rif = this.state.ClientData.rif;
+    if (creditcard.cvc === '') {
       console.log('CVC Invalido');
     } else {
-      if (creditcard.numero == '') {
+      if (creditcard.numero === '') {
         console.log('Numero Invalido');
       } else {
-        if (creditcard.nombre_impreso == '') {
+        if (creditcard.nombre_impreso === '') {
           console.log('Nombre Invalido');
         } else {
-          if (creditcard.banco == '') {
+          if (creditcard.banco === '') {
             console.log('Nombre del banco Invalido');
           } else {
             //Falta la validacion de tipo
-            if (1 == 1) {} else {
-              if (creditcard.ci == '') {
+            if (1 === 1) {} else {
+              if (creditcard.ci === '') {
                 console.log('Cedula invalida');
               } else {
-                //Aqui iria el registro
+                crearTarjetaCredito(rif,this.state.CreditoData);
               }
             }
           }
@@ -451,25 +407,25 @@ class MetodoPagoTiendaContainer extends Component {
   }
   handleDebitoSubmit(e) {
     e.preventDefault();
-    let debitcard = this.state.DebitoData;
-    if (debitcard.cvc == '') {
+    let debitcard = this.state.DebitoData, rif = this.state.ClientData.rif;
+    if (debitcard.cvc === '') {
       console.log('CVC Invalido');
     } else {
-      if (debitcard.numero == '') {
+      if (debitcard.numero === '') {
         console.log('Numero Invalido');
       } else {
-        if (debitcard.nombre_impreso == '') {
+        if (debitcard.nombre_impreso === '') {
           console.log('Nombre Invalido');
         } else {
-          if (debitcard.banco == '') {
+          if (debitcard.banco === '') {
             console.log('Nombre del banco Invalido');
           } else {
             //Falta la validacion de tipo
-            if (1 == 1) {} else {
-              if (debitcard.ci == '') {
+            if (1 === 1) {} else {
+              if (debitcard.ci === '') {
                 console.log('Cedula invalida');
               } else {
-                //Aqui iria el registro
+                crearTarjetaDebito(rif,this.state.DebitoData);
               }
             }
           }
@@ -479,65 +435,84 @@ class MetodoPagoTiendaContainer extends Component {
   }
   handleChequeSubmit(e) {
     e.preventDefault();
-    let cheque = this.state.ChequeData;
-    if (cheque.numero_cuenta == "") {
+    let cheque = this.state.ChequeData, rif = this.state.ClientData.rif
+    if (cheque.numero_cuenta === "") {
       console.log('NUMERO DE CUENTA INVALIDA');
     } else {
-      if (cheque.numero_cheque == "") {
+      if (cheque.numero_cheque === "") {
         console.log('NUMERO DE CHEQUE INAVALIDO');
       } else {
-        if (cheque.banco == "") {
+        if (cheque.banco === "") {
           console.log('BANCO INVALIDO')
         } else {
-          //AQUI IRIA EL REGISTRO
+          crearCheque(rif,this.state.ChequeData);
         }
       }
     }
   }
   handleEfectivoSubmit(e) {
+    let rif = this.state.ClientData.rif
     e.preventDefault();
     let efectivo = this.state.EfectivoData;
-    if (efectivo.cantidad == "") {
+    if (efectivo.cantidad === "") {
       console.log('CANTIDAD INVALIDA');
     } else {
-      if (efectivo.denominacion == "") {
+      if (efectivo.denominacion === "") {
         console.log('DENOMINACION INAVALIDA');
       } else {
-        //AQUI IRIA EL REGISTRO
+        crearEfectivo(rif,this.state.EfectivoData)
       }
     }
   }
   handleDivisaSubmit(e) {
     e.preventDefault();
-    let divisa = this.state.DivisaData;
-    if (divisa.cantidad == "") {
+    let divisa = this.state.DivisaData, rif = this.state.ClientData.rif
+    if (divisa.cantidad === "") {
       console.log('CANTIDAD INVALIDA');
     } else {
-      if (divisa.tipo == "") {
+      if (divisa.tipo === "") {
         console.log('TIPO INAVALIDO');
       } else {
-        //AQUI IRIA EL REGISTRO
+        crearDivisa(rif,this.state.DivisaData);
       }
     }
   }
   handlePuntosSubmit(e) {
     e.preventDefault();
+    let rif = this.state.ClientData.rif
     let puntos = this.state.PuntosData;
-    if (puntos.cantidad == "") {
+    if (puntos.cantidad === "") {
       console.log('CANTIDAD INVALIDA');
     } else {
-      //AQUI IRIA EL REGISTRO
+      crearPagoPuntos(rif,this.state.PuntosData);
     }
   }
+
+  componentDidMount(){
+    axios.get('/read/userInfo',{withCredentials: true})
+    .then(async (res)=> { // handle success
+      console.log(res)
+      if(res.data==='errorNoUser'){
+        throw new Error('NoUser');
+      }
+      logged = true
+      console.log('Callback Axios con Data del Usuario')
+      this.setState({userData: res.data, isLoggedIn:true})
+      var clientData = await getClientePK(res.data.id)
+      console.log(clientData)
+      this.setState({ClientData: {rif: clientData.rif}})
+      if(clientData.tipo ==='Natural') this.setState({NaturalData: clientData, isLoggedIn:true})
+      else this.setState({CompanyData: clientData, isLoggedIn:true})
+    })
+    .catch(function (error){
+      console.log('axios'); console.log(error);
+    })
+  }
+
   render() {
     return (<div className=" container">
-      <ShopPayment data={this.state.CreditoData} onClick={this.onClick} handleNumeroCredito={this.handleNumeroCredito} handleNombreImpresoCredito={this.handleNombreImpresoCredito} handleCVCCredito={this.handleCVCCredito} handleBancoCredito={this.handleBancoCredito} handleCICredito={this.handleCICredito} handleCreditoSubmit={this.handleCreditoSubmit}/>
-      <ShopPaymentDebit data={this.state.DebitoData} onClick={this.onClick} handleNumeroDebito={this.handleNumeroDebito} handleNombreImpresoDebito={this.handleNombreImpresoDebito} handleCVCDebito={this.handleCVCDebito} handleBancoDebito={this.handleBancoDebito} handleCIDebito={this.handleCIDebito} handleExpiracionDebito={this.handleExpiracionDebito} handleDebitoSubmit={this.handleDebitoSubmit}/>
-      <ShopPaymentPoint data={this.state.PuntosData} onClick={this.onClick} handleCantidadPuntos={this.handleCantidadPuntos} handlePuntosSubmit={this.handlePuntosSubmit}/>
-      <ShopPaymentDivisa data={this.state.DivisaData} onClick={this.onClick} handleCantidadDivisa={this.handleCantidadDivisa} handleTipoDivisa={this.handleTipoDivisa} handleDivisaSubmit={this.handleDivisaSubmit}/>
-      <ShopPaymentCheque data={this.state.ChequeData} onClick={this.onClick} handleBancoCheque={this.handleBancoCheque} handleNumeroChequeCheque={this.handleNumeroChequeCheque} handleNumeroCuentaCheque={this.handleNumeroCuentaCheque} handleChequeSubmit={this.handleChequeSubmit}/>
-      <ShopPaymentEfectivo data={this.state.EfectivoData} onClick={this.onClick} handleDenominacionEfectivo={this.handleDenominacionEfectivo} handleCantidadEfectivo={this.handleCantidadEfectivo} handleEfectivoSubmit={this.handleEfectivoSubmit}/>
-    </div >)
+      <ShopPayment data={this.state} onClick={this.onClick} handleCredito={this.handleCredito} handleCreditoSubmit={this.handleCreditoSubmit} handleDebito = {this.handleDebito} handleDebitoSubmit={this.handleDebitoSubmit}/>
+      </div>)
   }
 }
 export default withRouter(MetodoPagoTiendaContainer);
