@@ -29,12 +29,20 @@ class Carnet extends Component {
         <h3> CARNET DE AFILIACIÓN </h3>
         <div className="w-100"></div>
         <div className="col-3 col align-self-center bg-dark text-light">
-          <div className="row">
+          {this.props.tipo === "Natural"
+          ?<div className="row">
             <div className="col-12 mb-2"> <h5>RIF</h5>{data.rif} </div>
             <div className="col-12"> <h5>Nombre y Apellido</h5>{data.name} {data.lastName}</div>
               <div className="col-12 mb-2"> <h5>Género</h5>{data.gender}</div>
               <div className="col-12"> <h5>Fecha de Nacimiento</h5>{formatDate(data.bornDate)}</div>
           </div>
+          :<div className="row">
+            <div className="col-12 mb-2"> <h5>RIF</h5>{data.rif} </div>
+            <div className="col-12"> <h5>Designación Comercial</h5>{data.comercialDesignation}</div>
+              <div className="col-12 mb-2"> <h5>Razón Social</h5>{data.businessName}</div>
+              <div className="col-12"> <h5>Página Web</h5>{formatDate(data.webPage)}</div>
+          </div>
+        }
         </div>
         <div className="col-3 bg-dark text-light align-self-center">
           <div className ="row">

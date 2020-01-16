@@ -76,8 +76,7 @@ class HomeShop extends Component{
         recursiveDireccion(foreign)
         .then((fullAddress)=>{
           this.interval = setInterval(() => {
-            this.setState({direccion: fullAddress})
-            console.log(this.state.direccion)}, 1000);
+            this.setState({direccion: fullAddress})}, 1000);
           return fullAddress
         })
       })

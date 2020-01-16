@@ -81,7 +81,11 @@ router.get('/read/roles', db.getRoles) // GET ALL ROLES
 router.get('/read/divisaTasa', db.getTasaActual) //GET TIPO DE CAMBIO
 router.get('/read/cervezas', db.getCervezas) //GET ALL BEERS
 router.get('/read/cantidadPorIdCerveza', db.getCantidadPorIdCerveza) //GET QUANTITY OF A BEER IN INVENTORY
+<<<<<<< Updated upstream
 router.get('read/totalFacturaCompra',db.getTotalFacturaCompra) //TE DEVUELTE EL TOTAL DE UNA FACTURA DETERMINADA
+=======
+router.get('/read/usuarios', db.getUsuarios) //GET All Users
+>>>>>>> Stashed changes
 
 //POST ROUTES
 router.post('/create/usuario', db.postUsuario) //CREATE NEW USER

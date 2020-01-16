@@ -1,5 +1,9 @@
-import React, {Component} from 'react';
-import {BrowserRouter as Router, Route, Link} from "react-router-dom";
+import React, {Component} from 'react'
+import {BrowserRouter as Router, Route, Link} from "react-router-dom"
+import ReactDOM from 'react-dom'
+
+import Button from './Button'
+import Carnet from './Carnet'
 
 function mostrarCorreos(Emails){
   let i=0
@@ -16,6 +20,25 @@ function mostrarContactos(Contactos){
       i++;
       return <Contact key={i} i={i} nameContact={contacto.nameContact} numberContact={contacto.numberContact}/>
     })
+}
+function ventanaShowCarnet(CompanyData){
+  return(
+    <section className="row">
+      <div className="col-12">
+        <Carnet data ={CompanyData} tipo ="Juridico"/>
+      </div>
+    </section>
+  )
+}
+function renderOption(id, data){
+  let elementHTML = document.getElementById('optionSelected')
+  switch(id){
+    case('showCarnet'):
+      ReactDOM.render(ventanaShowCarnet(data), elementHTML);
+      break
+    default:
+      elementHTML.innerHTML = 'No encontró la opción'
+  }
 }
 
 class EmailComp extends Component{
@@ -75,11 +98,18 @@ class CompanyClient extends Component{
           <h5><strong>Puntos acumulados: </strong></h5>
         </div>
         <div className="col-4">
+          <h5> <strong> OPCIONES CLIENTE: </strong></h5>
           <a className="btn btn-outline-dark btn-lg btn-block" href="/pedidos" role="button">Pedidos</a>
           <a className="btn btn-outline-dark btn-lg btn-block" href="/seguridad" role="button">Seguridad</a>
           <a className="btn btn-outline-dark btn-lg btn-block" href="/metodopago" role="button">Metodos de Pago</a>
           <a className="btn btn-outline-dark btn-lg btn-block" href="/direccion" role="button">Direccion</a>
-          <a className="btn btn-outline-dark btn-lg btn-block" href="/carnet" role="button">Carnet de Afiliacion</a>
+          <Button id="showCarnet" title="Carnet" type="options" action={(event)=>{
+              event.preventDefault(); renderOption('showCarnet', this.props.CompanyData)}} buttonStyle={{width:"100%"}}/>
+        </div>
+        <div className="col-12">
+          <div id="optionSelected">
+
+          </div>
         </div>
       </section>
     )

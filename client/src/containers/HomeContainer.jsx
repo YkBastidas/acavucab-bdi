@@ -23,23 +23,6 @@ import ProductLine from "../components/ProductLine"
 import SideEvents from "../components/SideEvents"
 import HomeRightSide from "../containers/HomeRightSide"
 
-import Button from "../components/Button"
-
-function conseguirUsuario(userName){
-  return axios.get('/read/usuarioPorNombre', {
-    params: {
-      nombre : userName
-    }}
-  ).then((response) => {
-      console.log(response.data)
-      if(response.data.length > 0) return response.data
-      else return false
-  }).catch(function (error) {
-    console.log('AXIOS error: '+ error);
-    return 'errorValidateUser'
-  });
-}
-
 axios.defaults.withCredentials = true;
 
 export default class HomeContainer extends Component {
@@ -49,24 +32,6 @@ export default class HomeContainer extends Component {
       report: '',
       reportScript: ''
     };
-  }
-
-   async testReport(e){
-    e.preventDefault()
-    let jsonUser= await conseguirUsuario('ProbandoUser')
-    let data = {
-      "template": {
-        "name": "/reportes/test-main"
-      },
-      "data": {
-        "userData": jsonUser[0]
-      }
-    }
-    if(jsonUser!== false){
-      console.log('Reporte Enviado')
-      jsreport.serverUrl = 'http://localhost:5488'
-      jsreport.render(document.getElementById('reportPlaceholder'), data)
-    }
   }
 
   render() {
@@ -89,11 +54,6 @@ export default class HomeContainer extends Component {
         </div>
         <div className="col-sm-4 col align-self-center">
           <HomeRightSide/>
-        </div>
-        <Button action={this.testReport} type={"warning"} title={"Generar Reporte"}
-          buttonStyle={{ width: "100%" }}/>
-        <div id="reportPlaceholder">
-          <p>there should be a report here...</p>
         </div>
       </section >);
   }
