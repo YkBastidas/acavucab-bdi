@@ -280,6 +280,14 @@ const getCantidadPorIdCerveza = (request, response) =>{
     response.status(200).json(results.rows)
   })
 }
+const getUsuarios = (request, response) =>{
+  pool.query('SELECT * FROM usuario', (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
 const getLogout = (request,response) =>{
   request.logout()
   request.session = null
@@ -1148,6 +1156,7 @@ module.exports = {
   getTasaPuntosActual,
   getCervezas,
   getCantidadPorIdCerveza,
+  getUsuarios,
   getLogout,
   /*
 	getEmpleados,
