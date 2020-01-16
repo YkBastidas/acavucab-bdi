@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 
 import SignUpContainer from '../containers/SignUpContainer'
 import Button from './Button'
+import SearchUsersContainer from '../containers/SearchUsersContainer'
 
 function ventanaCrearUsuario(){
   return(
@@ -15,11 +16,24 @@ function ventanaCrearUsuario(){
   )
 }
 
+function ventanaSearchUser(){
+  return(
+    <section className="row">
+      <div className="col-12">
+        <SearchUsersContainer/>
+      </div>
+    </section>
+  )
+}
+
 function renderOption(id){
   let elementHTML = document.getElementById('optionSelected')
   switch(id){
     case('createUserButton'):
       ReactDOM.render(ventanaCrearUsuario(), elementHTML);
+      break
+    case('searchUsers'):
+      ReactDOM.render(ventanaSearchUser(), elementHTML);
       break
     default:
       elementHTML.innerHTML = 'No encontró la opción'
@@ -66,7 +80,8 @@ class PersonalAccount extends Component{
                   event.preventDefault(); renderOption('createUserButton')}} buttonStyle={{width:"100%"}}/>
             </div>
             <div className ="col-3">
-              <a className="btn btn-outline-dark btn-lg btn-block" href="/metodopago" role="button">Metodos de Pago</a>
+              <Button id="searchUsers" title="Buscar usuarios" type="options" action={(event)=>{
+                  event.preventDefault(); renderOption('searchUsers')}} buttonStyle={{width:"100%"}}/>
             </div>
             <div className ="col-3">
               <a className="btn btn-outline-dark btn-lg btn-block" href="/direccion" role="button">Direccion</a>

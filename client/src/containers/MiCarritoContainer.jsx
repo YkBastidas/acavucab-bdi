@@ -261,29 +261,28 @@ export default class MiCarritoContainer extends Component {
     }
     else alert('Cantidad Inválida')
   }
-  handleSubmit(e){
+  async handleSubmit(e){
+    let idCompra, totalfactura, userData = this.state.userData
     e.preventDefault()
-    if(this.state.isLoggedIn)
-      alert("Enviado")
-      if(this.userData.fk_rol==10){
-        var idCompra= crearCompra(null,1,null,userData.id);
+    if(this.state.isLoggedIn){
+      if(userData.fk_rol===10){
+        idCompra = await crearCompra(null,1,null,userData.id);
         postStatusCompra(idCompra);
         //AQUI IRIA EL LOOP PARA DETALLE
-
-        var totalfactura= getTotalFactura(idCompra);
+        totalfactura= await getTotalFactura(idCompra);
         putTotalFactura(idCompra,totalfactura);
       }
-      else{
-        const fk_usuario= getClientePK(this.userData.id);
-        var idCompra=crearCompra(fk_usuario,null,2,null);
+      else if (userData.fk_rol===8){
+        const fk_usuario= getClientePK(userData.id);
+        idCompra = await crearCompra(fk_usuario,null,2,null);
         postStatusCompra(idCompra);
         //AQUI IRIA EL LOOP PARA DETALLE
-
-        var totalfactura= getTotalFactura(idCompra);
+        totalfactura= await getTotalFactura(idCompra);
         putTotalFactura(idCompra,totalfactura);
       }
-      else{
-        alert("Debe iniciar sesión antes de comprar")
+    }
+    else{
+      alert("Debe iniciar sesión antes de comprar")
     }
   }
 

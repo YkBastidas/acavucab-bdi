@@ -100,7 +100,7 @@ router.post('/create/cash', db.postEfectivo) //CREATE CASH
 router.post('/create/divisa', db.postDivisa) //CREATE DIVISA
 router.post('/create/pago',db.postPago) //REGISTRA EL PAGO DE LA COMPRA
 router.post('/create/compra',db.postCompra) //INICIALIZA LA COMPRA PARA OBTENER SU PK
-router.post('/create/detalleCompra'.db.postDetalleCompra) //REGISTRA DETALLE DE LAS COMPRAS
+router.post('/create/detalleCompra', db.postDetalleCompra) //REGISTRA DETALLE DE LAS COMPRAS
 router.post('/create/statusCompra',db.postStatusCompra) //REGISTRA STATUS EN LAS COMPRAS
 
 //PUT ROUTES
