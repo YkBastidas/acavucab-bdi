@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
+import Input from './Input';
+import Button from './Button';
+import DateForm from './DateForm';
 
 
 class ShopPayment extends Component{
@@ -29,38 +32,31 @@ render(){
                     </div>
                   </div>
             
-              <div>
-                <label for="cc-name">Nombre en tarjeta</label>
-                <input type="text" class="form-control" id="cc-name" placeholder="" required></input>
+                  <div>
+                <Input title={"Banco de la tarjeta"} name={"cc-banco"} inputtype={"text"} value={this.props.data.banco} handlerChange={this.props.handleBancoCredito}/>
               </div>
               <div>
-                <label for="cc-number">Numero de tarjeta de Credito</label>
-                <input type="text" class="form-control" id="cc-number" placeholder="" required></input>
+                <Input title={"Nombre impreso en la tarjeta"} name={"cc-name"} inputtype={"text"} value={this.props.data.nombre_impreso} handlerChange={this.props.handleNombreImpresoCredito}/>     
               </div>
-            
-            <div>
-              <label for="cc-number">Numero de tarjeta de Debito</label>
-              <input type="text" class="form-control" id="cc-number" placeholder="" required></input>
-            </div>
+              <div>
+                <Input title={"Cedula del tarjeta-habiente"} name={"cc-ci"} inputtype={"text"} value={this.props.data.ci} handlerChange={this.props.handleCICredito}/>     
+              </div>
+              <div>
+                <Input title={"Numero de tarjeta"} name={"cc-number"} inputtype={"text"} value={this.props.data.numero} handlerChange={this.props.handleNumeroCredito}/>
+              </div>
           </div>
-            
               <div>
-                <label for="cc-expiration">Expiracion</label>
-                <input type="text" class="form-control" id="cc-expiration" placeholder="" required></input>
+              <Input title={"Codigo de validacion"} name={"cc-cvc"} inputtype={"text"} value={this.props.data.cvc} handlerChange={this.props.handleCVCCredito}/>
               </div>
               <div>
-                <label for="cc-expiration">Codigo de seguridad</label>
-                <input type="text" class="form-control" id="cc-cvv" placeholder="" required></input>
-                <hr></hr>
+               <DateForm title={"* Fecha de Expiracion:"} name={"bornDate"} inputtype={"date"} min={"1899-01-01"} max={"2100-01-01"} value={this.props.data.bornDate} handlerChange={this.props.handleBornDate}/>
               </div>
               <li>
                 <span>Total: </span>
                 <strong>Numero</strong>
                 </li>
             <hr></hr>
-            <button class="btn btn-primary btn-lg btn-block" type="submit">Comprar</button>
-            
-          
+            <Button action={this.props.handleCreditoSubmit} type={'primary'} title={'Comprar'}></Button>
         </div>
       </div>
     

@@ -57,51 +57,7 @@ app.use((req, res, next) => {
   next(err);
 });
 
-/*
-app.use('/bd/tipocerveza', router);
-app.use('/bd/agregarevento', router);
-app.use('/bd/modificarevento', router);
-app.use('/bd/eliminarevento', router);
-app.use('/bd/tienda', router);
-app.use('/bd/personal', router);
-app.use('/bd/modificarpersonal', router);
-app.use('/bd/añadirpersonal', router);
-app.use('/bd/eliminarpersonal', router);
-app.use('/bd/iniciosesion', router);
-app.use('/bd/contacto', router);
-app.use('/bd/proveedores', router);
-app.use('/bd/fichaproveedor', router);
-app.use('/bd/eliminarproveedor', router);
-app.use('/bd/modificarproveedor', router);
-app.use('/bd/descripcioncerveza', router);
-app.use('/bd/agregarcerveza', router);
-app.use('/bd/modificarcerveza', router);
-app.use('/bd/horarios', router);
-app.use('/bd/micuenta', router);
-app.use('/bd/descripcionevento', router);
-app.use('/bd/contrasena', router);
-app.use('/bd/codigoconfirmacion', router);
-app.use('/bd/presupuesto', router);
-app.use('/bd/carnet', router);
-app.use('/bd/listadeseo', router);
-app.use('/bd/pedidoscurso', router);
-app.use('/bd/pedidoscancelados', router);
-app.use('/bd/pedidostiempo', router);
-app.use('/bd/pedidos', router);
-app.use('/bd/seguridad', router);
-app.use('/bd/nombreseguridad', router);
-app.use('/bd/correoseguridad', router);
-app.use('/bd/numeroseguridad', router);
-app.use('/bd/contraseñaseguridad', router);
-app.use('/bd/direccion', router);
-app.use('/bd/agregardireccion', router);
-app.use('/bd/editardireccion', router);
-app.use('/bd/eliminardireccion', router);
-app.use('/bd/carrito', router);
-app.use('/bd/metodopago', router);
-app.use('/bd/metodopagotienda', router);
- */
-
+//GET ROUTES
 router.get('/read/eventos', db.getEvents) // GET ALL EVENTS
 router.get('/read/direcciones', db.getDirecciones) // GET ALL ADDRESSES
 router.get('/read/direccionPorClave', db.getDireccionPorClave) // GET ADDRESS BY ID
@@ -122,7 +78,11 @@ router.get('/read/personalPorUserID', db.getPersonalPorUserID) //GET PERSONAL BY
 router.get('/read/rolPorID', db.getRolPorUserID) //GET USER ROLE BY IT'S ID
 router.get('/read/empleadoPorCedula', db.getEmpleadoPorCedula) // GET EMPLOYEE BY CI
 router.get('/read/roles', db.getRoles) // GET ALL ROLES
+router.get('/read/divisaTasa', db.getTasaActual) //GET TIPO DE CAMBIO
+router.get('/read/cervezas', db.getCervezas) //GET ALL BEERS
+router.get('/read/cantidadPorIdCerveza', db.getCantidadPorIdCerveza) //GET QUANTITY OF A BEER IN INVENTORY
 
+//POST ROUTES
 router.post('/create/usuario', db.postUsuario) //CREATE NEW USER
 router.post('/create/registro', db.postRegistro) // CREATE NEW CLIENT
 router.post('/create/direccion', db.postDireccion) // CREATE A NEW ADDRESS
@@ -131,7 +91,16 @@ router.post('/create/telefonoCliente', db.isLogged, db.postTelefonoCliente) // C
 router.post('/create/personaContacto', db.postPersonaContacto) // CREATE A NEW CONTACT PERSON
 router.post('/create/registroEmpleado', db.postEmpleado) //CREATE A NEW EMPLOYEE
 router.post('/create/telefonoPersonal', db.postTelefonoPersonal) //CREATE A NEW PHONE FOR EMPLOYEE
+router.post('/create/creditCard',db.postTarjetaCredito) //CREATE A CREDIT CARD
+router.post('/create/debitCard',db.postTarjetaDebito) //CREATE A DEBIT CARD
+router.post('/create/pagoPuntos',db.postPagoPuntos) //CREATE PUNTOS
+router.post('/create/cheque', db.postCheque) //CREATE CHEQUE
+router.post('/create/cash', db.postEfectivo) //CREATE CASH
+router.post('/create/divisa', db.postDivisa) //CREATE DIVISA
+router.post('/create/pago',db.postPago) //REGISTRA EL PAGO DE LA COMPRA
+router.post('/create/compra',db.postCompra) //INICIALIZA LA COMPRA PARA OBTENER SU PK
 
+//AUTHENTICATION
 router.post('/auth/signIn', db.postSignIn) // AUTHENTICATE USER AND LOGIN
 router.get('/auth/logout', db.getLogout) // CLOSE USER SESSION
 

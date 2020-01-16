@@ -76,11 +76,11 @@ class PersonalAccount extends Component{
             </div>
           </div>
         </div>
-      <div className="col-12">
-        <div id="optionSelected">
+        <div className="col-12">
+          <div id="optionSelected">
 
+          </div>
         </div>
-      </div>
       </section>
     )
   }

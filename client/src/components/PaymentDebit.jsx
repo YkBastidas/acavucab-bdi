@@ -2,49 +2,64 @@ import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 
 
-class Pedidos extends Component{
+class PaymentDebit extends Component{
     constructor(props) {
       super(props);
       this.state = {
         title: props.title,
-        
+
     }
 }
 render(){
     return(
-        <section className="row margin-bottom">
-        <div className="col-sm-12 col align-self-center">
-        <div class="medium-7 large-4 cell">
-            <div class="medium-6 cell" data-sticky-container>
-                <div class="sticky" data-sticky data-anchor="content">
-                    
-                    <h4>Pedidos</h4>
-                    <ul>
-                        <li><a id="h5link" href="../pedidos">Pedidos</a></li>
-                        <li><a id="h5link" href="/listadeseo">Lista de deseos</a></li>
-                        <li><a id="h5link" href="/pedidoscurso">Pedidos en curso</a></li>
-                        <li><a id="h5link" href="/pedidoscancelados">Pedidos cancelados</a></li>
-                        <li><a id="h5link" href="/pedidostiempo">Pedidos en los últimos meses</a></li>
-                    </ul>
-                </div>
+        <div class="col-md-8 order-md-2">
+        <div class="grid-x grid-margin-x">
+          <div class="large-12 cell">
+            <h4 class="mb-3">Pago online</h4>
+            <div class="d-block my-8">
+              <div class="custom-control custom-radio">
+                <input id="credit" name="paymentMethod" type="radio" class="custom-control-input"></input>
+                <label class="custom-control-label" for="credit" onClick={this.props.onClick}>Tarjeta Credito</label>
+              </div>
             </div>
+            <div class="d-block my-3">
+                    <div class="custom-control custom-radio">
+                      <input id="debit" name="paymentMethod" type="radio" class="custom-control-input"checked required ></input>
+                      <label class="custom-control-label" for="debit" >Tarjeta Debito</label>
+                    </div>
+                  </div>
+              <div>
+                <label for="cc-name">Nombre en tarjeta</label>
+                <input type="text" class="form-control" id="cc-name" placeholder="" required></input>
+              </div>
+            <div>
+              <label for="cc-number">Numero de tarjeta de Debito</label>
+              <input type="text" class="form-control" id="cc-number" placeholder="" required></input>
+            </div>
+          </div>
+            
+              <div>
+                <label for="cc-expiration">Expiracion</label>
+                <input type="text" class="form-control" id="cc-expiration" placeholder="" required></input>
+              </div>
+              <div>
+                <label for="cc-expiration">Codigo de seguridad</label>
+                <input type="text" class="form-control" id="cc-cvv" placeholder="" required></input>
+                <hr></hr>
+              </div>
+              <li>
+                <span>Total: </span>
+                <strong>Numero</strong>
+                </li>
+            <hr></hr>
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Comprar</button>
+            
+          
         </div>
-        <form>
-                <div class="text-center">
-                <div class="grid-x">
-                    <div class="small-16 cell">
-                        <label>Busca el/los pedidos
-                            <input type="text"></input> <button type="button" class="btn btn-primary"><a href="/tipocerveza" >Buscar</a></button>
-                        </label>
-                    </div>
-                    </div>
-                    </div>
-            </form>
-           
-        </div>
-       
-      </section>
+      </div>
+    
+   
     )
 }
 }
-export default Pedidos
+export default PaymentDebit

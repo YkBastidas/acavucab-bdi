@@ -2018,11 +2018,11 @@ INSERT INTO public.direccion (fk_direccion, tipo, nombre) VALUES
 (1002, 'Avenida', 'Libertad'),
 (2009, 'Edificio', 'Valparaiso'),
 (2010, 'Piso', '16'),
-(2011, 'Apartamento', '1604');
+(2011, 'Apartamento', '1604'),
 (1976, 'Avenida', 'Teherán Urb Montalban'),
-(2014, 'Edificio', 'Laboratorios'),
-(2010, 'Piso', '2'),
-(2011, 'Oficina', 'INF001');
+(2013, 'Edificio', 'Laboratorios'),
+(2014, 'Piso', '2'),
+(2015, 'Oficina', 'INF001');
 
 INSERT INTO public.rol(nombre) VALUES
 ('Jefe de pasillo'),
@@ -2283,10 +2283,10 @@ INSERT INTO public.privilegio (tipo,tabla) VALUES
 
 
 INSERT INTO public.cliente(rif,tipo,fk_direccion_fisica,natural_ci,natural_nombre,natural_apellido,natural_genero,juridico_denominacion_comercial,juridico_razon_social,juridico_pagina_web,juridico_capital,juridico_fk_direccion_fiscal,fk_usuario) VALUES
-('V26731723','Natural',2000,16253135,'Archibaldo','Darree','Hombre',null,null,null,null,null,6),
+('V26731723','Natural',2000,26731723,'Archibaldo','Darree','Hombre',null,null,null,null,null,6),
 ('J13128895','Juridico',2004,null,null,null,null,'PHBB','PHBB C.A.','phpbb.com',362456870,2008,7),
 ('V162531356','Natural',1,16253135,'Archibaldo','Darree','Hombre',null,null,null,null,null,29),
-('J192174719','Juridico',1,null,null,null,null,'PHBB','PHBB C.A.','phpbb.com',362456870,1,30),
+('J192174719','Juridico',1,null,null,null,null,'PROTECT','PROTECT C.A.','protect.com',362456870,1,30),
 ('V175327365','Natural',2,17532736,'Philip','Banfield','Hombre',null,null,null,null,null,31),
 ('J165520856','Juridico',2,null,null,null,null,' Distribuidora Princenton','Princenton S.R.L.','princeton.com',244032734,2,32),
 ('V207332128','Natural',3,20733212,'Dyana','Byron','Mujer',null,null,null,null,null,33),
@@ -3510,26 +3510,26 @@ INSERT INTO public.lager(tipo,fk_historia_cerveza) VALUES
 ('Maibock',6),
 ('Eisbock',6);
 
-INSERT INTO public.cerveza_artesanal(nombre,descripcion,fk_ale,fk_lager) VALUES
-('Destilo','Blonde refrescante y liviana, de color dorado y cuerpo ligero, donde se destacan aromas florales y toques cítricos',6,null),
-('Tovar Siete','Cerveza filtrada de color dorado intenso (EBC 6), con una fuerte presencia de los granos en su sabor y aroma, mucho cuerpo y alta graduación alcohólica.',null,9),
-('Tovar IPA','Cerveza sin filtrar, espumosa, de color naranja y con un predominante sabor y aroma a lúpulo.',2,null),
-('Tovar Pilsen','Cerveza filtrada de color dorado intenso (EBC 4), sabor suave a malta, presencia de un aroma de lúpulos nobles y una percepción general muy balanceada, al probarla ningún sabor predomina.',null,1),
-('Polar Ice','Polar Ice es la cerveza suave, que te permite disfrutar los mejores momentos en compañía de tus panas, gracias a su sabor equilibrado y grado alcohólico medio.',null,1),
-('Solera-Marzen','Es una cerveza tipo lager, elaborada en Baviera y de color ámbar. De cuerpo ligeramente pronunciado, con 4%(°G.L.) y un aroma a cebada malteada con notas tostadas que la caracterizan.',null,4),
-('Benitz Jokili Bierli','Jokili Bierli, Cerveza de Temporada de Carnavales.',8,null),
-('Cervecería Lago Ángel o Demonio','Color dorado turbio y de espuma blanca y fina. Ligeramente dulce y amarga. Aromas frutales a hierbas y miel, picante en un inicio producto del alcohol que contiene.',4,null),
-('Mito Brewhouse Llorona',' Llorona IPA, es una cerveza desenfrenadamente lupulada, no recomendada para paladares delicados. grado alcohólico G.L, color cobre aromas cítricos por la naturaleza y estilo de los lúpulos que se utilizan, esta cerveza cumple con la ley Baviera, la cual le confiere el nombre de “Cerveza Genuina”.',2,null),
-('Yanqui Víctor Guardabosques','Un Pale Ale con cuerpo mediano a completo, el amargor de cerveza se combina con las sutiles notas de sabor a cebada rostizada y con sus aromas de frutas cítricas. Considerado un clásico pale ale, la hacemos a una sola temperatura de macerado para conseguir la robustez que la caracteriza',3,null),
-('Yanqui Víctor Gallero','Los aromas cítricos como la piña y florales como el pino acompañan al cuerpo mediano donde el dulzor de la Caramel Malt puede ser captado de manera que no es una cerveza seca.',2,null),
-('Cervecería Lago Rock N Rolla','Color castaño oscuro. Fuerte y malteada con trazas de nuez. Suave sabor a mezcla de maltas tostadas. Es afrutada, seca y con leve sabor cítrico.',9,null),
-('Tovar Siete','Cerveza filtrada de color dorado intenso (EBC 6), con una fuerte presencia de los granos en su sabor y aroma, mucho cuerpo y alta graduación alcohólica.',null,7),
-('Tovar Pilsen', 'Cerveza filtrada de color dorado intenso (EBC 4), sabor suave a malta, presencia de un aroma de lúpulos nobles y una percepción general muy balanceada, al probarla ningún sabor predomina.',null,1),
-('Tovar Hefe Weizen', 'Cerveza sin filtrar de aspecto turbio y color anaranjado intenso (EBC 8), sacada directamente del tanque de fermentación, por lo que es más fresca. Contiene una levadura especial que ésteres y fenoles con aromas característicos a banana y clavo que le dan un sabor afrutado con tonos dulces.',null,7),
-('Polar Ice', 'Polar Ice es la cerveza suave, que te permite disfrutar los mejores momentos en compañía de tus panas, gracias a su sabor equilibrado y grado alcohólico medio.',null,1),
-('Mito Brewhouse Candileja','Inspirada en las técnicas y procesos utilizados por los monjes en monasterios y abadías trapenses. Ingredientes en grandes dosis y delicadamente seleccionados para su producción. Esta de cuerpo denso y resplandeciente color ámbar, se caracteriza por su aroma intenso a caramelo, rasgos de durazno y ciruela que son esteres emitidos por la cepa de levadura de la fermentación, su carbonatación es de media a alta, lúpulos característicos de su estilo, la hacen una opción fácil de maridar. No contiene conservantes.',5,null),
-('Aldarra Mantuana', 'Caracterizada por una mezcla de cereales, maltas y lúpulos americanos. De un interesante color dorado, posee un sabor ligero y cuerpo liviano, además de un aroma que recuerda las frutas tropicales. Una preparación carbonatación media, sin asperezas o astringencias.',6,null),
-('Brünett Barcelona', 'Edición especila Barcelona Orgullo Oriental, Extra Special Bitter Ale. Una tradicional Extra Special Bitter hecha al más puro estilo inglés.',10,null);
+INSERT INTO public.cerveza_artesanal(nombre,descripcion,precio_unitario,fk_ale,fk_lager) VALUES
+('Destilo','Blonde refrescante y liviana, de color dorado y cuerpo ligero, donde se destacan aromas florales y toques cítricos',round(cast(random()*(10000-25000)+25000 as numeric), 2),6,null),
+('Tovar Siete','Cerveza filtrada de color dorado intenso (EBC 6), con una fuerte presencia de los granos en su sabor y aroma, mucho cuerpo y alta graduación alcohólica.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,9),
+('Tovar IPA','Cerveza sin filtrar, espumosa, de color naranja y con un predominante sabor y aroma a lúpulo.',round(cast(random()*(10000-25000)+25000 as numeric), 2),2,null),
+('Tovar Pilsen','Cerveza filtrada de color dorado intenso (EBC 4), sabor suave a malta, presencia de un aroma de lúpulos nobles y una percepción general muy balanceada, al probarla ningún sabor predomina.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,1),
+('Polar Ice','Polar Ice es la cerveza suave, que te permite disfrutar los mejores momentos en compañía de tus panas, gracias a su sabor equilibrado y grado alcohólico medio.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,1),
+('Solera-Marzen','Es una cerveza tipo lager, elaborada en Baviera y de color ámbar. De cuerpo ligeramente pronunciado, con 4%(°G.L.) y un aroma a cebada malteada con notas tostadas que la caracterizan.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,4),
+('Benitz Jokili Bierli','Jokili Bierli, Cerveza de Temporada de Carnavales.',round(cast(random()*(10000-25000)+25000 as numeric), 2),8,null),
+('Cervecería Lago Ángel o Demonio','Color dorado turbio y de espuma blanca y fina. Ligeramente dulce y amarga. Aromas frutales a hierbas y miel, picante en un inicio producto del alcohol que contiene.',round(cast(random()*(10000-25000)+25000 as numeric), 2),4,null),
+('Mito Brewhouse Llorona',' Llorona IPA, es una cerveza desenfrenadamente lupulada, no recomendada para paladares delicados. grado alcohólico G.L, color cobre aromas cítricos por la naturaleza y estilo de los lúpulos que se utilizan, esta cerveza cumple con la ley Baviera, la cual le confiere el nombre de “Cerveza Genuina”.',round(cast(random()*(10000-25000)+25000 as numeric), 2),2,null),
+('Yanqui Víctor Guardabosques','Un Pale Ale con cuerpo mediano a completo, el amargor de cerveza se combina con las sutiles notas de sabor a cebada rostizada y con sus aromas de frutas cítricas. Considerado un clásico pale ale, la hacemos a una sola temperatura de macerado para conseguir la robustez que la caracteriza',round(cast(random()*(10000-25000)+25000 as numeric), 2),3,null),
+('Yanqui Víctor Gallero','Los aromas cítricos como la piña y florales como el pino acompañan al cuerpo mediano donde el dulzor de la Caramel Malt puede ser captado de manera que no es una cerveza seca.',round(cast(random()*(10000-25000)+25000 as numeric), 2),2,null),
+('Cervecería Lago Rock N Rolla','Color castaño oscuro. Fuerte y malteada con trazas de nuez. Suave sabor a mezcla de maltas tostadas. Es afrutada, seca y con leve sabor cítrico.',round(cast(random()*(10000-25000)+25000 as numeric), 2),9,null),
+('Tovar Siete','Cerveza filtrada de color dorado intenso (EBC 6), con una fuerte presencia de los granos en su sabor y aroma, mucho cuerpo y alta graduación alcohólica.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,7),
+('Tovar Pilsen', 'Cerveza filtrada de color dorado intenso (EBC 4), sabor suave a malta, presencia de un aroma de lúpulos nobles y una percepción general muy balanceada, al probarla ningún sabor predomina.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,1),
+('Tovar Hefe Weizen', 'Cerveza sin filtrar de aspecto turbio y color anaranjado intenso (EBC 8), sacada directamente del tanque de fermentación, por lo que es más fresca. Contiene una levadura especial que ésteres y fenoles con aromas característicos a banana y clavo que le dan un sabor afrutado con tonos dulces.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,7),
+('Polar Ice', 'Polar Ice es la cerveza suave, que te permite disfrutar los mejores momentos en compañía de tus panas, gracias a su sabor equilibrado y grado alcohólico medio.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,1),
+('Mito Brewhouse Candileja','Inspirada en las técnicas y procesos utilizados por los monjes en monasterios y abadías trapenses. Ingredientes en grandes dosis y delicadamente seleccionados para su producción. Esta de cuerpo denso y resplandeciente color ámbar, se caracteriza por su aroma intenso a caramelo, rasgos de durazno y ciruela que son esteres emitidos por la cepa de levadura de la fermentación, su carbonatación es de media a alta, lúpulos característicos de su estilo, la hacen una opción fácil de maridar. No contiene conservantes.',round(cast(random()*(10000-25000)+25000 as numeric), 2),5,null),
+('Aldarra Mantuana', 'Caracterizada por una mezcla de cereales, maltas y lúpulos americanos. De un interesante color dorado, posee un sabor ligero y cuerpo liviano, además de un aroma que recuerda las frutas tropicales. Una preparación carbonatación media, sin asperezas o astringencias.',round(cast(random()*(10000-25000)+25000 as numeric), 2),6,null),
+('Brünett Barcelona', 'Edición especila Barcelona Orgullo Oriental, Extra Special Bitter Ale. Una tradicional Extra Special Bitter hecha al más puro estilo inglés.',round(cast(random()*(10000-25000)+25000 as numeric), 2),10,null);
 
 INSERT INTO public.comentario_cerveza(fk_cliente,fk_cerveza,calificacion, descripcion) VALUES
 ('V162531356',1,3.5,'Refrescante con abundantes aromas florales'),
@@ -3563,3 +3563,24 @@ INSERT INTO public.persona_contacto(nombre, numero, fk_cliente) VALUES
 
 INSERT INTO public.correo_electronico(direccion, fk_cliente) VALUES
 ('jhondoe18@gmail.com', 'V26731723'), ('jhondoe18@hotmail.com', 'V26731723'), ('contact@phbb.ca', 'J13128895');
+
+INSERT INTO public.historico_inventario_cerveza(cant_disponible, fecha_inicio, fk_cerveza) VALUES
+  (floor(random()*(500-2000))+2000, '15/01/2020', 1),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 2),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 3),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 4),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 5),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 6),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 7),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 8),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 9),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 10),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 11),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 12),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 13),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 14),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 15),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 16),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 17),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 18),
+  (floor(random()*(500-2000))+2000, '15/01/2020', 19);

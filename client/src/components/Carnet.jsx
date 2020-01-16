@@ -5,53 +5,45 @@ import axios from 'axios';
 //import '../report';
 
 //const carnetreporte = document.getElementById('carnetreporte').setAttribute('href', "http://localhost:5488/api/report");
+function formatDate(date) {
+  var monthNames = [
+    "Enero", "Febrero", "Marzo",
+    "Abril", "Mayo", "Junio", "Julio",
+    "Agosto", "Septiembre", "Octubre",
+    "Noviembre", "Diciembre"
+  ];
+  var birthday = new Date(date)
+  var day = birthday.getDate();
+  var monthIndex = birthday.getMonth();
+  var year = birthday.getFullYear();
+
+  return day + ' ' + monthNames[monthIndex] + ' ' + year;
+}
 
 class Carnet extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {}
-  }
   render() {
-    return (<section className="row align-items-center margin-bottom">
-      <div className="col-sm-12 col align-self-center">
-        <h4>Nombre/Razón social</h4>
-        <div class="input-group input-group-lg">
-          <span class="input-group-addon">
-            <i class="fa fa-user"></i>
-          </span>
-          <input type="text" class="form-control" placeholder=""></input>
+    let data = this.props.data, qrText = data.rif,
+    qrURL="https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl="+qrText+"&chld=H|0"
+    return (
+      <section className="row align-items-center margin-bottom">
+        <h3> CARNET DE AFILIACIÓN </h3>
+        <div className="w-100"></div>
+        <div className="col-3 col align-self-center bg-dark text-light">
+          <div className="row">
+            <div className="col-12 mb-2"> <h5>RIF</h5>{data.rif} </div>
+            <div className="col-12"> <h5>Nombre y Apellido</h5>{data.name} {data.lastName}</div>
+              <div className="col-12 mb-2"> <h5>Género</h5>{data.gender}</div>
+              <div className="col-12"> <h5>Fecha de Nacimiento</h5>{formatDate(data.bornDate)}</div>
+          </div>
         </div>
-        <hr></hr>
-        <h4>Cedula o RIF</h4>
-        <div class="input-group input-group-lg">
-          <span class="input-group-addon">
-            <i class="fa fa-user"></i>
-          </span>
-          <input type="text" class="form-control" placeholder=""></input>
+        <div className="col-3 bg-dark text-light align-self-center">
+          <div className ="row">
+            <div className="col-12"> <h5>Numero Identificador</h5>{"Random"} </div>
+          </div>
+          <div className ="row">
+            <div className="col-12 mb-1"> <h5>QR CODE</h5> <img src={qrURL} alt="QRCode"/> </div>
+          </div>
         </div>
-        <hr></hr>
-
-        <h4>Numero Identificador</h4>
-        <div class="input-group input-group-lg">
-          <span class="input-group-addon">
-            <i class="fa fa-user"></i>
-          </span>
-          <input type="text" class="form-control" placeholder=""></input>
-        </div>
-        <hr></hr>
-        <h4>Codigo QR</h4>
-        <div class="large-6 cell">
-          <p><img src={require('../images/mario.png')} alt="article" style={{
-        width: "13em"
-      }}/></p>
-        </div>
-        <hr></hr>
-        <form action="/">
-          <button type="button" class="btn btn-primary">
-            <a href="http://localhost:8000/carnetreporte" class="button">Generar</a>
-          </button>
-        </form>
-      </div>
     </section>)
   }
 }
