@@ -115,6 +115,20 @@ function crearCheque(rif, ChequeData) {
     return 'error'
   })
 }
+function crearEfectivo(rif, EfectivoData) {
+  return axios.post('/create/cash', {
+    cantidad: EfectivoData.cantidad,
+    denominacion: EfectivoData.denominacion,
+    fk_cliente: rif
+  }).then((response) => {
+    return response.data[0].id
+  }).catch(function(error) {
+    console.log('AXIOS error: ' + error);
+    return 'error'
+  })
+}
+function getMontoFactura(nrofactura)
+
 
 class MetodoPagoTiendaContainer extends Component {
   constructor(props) {
@@ -421,6 +435,9 @@ class MetodoPagoTiendaContainer extends Component {
       }
     }), () => console.log(this.state.EfectivoData))
   }
+
+
+  //HANDLE SUBMITS
   handleCreditoSubmit(e) {
     e.preventDefault();
     let creditcard = this.state.CreditoData;
@@ -441,7 +458,7 @@ class MetodoPagoTiendaContainer extends Component {
               if (creditcard.ci == '') {
                 console.log('Cedula invalida');
               } else {
-                //Aqui iria el registro
+                crearTarjetaCredito(rif,this.state.CreditoData);
               }
             }
           }
@@ -469,7 +486,7 @@ class MetodoPagoTiendaContainer extends Component {
               if (debitcard.ci == '') {
                 console.log('Cedula invalida');
               } else {
-                //Aqui iria el registro
+                crearTarjetaDebito(rif,this.state.DebitoData);
               }
             }
           }
@@ -489,7 +506,7 @@ class MetodoPagoTiendaContainer extends Component {
         if (cheque.banco == "") {
           console.log('BANCO INVALIDO')
         } else {
-          //AQUI IRIA EL REGISTRO
+          crearCheque(rif,this.state.ChequeData);
         }
       }
     }
@@ -503,7 +520,7 @@ class MetodoPagoTiendaContainer extends Component {
       if (efectivo.denominacion == "") {
         console.log('DENOMINACION INAVALIDA');
       } else {
-        //AQUI IRIA EL REGISTRO
+        crearEfectivo(rif,this.state.EfectivoData)
       }
     }
   }
@@ -516,7 +533,7 @@ class MetodoPagoTiendaContainer extends Component {
       if (divisa.tipo == "") {
         console.log('TIPO INAVALIDO');
       } else {
-        //AQUI IRIA EL REGISTRO
+        crearDivisa(rif,this.state.DivisaData);
       }
     }
   }
@@ -526,9 +543,10 @@ class MetodoPagoTiendaContainer extends Component {
     if (puntos.cantidad == "") {
       console.log('CANTIDAD INVALIDA');
     } else {
-      //AQUI IRIA EL REGISTRO
+      crearPagoPuntos(rif,this.state.PuntosData);
     }
   }
+
   render() {
     return (<div className=" container">
       <ShopPayment data={this.state.CreditoData} onClick={this.onClick} handleNumeroCredito={this.handleNumeroCredito} handleNombreImpresoCredito={this.handleNombreImpresoCredito} handleCVCCredito={this.handleCVCCredito} handleBancoCredito={this.handleBancoCredito} handleCICredito={this.handleCICredito} handleCreditoSubmit={this.handleCreditoSubmit}/>

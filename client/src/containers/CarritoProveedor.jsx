@@ -30,79 +30,6 @@ function crearVentanaCerveza(Cerveza){
   )
 }
 
-function crearCompra(rif, tienda_fisica, tienda_virtual, usuario) {
-  return axios.post('/create/compra', {
-    total_pago: 0,
-    fecha_compra: null, //EN LOS QUERIES EL HACE CURRENT DATE
-    fk_cliente: rif,
-    fk_usuario: usuario,
-    fk_tienda_fisica: tienda_fisica,
-    fk_tienda_virtual: tienda_virtual
-  }).then((response) => {
-    return response.data[0].id
-  }).catch(function(error) {
-    console.log('AXIOS error: ' + error);
-    return 'error'
-  })
-}
-function crearDetalle(compra, cerveza, qty) {
-  return axios.post('/create/detalleCompra', {
-    cantidad: qty,
-    fk_compra : compra,
-    fk_cerveza: cerveza
-  }).then((response) => {
-    return response.data[0].id
-  }).catch(function(error) {
-    console.log('AXIOS error: ' + error);
-    return 'error'
-  })
-}
-function getClientePK(usuario) {
-  return axios.get('/read/clientePorUserId', {
-    fk_usuario: usuario
-  }).then((response) => {
-    return response.data[0].id
-  }).catch(function(error) {
-    console.log('AXIOS error: ' + error);
-    return 'error'
-  })
-}
-function postStatusCompra(compra) {
-  return axios.get('/create/statusCompra', {
-    fk_status: 1,
-    fk_compra: compra,
-    fk_departamento: null
-  }).then((response) => {
-    return response.data[0].id
-  }).catch(function(error) {
-    console.log('AXIOS error: ' + error);
-    return 'error'
-  })
-}
-function getTotalFactura(factura){
-  return axios.get('/read/totalFacturaCompra', {
-    fk_venta: factura
-  }).then((response) => {
-    return response.data[0].id
-  }).catch(function(error) {
-    console.log('AXIOS error: ' + error);
-    return 'error'
-  })
-}
-function putTotalFactura(factura,montototal){
-  return axios.get('/update/totalFactura', {
-    fk_venta: null,
-    fk_compra: factura,
-    total: montototal,
-    tipo: 'Compra'
-  }).then((response) => {
-    return response.data[0].id
-  }).catch(function(error) {
-    console.log('AXIOS error: ' + error);
-    return 'error'
-  })
-}
-
 async function maxQuantity(idCerveza){
   return await axios.get('/read/cantidadPorIdCerveza', {
     params: {
@@ -265,26 +192,8 @@ export default class MiCarritoContainer extends Component {
     e.preventDefault()
     if(this.state.isLoggedIn)
       alert("Enviado")
-      if(this.userData.fk_rol==10){
-        var idCompra= crearCompra(null,1,null,userData.id);
-        postStatusCompra(idCompra);
-        //AQUI IRIA EL LOOP PARA DETALLE
-
-        var totalfactura= getTotalFactura(idCompra);
-        putTotalFactura(idCompra,totalfactura);
-      }
-      else{
-        const fk_usuario= getClientePK(this.userData.id);
-        var idCompra=crearCompra(fk_usuario,null,2,null);
-        postStatusCompra(idCompra);
-        //AQUI IRIA EL LOOP PARA DETALLE
-
-        var totalfactura= getTotalFactura(idCompra);
-        putTotalFactura(idCompra,totalfactura);
-      }
-      else{
-        alert("Debe iniciar sesión antes de comprar")
-    }
+    else
+      alert("Debe iniciar sesión antes de comprar")
   }
 
   render() {
@@ -297,7 +206,7 @@ export default class MiCarritoContainer extends Component {
       </div>
       <div className="col-sm-12 col align-self-center margin-top">
         <form onSubmit={this.addBeer} className="needs-validation formulary">
-          <h4 className="text-center"> Seleccione la cerveza a comprar </h4>
+          <h4 className="text-center"> Seleccione las cervezas a reponer </h4>
           <div className="form-row">
             <div className="col-4">
               <label htmlFor="beerDropdown"> Cerveza </label>

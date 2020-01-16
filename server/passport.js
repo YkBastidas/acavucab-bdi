@@ -4,8 +4,8 @@ var bcrypt = require('bcryptjs')
 const config = {
   user: 'postgres',
   host: 'localhost',
-  database: 'ACAVUCAB',
-  password: 'admin',
+  database: 'acavucab',
+  password: '170599',
   port: 5432,
 } //PostgreSQL database configuration
 const axios = require('axios');

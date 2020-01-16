@@ -81,6 +81,7 @@ router.get('/read/roles', db.getRoles) // GET ALL ROLES
 router.get('/read/divisaTasa', db.getTasaActual) //GET TIPO DE CAMBIO
 router.get('/read/cervezas', db.getCervezas) //GET ALL BEERS
 router.get('/read/cantidadPorIdCerveza', db.getCantidadPorIdCerveza) //GET QUANTITY OF A BEER IN INVENTORY
+router.get('read/totalFacturaCompra',db.getTotalFacturaCompra) //TE DEVUELTE EL TOTAL DE UNA FACTURA DETERMINADA
 
 //POST ROUTES
 router.post('/create/usuario', db.postUsuario) //CREATE NEW USER
@@ -99,6 +100,12 @@ router.post('/create/cash', db.postEfectivo) //CREATE CASH
 router.post('/create/divisa', db.postDivisa) //CREATE DIVISA
 router.post('/create/pago',db.postPago) //REGISTRA EL PAGO DE LA COMPRA
 router.post('/create/compra',db.postCompra) //INICIALIZA LA COMPRA PARA OBTENER SU PK
+router.post('/create/detalleCompra'.db.postDetalleCompra) //REGISTRA DETALLE DE LAS COMPRAS
+router.post('/create/statusCompra',db.postStatusCompra) //REGISTRA STATUS EN LAS COMPRAS
+
+//PUT ROUTES
+router.put('/update/totalFactura',db.putTotalFactura) //COLOCA EL TOTAL DE LA FACTURA DESPUES DE INSERTAR LOS DETALLES (VALIDO PARA COMPRA O VENTA)
+
 
 //AUTHENTICATION
 router.post('/auth/signIn', db.postSignIn) // AUTHENTICATE USER AND LOGIN
