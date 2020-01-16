@@ -2,8 +2,8 @@
 const config = {
   user: 'postgres',
   host: 'localhost',
-  database: 'acavucab',
-  password: '170599',
+  database: 'ACAVUCAB',
+  password: 'admin', //170599
   port: 5432,
 } //PostgreSQL database configuration
 

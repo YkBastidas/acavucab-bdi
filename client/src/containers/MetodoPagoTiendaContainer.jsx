@@ -134,7 +134,7 @@ function getMontoFactura(nrofactura){
 
 function getClientePK(usuario) {
   return axios.get('/read/clientePorUserId', {
-    fk_usuario: usuario
+    params: {fk_usuario: usuario}
   }).then((response) => {
     return response.data[0]
   }).catch(function(error) {
@@ -147,7 +147,7 @@ class MetodoPagoTiendaContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      creditoVisible: true, isLoggedIn: "",
+      visible : { credito : true, debito: "", puntos:"", divisa:"", cheque:"", efectivo:""}, isLoggedIn: "",
       userData: {id: '', nombre: '', contrasena: '', fk_rol:''},
       ClientData: {rif: ""},
       NaturalData: {
@@ -167,20 +167,20 @@ class MetodoPagoTiendaContainer extends Component {
                         mainBuilding:"", mainFloor:"", mainOffice:"", mainApartment:""}
       },
       CreditoData: {
-        banco: "",
-        numero: "",
-        cvc: "",
-        nombre_impreso: "",
-        ci: "",
-        tipo: ""
+        "cc-banco": "",
+        "cc-name": "",
+        "cc-ci": "",
+        "cc-number": "",
+        "cc-cvc": "",
+        "cc-expiration": ""
       },
       DebitoData: {
-        banco: "",
-        numero: "",
-        cvc: "",
-        nombre_impreso: "",
-        ci: "",
-        tipo: ""
+        "dc-banco": "",
+        "dc-name": "",
+        "dc-ci": "",
+        "dc-number": "",
+        "dc-expiration": "",
+        "dc-cvc": ""
       },
       PuntosData: {
         cantidad: "",
@@ -204,18 +204,8 @@ class MetodoPagoTiendaContainer extends Component {
 
     this.onClick = this.onClick.bind(this);
 
-    this.handleBancoCredito = this.handleBancoCredito.bind(this);
-    this.handleNumeroCredito = this.handleNumeroCredito.bind(this);
-    this.handleCVCCredito = this.handleCVCCredito.bind(this);
-    this.handleNombreImpresoCredito = this.handleNombreImpresoCredito.bind(this);
-    this.handleCICredito = this.handleCICredito.bind(this);
-
-    this.handleBancoDebito = this.handleBancoDebito.bind(this);
-    this.handleNumeroDebito = this.handleNumeroDebito.bind(this);
-    this.handleCVCDebito = this.handleCVCDebito.bind(this);
-    this.handleNombreImpresoDebito = this.handleNombreImpresoDebito.bind(this);
-    this.handleCIDebito = this.handleCIDebito.bind(this);
-    this.handleExpiracionDebito = this.handleExpiracionDebito.bind(this);
+    this.handleCredito = this.handleCredito.bind(this);
+    this.handleDebito = this.handleDebito.bind(this);
 
     this.handleCantidadDivisa = this.handleCantidadDivisa.bind(this);
     this.handleTipoDivisa = this.handleTipoDivisa.bind(this);
@@ -280,105 +270,23 @@ class MetodoPagoTiendaContainer extends Component {
 
     }))
   }
-  handleBancoCredito(e) {
+  handleCredito(e) {
     let value = e.target.value;
+    let name = e.targer.name;
     this.setState(prevState => ({
       CreditoData: {
         ...prevState.CreditoData,
-        banco: value
+        [name]: value
       }
     }), () => console.log(this.state.CreditoData));
   }
-  handleNumeroCredito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      CreditoData: {
-        ...prevState.CreditoData,
-        numero: value
-      }
-    }), () => console.log(this.state.CreditoData));
-  }
-  handleNombreImpresoCredito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      CreditoData: {
-        ...prevState.CreditoData,
-        nombre_impreso: value
-      }
-    }), () => console.log(this.state.CreditoData));
-  }
-  handleCICredito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      CreditoData: {
-        ...prevState.CreditoData,
-        ci: value
-      }
-    }), () => console.log(this.state.CreditoData));
-  }
-  handleCVCCredito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      CreditoData: {
-        ...prevState.CreditoData,
-        cvc: value
-      }
-    }), () => console.log(this.state.CreditoData));
-  }
-
-  //TIPO PAGO DEBITO
-
-  handleBancoDebito(e) {
+  handleDebito(e) {
+    let name = e.target.name;
     let value = e.target.value;
     this.setState(prevState => ({
       DebitoData: {
         ...prevState.DebitoData,
-        banco: value
-      }
-    }), () => console.log(this.state.DebitoData));
-  }
-  handleNumeroDebito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      DebitoData: {
-        ...prevState.DebitoData,
-        numero: value
-      }
-    }), () => console.log(this.state.DebitoData));
-  }
-  handleNombreImpresoDebito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      DebitoData: {
-        ...prevState.DebitoData,
-        nombre_impreso: value
-      }
-    }), () => console.log(this.state.DebitoData));
-  }
-  handleCIDebito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      DebitoData: {
-        ...prevState.DebitoData,
-        ci: value
-      }
-    }), () => console.log(this.state.DebitoData));
-  }
-  handleCVCDebito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      DebitoData: {
-        ...prevState.DebitoData,
-        cvc: value
-      }
-    }), () => console.log(this.state.DebitoData));
-  }
-  handleExpiracionDebito(e) {
-    let value = e.target.value;
-    this.setState(prevState => ({
-      DebitoData: {
-        ...prevState.DebitoData,
-        expiracion: value
+        [name]: value
       }
     }), () => console.log(this.state.DebitoData));
   }
@@ -590,7 +498,8 @@ class MetodoPagoTiendaContainer extends Component {
       logged = true
       console.log('Callback Axios con Data del Usuario')
       this.setState({userData: res.data, isLoggedIn:true})
-      var clientData = await getClientePK(res.data[0].id)
+      var clientData = await getClientePK(res.data.id)
+      console.log(clientData)
       this.setState({ClientData: {rif: clientData.rif}})
       if(clientData.tipo ==='Natural') this.setState({NaturalData: clientData, isLoggedIn:true})
       else this.setState({CompanyData: clientData, isLoggedIn:true})
@@ -602,13 +511,8 @@ class MetodoPagoTiendaContainer extends Component {
 
   render() {
     return (<div className=" container">
-      <ShopPayment data={this.state.CreditoData} onClick={this.onClick} handleNumeroCredito={this.handleNumeroCredito} handleNombreImpresoCredito={this.handleNombreImpresoCredito} handleCVCCredito={this.handleCVCCredito} handleBancoCredito={this.handleBancoCredito} handleCICredito={this.handleCICredito} handleCreditoSubmit={this.handleCreditoSubmit}/>
-      <ShopPaymentDebit data={this.state.DebitoData} onClick={this.onClick} handleNumeroDebito={this.handleNumeroDebito} handleNombreImpresoDebito={this.handleNombreImpresoDebito} handleCVCDebito={this.handleCVCDebito} handleBancoDebito={this.handleBancoDebito} handleCIDebito={this.handleCIDebito} handleExpiracionDebito={this.handleExpiracionDebito} handleDebitoSubmit={this.handleDebitoSubmit}/>
-      <ShopPaymentPoint data={this.state.PuntosData} onClick={this.onClick} handleCantidadPuntos={this.handleCantidadPuntos} handlePuntosSubmit={this.handlePuntosSubmit}/>
-      <ShopPaymentDivisa data={this.state.DivisaData} onClick={this.onClick} handleCantidadDivisa={this.handleCantidadDivisa} handleTipoDivisa={this.handleTipoDivisa} handleDivisaSubmit={this.handleDivisaSubmit}/>
-      <ShopPaymentCheque data={this.state.ChequeData} onClick={this.onClick} handleBancoCheque={this.handleBancoCheque} handleNumeroChequeCheque={this.handleNumeroChequeCheque} handleNumeroCuentaCheque={this.handleNumeroCuentaCheque} handleChequeSubmit={this.handleChequeSubmit}/>
-      <ShopPaymentEfectivo data={this.state.EfectivoData} onClick={this.onClick} handleDenominacionEfectivo={this.handleDenominacionEfectivo} handleCantidadEfectivo={this.handleCantidadEfectivo} handleEfectivoSubmit={this.handleEfectivoSubmit}/>
-    </div >)
+      <ShopPayment data={this.state} onClick={this.onClick} handleCredito={this.handleCredito} handleCreditoSubmit={this.handleCreditoSubmit} handleDebito = {this.handleDebito} handleDebitoSubmit={this.handleDebitoSubmit}/>
+      </div>)
   }
 }
 export default withRouter(MetodoPagoTiendaContainer);
