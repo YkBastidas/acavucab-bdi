@@ -1,4 +1,4 @@
-﻿INSERT INTO public.direccion (tipo, nombre) VALUES
+INSERT INTO public.direccion (tipo, nombre) VALUES
 ('Estado', 'Amazonas'),
 ('Estado', 'Anzoátegui'),
 ('Estado', 'Apure'),
@@ -2020,9 +2020,9 @@ INSERT INTO public.direccion (fk_direccion, tipo, nombre) VALUES
 (2010, 'Piso', '16'),
 (2011, 'Apartamento', '1604'),
 (1976, 'Avenida', 'Teherán Urb Montalban'),
-(2013, 'Edificio', 'Laboratorios'),
-(2014, 'Piso', '2'),
-(2015, 'Oficina', 'INF001');
+(2014, 'Edificio', 'Laboratorios'),
+(2010, 'Piso', '2'),
+(2011, 'Oficina', 'INF001');
 
 INSERT INTO public.rol(nombre) VALUES
 ('Jefe de pasillo'),
@@ -2283,10 +2283,10 @@ INSERT INTO public.privilegio (tipo,tabla) VALUES
 
 
 INSERT INTO public.cliente(rif,tipo,fk_direccion_fisica,natural_ci,natural_nombre,natural_apellido,natural_genero,juridico_denominacion_comercial,juridico_razon_social,juridico_pagina_web,juridico_capital,juridico_fk_direccion_fiscal,fk_usuario) VALUES
-('V26731723','Natural',2000,26731723,'Archibaldo','Darree','Hombre',null,null,null,null,null,6),
+('V26731723','Natural',2000,16253135,'Archibaldo','Darree','Hombre',null,null,null,null,null,6),
 ('J13128895','Juridico',2004,null,null,null,null,'PHBB','PHBB C.A.','phpbb.com',362456870,2008,7),
 ('V162531356','Natural',1,16253135,'Archibaldo','Darree','Hombre',null,null,null,null,null,29),
-('J192174719','Juridico',1,null,null,null,null,'PROTECT','PROTECT C.A.','protect.com',362456870,1,30),
+('J192174719','Juridico',1,null,null,null,null,'PHBB','PHBB C.A.','phpbb.com',362456870,1,30),
 ('V175327365','Natural',2,17532736,'Philip','Banfield','Hombre',null,null,null,null,null,31),
 ('J165520856','Juridico',2,null,null,null,null,' Distribuidora Princenton','Princenton S.R.L.','princeton.com',244032734,2,32),
 ('V207332128','Natural',3,20733212,'Dyana','Byron','Mujer',null,null,null,null,null,33),
@@ -2468,27 +2468,27 @@ INSERT INTO public.rol_privilegio(fk_rol,fk_privilegio) VALUES
 (10,55),
 (10,63);
 
-INSERT INTO public.departamento(nombre) VALUES
-('Departamento de compras'),
-('Departamento de ventas'),
-('Gerencia General'),
-('RRHH'),
-('Marketing y publicidad'),
-('Control de calidad'),
-('Departamento de seguridad'),
-('Presupuesto'),
-('Atencion al cliente'),
-('Almacen');
+INSERT INTO public.departamento(clave, nombre) VALUES
+(1,'Departamento de compras'),
+(2,'Departamento de ventas'),
+(3,'Gerencia General'),
+(4,'RRHH'),
+(5,'Marketing y publicidad'),
+(6,'Control de calidad'),
+(7,'Departamento de seguridad'),
+(8,'Presupuesto'),
+(9,'Atencion al cliente'),
+(10,'Almacen');
 
-INSERT INTO public.status(nombre) VALUES
-('Presupuesto'),
-('Reservado'),
-('Ordenado'),
-('Cancelado'),
-('Pagado'),
-('Esperando aprobacion'),
-('En revision'),
-('Entregado');
+INSERT INTO public.status(clave, nombre) VALUES
+(1,'Presupuesto'),
+(2,'Reservado'),
+(3,'Ordenado'),
+(4,'Cancelado'),
+(5,'Pagado'),
+(6,'Esperando aprobacion'),
+(7,'En revision'),
+(8,'Entregado');
 
 INSERT INTO public.tipo_pago_credito(banco,numero,tipo,cvc,nombre_impreso,cedula) VALUES
 ('Banco de Venezuela',3587356401233755,'Visa',965,'Juan Perez',25684789),
@@ -3470,21 +3470,13 @@ INSERT INTO public.historico_tasa (numero_cambio,fecha_inicio,fecha_fin ) VALUES
 (7800, '01/11/2019', '01/12/2019'),
 (10000, '01/12/2019',null);
 
-INSERT INTO public.historico_valor_puntos (numero_cambio,fecha_inicio,fecha_fin ) VALUES
-(15, '01/7/2019', '01/08/2019'),
-(25, '01/08/2019', '01/09/2019'),
-(20, '01/09/2019', '01/10/2019'),
-(30, '01/10/2019', '01/11/2019'),
-(35, '01/11/2019', '01/12/2019'),
-(40, '01/12/2019',null);
-
-INSERT INTO public.historia_cerveza (descripcion) VALUES
-('Es el estilo más utilizado para fabricar cerveza en todo el mundo. A veces se conocen como pilsener o pils y el nombre viene de la ciudad de Plzen, en Bohemia, hoy en la República Checa, pero que se llamaba Pilsen cuando formaba parte de la zona germano hablante del Imperio Austrohúngaro en 1842. En esta ciudad se elaboró por primera vez un tipo de cerveza dorada y transparente, utilizando el método de fermentación baja, en contraste con las cervezas oscuras o turbias conocidas hasta esa fecha.'),
-('Cervezas pálidas, parecidas a las pilsen pero un poco menos secas, con más cuerpo y menos lupulizadas. Aunque son ligeramente más oscuras, tienen el mismo contenido alcohólico, de 4.5 a 5%. Son la versión pálida (helles) de las de estilo oscuro (dunkel), conocido como estilo Munich. Se empezaron a elaborar a principios del siglo XX como reacción de los bávaros a las cervezas pálidas del resto de Alemania y Europa que empezaban a popularizarse. Es un estilo muy común en Munich y sur de Alemania y se sirve en las cervecerías cuando se pide simplemente una cerveza. En Munich y sur de Baviera se conocen con el nombre de helles o münchner hell, que significa pálida y en Franconia, parte norte del estado de Baviera, como vollbier.'),
-('En alemán se les conoce como dunkel o dunkles que significa oscura. Es una especialidad tradicional de Munich y de algunas partes de Franconia por lo que a veces se les conoce como estilo Munich (Münchner). Suelen tener más carácter de malta que las pálidas y existían antes que éstas. Hasta la Segunda Guerra Mundial eran las cervezas ordinarias de cada día. Su color varía entre el rojo amarronado y el negro carbón y suelen tener un poco más de alcohol que las pálidas, de 5 a 5.5%. En el resto del mundo, es el estilo que normalmente se sirve cuando se quiere una lager oscura.'),
-('Este estilo fue elaborado por primera vez en la ciudad de Viena por Anton Dreher en 1841, cuando introdujo el método de fermentación baja en su fábrica de cerveza, aunque posteriormente se desarrollaría en Munich. Hoy en día ya no se produce en Viena y sí en Munich donde viene elaborándose tradicionalmente desde finales del siglo pasado para celebrar la Fiesta de la Cerveza de Octubre.'),
-('Fue uno de los cuatro grandes estilos de hacer cerveza que se desarrollaron en el siglo XIX y que tomaron el nombre de su ciudad de origen, Dortmund, Pilsen, Munich y Viena . El dortmunder viene de la ciudad de Dortmund, en el noroeste de Alemania y debido a su gran aceptación pronto empezó a venderse fuera de su lugar de origen, por lo que se le subtituló export. En Alemania es una denominación de origen: sólo las elaboradas en esa ciudad puden utilizar el nombre dortmunder . Hoy se elaboran cervezas con características similares en muchas otras ciudades de Alemania y se les denomina simplemente export. Sin embargo es un término un poco confuso ya que los productores de cerveza en la ciudad de Dortmund elaboran cervezas no sólo de este estilo, sino también de otros y utilizan el nombre de Dortmund en toda la gama. Las cervezas de este estilo son de color dorado pálido, semisecas, con más cuerpo que las pilsen, pero un poco menos amargas.'),
-('El nombre de estas cervezas fuertes puede sugerir la fuerza de un macho cabrío, que es el significado de la palabra alemana bock, aunque es más probable que el nombre derive de la ciudad de Einbeck en el norte de Alemania, de donde es originaria esta cerveza. Se cree que ya se elaboraba en los siglos XIV ó XV. Hoy en día este estilo también está asociado a la ciudad de Munich, donde se producen muy buenas cervezas en este estilo.');
+INSERT INTO public.historia_cerveza (clave, descripcion) VALUES
+(1,'Es el estilo más utilizado para fabricar cerveza en todo el mundo. A veces se conocen como pilsener o pils y el nombre viene de la ciudad de Plzen, en Bohemia, hoy en la República Checa, pero que se llamaba Pilsen cuando formaba parte de la zona germano hablante del Imperio Austrohúngaro en 1842. En esta ciudad se elaboró por primera vez un tipo de cerveza dorada y transparente, utilizando el método de fermentación baja, en contraste con las cervezas oscuras o turbias conocidas hasta esa fecha.'),
+(2,'Cervezas pálidas, parecidas a las pilsen pero un poco menos secas, con más cuerpo y menos lupulizadas. Aunque son ligeramente más oscuras, tienen el mismo contenido alcohólico, de 4.5 a 5%. Son la versión pálida (helles) de las de estilo oscuro (dunkel), conocido como estilo Munich. Se empezaron a elaborar a principios del siglo XX como reacción de los bávaros a las cervezas pálidas del resto de Alemania y Europa que empezaban a popularizarse. Es un estilo muy común en Munich y sur de Alemania y se sirve en las cervecerías cuando se pide simplemente una cerveza. En Munich y sur de Baviera se conocen con el nombre de helles o münchner hell, que significa pálida y en Franconia, parte norte del estado de Baviera, como vollbier.'),
+(3,'En alemán se les conoce como dunkel o dunkles que significa oscura. Es una especialidad tradicional de Munich y de algunas partes de Franconia por lo que a veces se les conoce como estilo Munich (Münchner). Suelen tener más carácter de malta que las pálidas y existían antes que éstas. Hasta la Segunda Guerra Mundial eran las cervezas ordinarias de cada día. Su color varía entre el rojo amarronado y el negro carbón y suelen tener un poco más de alcohol que las pálidas, de 5 a 5.5%. En el resto del mundo, es el estilo que normalmente se sirve cuando se quiere una lager oscura.'),
+(4,'Este estilo fue elaborado por primera vez en la ciudad de Viena por Anton Dreher en 1841, cuando introdujo el método de fermentación baja en su fábrica de cerveza, aunque posteriormente se desarrollaría en Munich. Hoy en día ya no se produce en Viena y sí en Munich donde viene elaborándose tradicionalmente desde finales del siglo pasado para celebrar la Fiesta de la Cerveza de Octubre.'),
+(5,'Fue uno de los cuatro grandes estilos de hacer cerveza que se desarrollaron en el siglo XIX y que tomaron el nombre de su ciudad de origen, Dortmund, Pilsen, Munich y Viena . El dortmunder viene de la ciudad de Dortmund, en el noroeste de Alemania y debido a su gran aceptación pronto empezó a venderse fuera de su lugar de origen, por lo que se le subtituló export. En Alemania es una denominación de origen: sólo las elaboradas en esa ciudad puden utilizar el nombre dortmunder . Hoy se elaboran cervezas con características similares en muchas otras ciudades de Alemania y se les denomina simplemente export. Sin embargo es un término un poco confuso ya que los productores de cerveza en la ciudad de Dortmund elaboran cervezas no sólo de este estilo, sino también de otros y utilizan el nombre de Dortmund en toda la gama. Las cervezas de este estilo son de color dorado pálido, semisecas, con más cuerpo que las pilsen, pero un poco menos amargas.'),
+(6,'El nombre de estas cervezas fuertes puede sugerir la fuerza de un macho cabrío, que es el significado de la palabra alemana bock, aunque es más probable que el nombre derive de la ciudad de Einbeck en el norte de Alemania, de donde es originaria esta cerveza. Se cree que ya se elaboraba en los siglos XIV ó XV. Hoy en día este estilo también está asociado a la ciudad de Munich, donde se producen muy buenas cervezas en este estilo.');
 
 INSERT INTO public.ale(tipo) VALUES
 ('American Pale'),
@@ -3499,7 +3491,7 @@ INSERT INTO public.ale(tipo) VALUES
 ('Bitter');
 
 INSERT INTO public.lager(tipo,fk_historia_cerveza) VALUES
-('Pilsen',1),
+('Pilsen',2),
 ('Münchner Hell',2),
 ('Münchner Dunkel - Lager Oscuras - Estilo Munich',3),
 ('Märzen/Oktoberfest - Estilo Vienna',4),
@@ -3510,26 +3502,26 @@ INSERT INTO public.lager(tipo,fk_historia_cerveza) VALUES
 ('Maibock',6),
 ('Eisbock',6);
 
-INSERT INTO public.cerveza_artesanal(nombre,descripcion,precio_unitario,fk_ale,fk_lager) VALUES
-('Destilo','Blonde refrescante y liviana, de color dorado y cuerpo ligero, donde se destacan aromas florales y toques cítricos',round(cast(random()*(10000-25000)+25000 as numeric), 2),6,null),
-('Tovar Siete','Cerveza filtrada de color dorado intenso (EBC 6), con una fuerte presencia de los granos en su sabor y aroma, mucho cuerpo y alta graduación alcohólica.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,9),
-('Tovar IPA','Cerveza sin filtrar, espumosa, de color naranja y con un predominante sabor y aroma a lúpulo.',round(cast(random()*(10000-25000)+25000 as numeric), 2),2,null),
-('Tovar Pilsen','Cerveza filtrada de color dorado intenso (EBC 4), sabor suave a malta, presencia de un aroma de lúpulos nobles y una percepción general muy balanceada, al probarla ningún sabor predomina.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,1),
-('Polar Ice','Polar Ice es la cerveza suave, que te permite disfrutar los mejores momentos en compañía de tus panas, gracias a su sabor equilibrado y grado alcohólico medio.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,1),
-('Solera-Marzen','Es una cerveza tipo lager, elaborada en Baviera y de color ámbar. De cuerpo ligeramente pronunciado, con 4%(°G.L.) y un aroma a cebada malteada con notas tostadas que la caracterizan.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,4),
-('Benitz Jokili Bierli','Jokili Bierli, Cerveza de Temporada de Carnavales.',round(cast(random()*(10000-25000)+25000 as numeric), 2),8,null),
-('Cervecería Lago Ángel o Demonio','Color dorado turbio y de espuma blanca y fina. Ligeramente dulce y amarga. Aromas frutales a hierbas y miel, picante en un inicio producto del alcohol que contiene.',round(cast(random()*(10000-25000)+25000 as numeric), 2),4,null),
-('Mito Brewhouse Llorona',' Llorona IPA, es una cerveza desenfrenadamente lupulada, no recomendada para paladares delicados. grado alcohólico G.L, color cobre aromas cítricos por la naturaleza y estilo de los lúpulos que se utilizan, esta cerveza cumple con la ley Baviera, la cual le confiere el nombre de “Cerveza Genuina”.',round(cast(random()*(10000-25000)+25000 as numeric), 2),2,null),
-('Yanqui Víctor Guardabosques','Un Pale Ale con cuerpo mediano a completo, el amargor de cerveza se combina con las sutiles notas de sabor a cebada rostizada y con sus aromas de frutas cítricas. Considerado un clásico pale ale, la hacemos a una sola temperatura de macerado para conseguir la robustez que la caracteriza',round(cast(random()*(10000-25000)+25000 as numeric), 2),3,null),
-('Yanqui Víctor Gallero','Los aromas cítricos como la piña y florales como el pino acompañan al cuerpo mediano donde el dulzor de la Caramel Malt puede ser captado de manera que no es una cerveza seca.',round(cast(random()*(10000-25000)+25000 as numeric), 2),2,null),
-('Cervecería Lago Rock N Rolla','Color castaño oscuro. Fuerte y malteada con trazas de nuez. Suave sabor a mezcla de maltas tostadas. Es afrutada, seca y con leve sabor cítrico.',round(cast(random()*(10000-25000)+25000 as numeric), 2),9,null),
-('Tovar Siete','Cerveza filtrada de color dorado intenso (EBC 6), con una fuerte presencia de los granos en su sabor y aroma, mucho cuerpo y alta graduación alcohólica.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,7),
-('Tovar Pilsen', 'Cerveza filtrada de color dorado intenso (EBC 4), sabor suave a malta, presencia de un aroma de lúpulos nobles y una percepción general muy balanceada, al probarla ningún sabor predomina.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,1),
-('Tovar Hefe Weizen', 'Cerveza sin filtrar de aspecto turbio y color anaranjado intenso (EBC 8), sacada directamente del tanque de fermentación, por lo que es más fresca. Contiene una levadura especial que ésteres y fenoles con aromas característicos a banana y clavo que le dan un sabor afrutado con tonos dulces.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,7),
-('Polar Ice', 'Polar Ice es la cerveza suave, que te permite disfrutar los mejores momentos en compañía de tus panas, gracias a su sabor equilibrado y grado alcohólico medio.',round(cast(random()*(10000-25000)+25000 as numeric), 2),null,1),
-('Mito Brewhouse Candileja','Inspirada en las técnicas y procesos utilizados por los monjes en monasterios y abadías trapenses. Ingredientes en grandes dosis y delicadamente seleccionados para su producción. Esta de cuerpo denso y resplandeciente color ámbar, se caracteriza por su aroma intenso a caramelo, rasgos de durazno y ciruela que son esteres emitidos por la cepa de levadura de la fermentación, su carbonatación es de media a alta, lúpulos característicos de su estilo, la hacen una opción fácil de maridar. No contiene conservantes.',round(cast(random()*(10000-25000)+25000 as numeric), 2),5,null),
-('Aldarra Mantuana', 'Caracterizada por una mezcla de cereales, maltas y lúpulos americanos. De un interesante color dorado, posee un sabor ligero y cuerpo liviano, además de un aroma que recuerda las frutas tropicales. Una preparación carbonatación media, sin asperezas o astringencias.',round(cast(random()*(10000-25000)+25000 as numeric), 2),6,null),
-('Brünett Barcelona', 'Edición especila Barcelona Orgullo Oriental, Extra Special Bitter Ale. Una tradicional Extra Special Bitter hecha al más puro estilo inglés.',round(cast(random()*(10000-25000)+25000 as numeric), 2),10,null);
+INSERT INTO public.cerveza_artesanal(nombre,descripcion,fk_ale,fk_lager) VALUES
+('Destilo','Blonde refrescante y liviana, de color dorado y cuerpo ligero, donde se destacan aromas florales y toques cítricos',6,null),
+('Tovar Siete','Cerveza filtrada de color dorado intenso (EBC 6), con una fuerte presencia de los granos en su sabor y aroma, mucho cuerpo y alta graduación alcohólica.',null,9),
+('Tovar IPA','Cerveza sin filtrar, espumosa, de color naranja y con un predominante sabor y aroma a lúpulo.',2,null),
+('Tovar Pilsen','Cerveza filtrada de color dorado intenso (EBC 4), sabor suave a malta, presencia de un aroma de lúpulos nobles y una percepción general muy balanceada, al probarla ningún sabor predomina.',null,1),
+('Polar Ice','Polar Ice es la cerveza suave, que te permite disfrutar los mejores momentos en compañía de tus panas, gracias a su sabor equilibrado y grado alcohólico medio.',null,1),
+('Solera-Marzen','Es una cerveza tipo lager, elaborada en Baviera y de color ámbar. De cuerpo ligeramente pronunciado, con 4%(°G.L.) y un aroma a cebada malteada con notas tostadas que la caracterizan.',null,4),
+('Benitz Jokili Bierli','Jokili Bierli, Cerveza de Temporada de Carnavales.',8,null),
+('Cervecería Lago Ángel o Demonio','Color dorado turbio y de espuma blanca y fina. Ligeramente dulce y amarga. Aromas frutales a hierbas y miel, picante en un inicio producto del alcohol que contiene.',4,null),
+('Mito Brewhouse Llorona',' Llorona IPA, es una cerveza desenfrenadamente lupulada, no recomendada para paladares delicados. grado alcohólico G.L, color cobre aromas cítricos por la naturaleza y estilo de los lúpulos que se utilizan, esta cerveza cumple con la ley Baviera, la cual le confiere el nombre de “Cerveza Genuina”.',2,null),
+('Yanqui Víctor Guardabosques','Un Pale Ale con cuerpo mediano a completo, el amargor de cerveza se combina con las sutiles notas de sabor a cebada rostizada y con sus aromas de frutas cítricas. Considerado un clásico pale ale, la hacemos a una sola temperatura de macerado para conseguir la robustez que la caracteriza',3,null),
+('Yanqui Víctor Gallero','Los aromas cítricos como la piña y florales como el pino acompañan al cuerpo mediano donde el dulzor de la Caramel Malt puede ser captado de manera que no es una cerveza seca.',2,null),
+('Cervecería Lago Rock N Rolla','Color castaño oscuro. Fuerte y malteada con trazas de nuez. Suave sabor a mezcla de maltas tostadas. Es afrutada, seca y con leve sabor cítrico.',9,null),
+('Tovar Siete','Cerveza filtrada de color dorado intenso (EBC 6), con una fuerte presencia de los granos en su sabor y aroma, mucho cuerpo y alta graduación alcohólica.',null,7),
+('Tovar Pilsen', 'Cerveza filtrada de color dorado intenso (EBC 4), sabor suave a malta, presencia de un aroma de lúpulos nobles y una percepción general muy balanceada, al probarla ningún sabor predomina.',null,1),
+('Tovar Hefe Weizen', 'Cerveza sin filtrar de aspecto turbio y color anaranjado intenso (EBC 8), sacada directamente del tanque de fermentación, por lo que es más fresca. Contiene una levadura especial que ésteres y fenoles con aromas característicos a banana y clavo que le dan un sabor afrutado con tonos dulces.',null,7),
+('Polar Ice', 'Polar Ice es la cerveza suave, que te permite disfrutar los mejores momentos en compañía de tus panas, gracias a su sabor equilibrado y grado alcohólico medio.',null,1),
+('Mito Brewhouse Candileja','Inspirada en las técnicas y procesos utilizados por los monjes en monasterios y abadías trapenses. Ingredientes en grandes dosis y delicadamente seleccionados para su producción. Esta de cuerpo denso y resplandeciente color ámbar, se caracteriza por su aroma intenso a caramelo, rasgos de durazno y ciruela que son esteres emitidos por la cepa de levadura de la fermentación, su carbonatación es de media a alta, lúpulos característicos de su estilo, la hacen una opción fácil de maridar. No contiene conservantes.',5,null),
+('Aldarra Mantuana', 'Caracterizada por una mezcla de cereales, maltas y lúpulos americanos. De un interesante color dorado, posee un sabor ligero y cuerpo liviano, además de un aroma que recuerda las frutas tropicales. Una preparación carbonatación media, sin asperezas o astringencias.',6,null),
+('Brünett Barcelona', 'Edición especila Barcelona Orgullo Oriental, Extra Special Bitter Ale. Una tradicional Extra Special Bitter hecha al más puro estilo inglés.',10,null);
 
 INSERT INTO public.comentario_cerveza(fk_cliente,fk_cerveza,calificacion, descripcion) VALUES
 ('V162531356',1,3.5,'Refrescante con abundantes aromas florales'),
@@ -3543,12 +3535,12 @@ INSERT INTO public.comentario_cerveza(fk_cliente,fk_cerveza,calificacion, descri
 ('V162531356',9,3,null);
 
 INSERT INTO public.descuento(fecha_inicio,precio,fk_rol,fk_cerveza) VALUES
-('01/10/2019',50000,2,1),
-('01/10/2019',57999,3,1),
-('01/11/2019',24700,3,11),
-('01/11/2019',32000,2,10),
-('01/12/2019',30000,2,8),
-('01/12/2019',65000,3,9);
+('01/10/2019',50,2,1),
+('01/10/2019',35,3,1),
+('01/11/2019',20,3,11),
+('01/11/2019',10,2,10),
+('01/12/2019',30,2,8),
+('01/12/2019',40,3,9);
 
 INSERT INTO public.telefono(numero, fk_personal) VALUES
 ('(212) 472-06-92', 1), ('(412) 993-14-11', 2), ('(416) 316-72-66', 2), ('(426) 987-92-63', 3),
@@ -3564,27 +3556,163 @@ INSERT INTO public.persona_contacto(nombre, numero, fk_cliente) VALUES
 INSERT INTO public.correo_electronico(direccion, fk_cliente) VALUES
 ('jhondoe18@gmail.com', 'V26731723'), ('jhondoe18@hotmail.com', 'V26731723'), ('contact@phbb.ca', 'J13128895');
 
-INSERT INTO public.historico_inventario_cerveza(cant_disponible, fecha_inicio, fk_cerveza) VALUES
-  (floor(random()*(500-2000))+2000, '15/01/2020', 1),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 2),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 3),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 4),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 5),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 6),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 7),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 8),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 9),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 10),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 11),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 12),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 13),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 14),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 15),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 16),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 17),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 18),
-  (floor(random()*(500-2000))+2000, '15/01/2020', 19);
+INSERT INTO public.tienda(clave, tipo,fisica_nombre, fk_fisica_direccion, virtual_pagina_web ) VALUES
+(1,'Fisica', 'Acavucb', 2016, null),
+(2,'Virtual', 'Acavucab', 2016, 'www.acavucab.com');
 
-  INSERT INTO public.tienda(
-  	tipo, fisica_nombre, fk_fisica_direccion)
-  	VALUES ('fisica', 'ACAVUCAB Shop', 2016);
+INSERT INTO public.compra(nro_factura, total, fecha_compra, fk_tienda_fisica,fk_tienda_virtual, fk_cliente) VALUES
+(23433, 2000, '12/12/19', 1, null, 'V207332128'),
+(23434, 3780, '08/11/19', null, 2, 'J83802370'),
+(23444, 6000, '01/11/19', 1, null, 'V166010745'),
+(23467, 250, '03/01/2020', null, 2, 'V123929504'),
+(23488, 156, '10/01/2020', 1, null, 'J11546897'),
+(24001, 480, '19/10/2019', null, 2, 'V154706166'),
+(24009, 500, '12/10/2019', 1, null, 'J108060100'),
+(24015, 198, '23/12/2019', null, 2, 'J192174719'),
+(24022, 54, '26/12/2019',1, null, 'J133515857'),
+(24033, 4000, '24/11/2019', null, 2, 'V144116297'),
+(24020, 70, '26/08/2019',1, null, 'V196325203'),
+(24021, 60, '23/06/2019',1, null, 'V135193397'),
+(24023, 35, '07/04/2019',1, null, 'J165520856'),
+(24024, 10, '13/02/2019',1, null, 'J202227259'),
+(24025, 78, '21/09/2019',1, null, 'V8506618');
+
+INSERT INTO public.status_compra(clave, fecha_cambio, fk_status, fk_compra,fk_departamento) VALUES 
+(1, '01/11/2019', 2, 23433, 1),
+(2, '20/11/2019', 4, 23467, 2),
+(3, '01/12/2019', 3, 24033, 3),
+(4, '15/12/2019', 5, 23488, 5),
+(5, '20/12/2019', 8, 24022, 4),
+(6, '01/01/2020', 7, 24009, 7),
+(7, '15/01/2020', 1, 24025, 5),
+(8, '11/10/2019', 6, 24015, 6),
+(9, '23/08/2019', 5, 24020, 8),
+(10, '15/07/2019', 2, 24024, 6);
+
+INSERT INTO public.venta(nro_factura, total, fecha) VALUES
+(2222, 46, '01/11/2019'),
+(2223, 1000, '15/11/2019'),
+(2224, 67, '05/10/2019'),
+(2225,70, '15/08/2019'),
+(2226, 97, '04/08/2019'),
+(2227, 123, '23/06/2019'),
+(2228, 200, '16/04/2019'),
+(2229, 270, '07/02/2019');
+
+INSERT INTO public.status_venta(clave, fk_status, fk_venta) VALUES
+(1,4,2222),
+(2,5,2223),
+(3,8,2225),
+(4,1,2226),
+(5,2,2224),
+(6,3,2228),
+(7,7,2227),
+(8,6,2229);
+
+INSERT INTO public.detalle_compra(clave, cantidad, precio_unitario, fk_compra, fk_cerveza, fk_ale, fk_lager) VALUES
+(1, 4, 22, 23433, 2,2,null),
+(2, 3, 16, 23467, 8,1,null),
+(3, 1, 8, 24033, 9,null, 3),
+(4, 6, 50, 24015, 4,null,5),
+(5, 7, 58, 24001, 12,null,2),
+(6, 12, 96, 24020, 14, null,1),
+(7, 2, 16, 24022, 5,4,null),
+(8, 3, 16, 24009, 1,5,null),
+(11, 6, 86, 23488, 10,6,null),
+(12, 7, 98, 24024, 3,null,4),
+(13, 9, 105, 24025, 5,null, 6),
+(14, 10, 120, 23444, 18,1,null),
+(15, 8, 90, 24021, 19,null,3);
+
+INSERT INTO public.detalle_venta(codigo, cantidad, precio_unitario, fk_venta, fk_cerveza_proveedor, fk_historico_inventario) VALUES
+(1234, 4, 20, 2222, 1, 1),
+(1235, 6, 15, 2223, 3, 2),
+(1236, 2, 10, 2224, 2, 3),
+(1237, 5, 30, 2225, 4, 4),
+(1238, 1, 13, 2226, 5, 5),
+(1239, 3, 20, 2227, 6, 6);
+
+INSERT INTO public.historico_inventario_cerveza(clave, cant_disponible, fecha_inicio, fecha_fin, fk_cerveza, fk_detalle_venta, fk_detalle_compra, fk_inventario) VALUES
+(1, 3000, '01/05/2019', '01/06/2019', 3, 1234,null , 1),
+(2, 3500, '02/06/2019', '01/07/2019', 2,null , 2, 2),
+(3, 4000, '02/07/2019', '01/08/2019', 1,null ,3,3),
+(4, 2000, '02/08/2019', '01/09/2019', 4, 1237,null,4),
+(5, 2600, '02/09/2019', '01/10/2019', 5, 1238,null,5);
+
+INSERT INTO public.inventario(clave, cantidad, fk_evento, fk_zona) VALUES 
+(1,300, 1, 1),
+(2, 400, 2,2),
+(3, 250, 3,3),
+(4, 600,4,4),
+(5, 800,5,5);
+
+INSERT INTO public.evento(clave, fecha_inicio, fecha_fin, nombre, cant_entrada_vendida, cant_entrada_disponible, fk_direccion) VALUES 
+(1, '12/08/2019', '14/12/2019', 'Beneficencia ucab', 150, 200, 1996),
+(2, '20/12/2019', '24/10/2019', 'Navidades felices', 200, 400, 2016),
+(3, '05/02/2019', '08/02/2019', 'Felices Carnavales', 250, 300, 1976),
+(4, '22/05/2019', '25/05/2019', 'Musica completa', 100, 250, 1002),
+(5, '09/06/2019', '11/06/2019', 'Vestido para todos', 280, 340, 953);
+
+INSERT INTO public.zona(clave, numero_estante, numero_repisa, fk_tienda, fk_rol, fk_pasillo) VALUES
+(1, 3, 3, 1, 1, 1),
+(2, 2, 4, 1, 2, 2),
+(3, 4, 5, 1, 3, 3),
+(4, 6, 7, 1, 4, 4),
+(5, 7, 8, 1, 5, 5),
+(6, 9, 12, 1, 6, 6),
+(7, 10, 14, 1, 7, 7),
+(8, 12, 1, 1, 8, 8);
+
+INSERT INTO public.pasillo(clave, numero) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 7),
+(8, 8);
+
+INSERT INTO public.cerveza_proveedor(clave, fk_cerveza_artesanal, fk_proveedor) VALUES
+(1,1,1),
+(2,3,4),
+(3,6,10),
+(4,8,15),
+(5,12,6),
+(6,17,3);
+
+INSERT INTO public.tipo_pago_puntos(codigo, banco, cantidad, fk_historico_valor_puntos, fk_cliente) VALUES
+(1, null, 5, 1, 'J13128895'),
+(2, null,10, 2, 'J110574806'),
+(3, null,3,  3, 'J203820964'),
+(4, null,2, 4, 'V144077093'),
+(5, null,3, 5, 'J89329048'),
+(6, null,4, 6, 'V184237312'),
+(7, null,2, 7, 'J126791200'),
+(8, null,1, 8, 'V105315021'),
+(9, null,2, 9, 'J115217957'),
+(10, null,3, 10, 'V75565592');
+
+INSERT INTO public.historico_valor_puntos(clave, numero_cambio, tipo, fecha_inicio, fecha_fin) VALUES
+(1,2000,'Compra', '01/02/2019', '02/03/2019'),
+(2, 4400,'Venta', '03/04/2019', '04/05/2019'),
+(3, 6000,'Venta', '05/06/2019', '06/07/2019'),
+(4, 7000,'Compra', '07/08/2019', '08/09/2019'),
+(5,8000,'Compra', '09/10/2019', '10/11/2019'),
+(6, 9000,'Compra', '11/12/2019', '12/01/2020'),
+(7, 5000,'Venta', '03/03/2020', '02/04/2019'),
+(8, 6500,'Venta', '07/07/2019', '06/08/2019'),
+(9, 7500,'Compra', '09/09/2019', '08/10/2019'),
+(10, 10000, 'Venta', '13/01/2020', null);
+
+INSERT INTO public.historico_puntos_cliente(clave, cantidad, fecha_cambio,tipo, fk_cliente, fk_historico_puntos) VALUES
+(1, 200, '02/03/2019', '+', 'V162531356', 2),
+(2, 130, '04/08/2019', '-', 'J133515857',1),
+(3, 10, '14/04/2019', '-', 'J67120915', 4),
+(4, 8, '25/10/2019', '-', 'V151328361', 5),
+(5, 12, '28/01/2019', '+', 'J99933545', 3),
+(6, 20, '05/12/2019', '-', 'V8506618', 6),
+(7, 34, '30/11/2019', '-', 'J209321018', 9),
+(8, 2, '04/01/2020', '+', 'V83186630', 7),
+(9, 19, '09/06/2019', '+', 'J134114176', 8),
+(10, 100, '03/02/2019', '+', 'V97900965', 10);
