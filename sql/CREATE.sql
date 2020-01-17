@@ -76,6 +76,7 @@ CREATE TABLE public.cerveza_artesanal
      clave numeric NOT NULL DEFAULT nextval('secuencia_cerveza'::regclass),
      nombre varchar(40) NOT NULL,
      descripcion varchar,
+     precio_unitario numeric NOT NULL,
      fk_ale numeric,
      fk_lager numeric,
      CONSTRAINT pk_clave_cerveza PRIMARY KEY (clave),
