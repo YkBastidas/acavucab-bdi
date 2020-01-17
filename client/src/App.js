@@ -27,7 +27,6 @@ import ModificarCerveza from './pages/ModificarCerveza'
 import AgregarEvento from './pages/AgregarEvento'
 import ModificarEvento from './pages/ModificarEvento'
 import Presupuesto from './pages/Presupuesto'
-import Carnet from './pages/Carnet'
 import Pedido from './pages/Pedidos'
 import PedidoCurso from './pages/PedidosCurso'
 import PedidoTiempo from './pages/PedidosTiempo'
@@ -43,7 +42,6 @@ import AgregarDireccion from './pages/AgregarDireccion'
 import EditarDireccion from './pages/EditarDireccion'
 import EliminarDireccion from './pages/EliminarDireccion'
 import MiCarrito from './pages/MiCarrito'
-import MetodoPago from './pages/MetodoPago'
 import MetodoPagoTienda from './pages/MetodoPagoTienda'
 import Reportes from './pages/Reportes'
 
@@ -77,7 +75,6 @@ class App extends Component {
             <Route path="/agregarcerveza/" component={AgregarCerveza}/>
             <Route path="/modificarcerveza/" component={ModificarCerveza}/>
             <Route path="/presupuesto/" component={Presupuesto}/>
-            <Route path="/carnet/" component={Carnet}/>
             <Route path="/listadeseo/" component={ListaDeseo}/>
             <Route path="/pedidoscurso/" component={PedidoCurso}/>
             <Route path="/pedidoscancelados/" component={PedidoCancelado}/>
@@ -93,8 +90,7 @@ class App extends Component {
             <Route path="/editardireccion/" component={EditarDireccion}/>
             <Route path="/eliminardireccion/" component={EliminarDireccion}/>
             <Route path="/carrito/" component={MiCarrito}/>
-            <Route path="/metodopago/" component={MetodoPago}/>
-            <Route path="/metodopagotienda/" component={MetodoPagoTienda}/>
+            <Route path="/metodopago/" component={MetodoPagoTienda}/>
             <Route path="/reportes/" component={Reportes}/>
           </div>
         </Router>

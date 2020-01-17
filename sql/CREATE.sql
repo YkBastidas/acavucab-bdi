@@ -881,6 +881,8 @@ CREATE TABLE public.historico_tasa
      numero_cambio numeric NOT NULL,
      fecha_inicio date NOT NULL,
      fecha_fin date,
+     tipo varchar(10),
+     CONSTRAINT chk_tipo_historico_tasa CHECK(tipo in ('Euros','Dólares')),
      CONSTRAINT pk_clave_historico_tasa PRIMARY KEY (clave)
 );
 
@@ -897,6 +899,7 @@ CREATE TABLE public.tipo_pago_divisa
      codigo numeric NOT NULL DEFAULT nextval('secuencia_tipo_pago_divisa'::regclass),
      banco varchar(15),
      tipo varchar(10) NOT NULL,
+     monto numeric NOT NULL,
      fk_historico_tasa numeric NOT NULL,
      fk_cliente varchar,
      CONSTRAINT fk_fk_cliente_tipo_pago_credito FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
