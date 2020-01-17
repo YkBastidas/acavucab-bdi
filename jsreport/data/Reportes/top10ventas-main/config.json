@@ -1,0 +1,23 @@
+{
+    "shortid": "HkeydNRhlL",
+    "name": "top10ventas-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "data": {
+        "shortid": "S1xOeSyuxU"
+    },
+    "folder": {
+        "shortid": "4DuMvFM"
+    },
+    "creationDate": {
+        "$$date": 1579112215672
+    },
+    "modificationDate": {
+        "$$date": 1579112215672
+    },
+    "_id": "NZWKsO8DEIikpI0p",
+    "$entitySet": "templates"
+}

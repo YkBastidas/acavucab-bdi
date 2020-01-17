@@ -1,0 +1,17 @@
+{
+    "folder": {
+        "shortid": "FnHe~Wz"
+    },
+    "shortid": "B1lSTrt6NB",
+    "name": "sales-data",
+    "creationDate": {
+        "$$date": 1577922856505
+    },
+    "modificationDate": {
+        "$$date": 1577922856505
+    },
+    "inheritedReadPermissions": [],
+    "inheritedEditPermissions": [],
+    "_id": "pFfTSASwbIQ7sdZv",
+    "$entitySet": "data"
+}

@@ -1,0 +1,23 @@
+{
+    "shortid": "BJ5cULTl8",
+    "name": "puntos-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "data": {
+        "shortid": "S1xOeSyuxU"
+    },
+    "creationDate": {
+        "$$date": 1579145177537
+    },
+    "modificationDate": {
+        "$$date": 1579164886919
+    },
+    "_id": "wodss5Al0G9tgFWa",
+    "$entitySet": "templates",
+    "folder": {
+        "shortid": "4DuMvFM"
+    }
+}

@@ -1,0 +1,40 @@
+{
+    "phantom": {
+        "waitForJS": true
+    },
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "scripts": [
+        {
+            "shortid": "BJX1Jw82ce"
+        }
+    ],
+    "shortid": "HJH11D83ce",
+    "name": "orders-main",
+    "folder": {
+        "shortid": "erkLzi"
+    },
+    "chrome": {
+        "printBackground": true,
+        "marginTop": "4cm",
+        "marginRight": "1.5cm",
+        "marginBottom": "1.5cm",
+        "marginLeft": "1.5cm",
+        "waitForJS": false
+    },
+    "pdfOperations": [
+        {
+            "type": "merge",
+            "templateShortid": "SJVbqZr9f",
+            "renderForEveryPage": true
+        }
+    ],
+    "creationDate": "2020-01-01T23:54:18.008Z",
+    "modificationDate": {
+        "$$date": 1577929083894
+    },
+    "inheritedReadPermissions": [],
+    "inheritedEditPermissions": [],
+    "_id": "sXYjKN4VIcgeESMu",
+    "$entitySet": "templates"
+}

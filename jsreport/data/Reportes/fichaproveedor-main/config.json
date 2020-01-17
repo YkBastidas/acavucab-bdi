@@ -1,0 +1,21 @@
+{
+    "shortid": "HyxO7e1Re8",
+    "name": "fichaproveedor-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "creationDate": "2020-01-16T13:13:35.734Z",
+    "modificationDate": {
+        "$$date": 1579196306989
+    },
+    "_id": "UytC8XggIqnvcgeE",
+    "$entitySet": "templates",
+    "data": {
+        "shortid": "S1xOeSyuxU"
+    },
+    "folder": {
+        "shortid": "4DuMvFM"
+    }
+}

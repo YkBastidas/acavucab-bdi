@@ -1,0 +1,21 @@
+{
+    "shortid": "ByxuzCM6lU",
+    "name": "top10comprasweb-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "data": {
+        "shortid": "S1xOeSyuxU"
+    },
+    "creationDate": "2020-01-15T23:26:48.040Z",
+    "modificationDate": {
+        "$$date": 1579131574339
+    },
+    "_id": "YWtMqaO1GEmL0Bkg",
+    "$entitySet": "templates",
+    "folder": {
+        "shortid": "4DuMvFM"
+    }
+}

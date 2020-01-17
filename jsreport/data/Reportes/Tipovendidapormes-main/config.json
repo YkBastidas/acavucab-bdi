@@ -1,0 +1,20 @@
+{
+    "shortid": "S1YaJmCeU",
+    "name": "Tipovendidapormes-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "folder": {
+        "shortid": "4DuMvFM"
+    },
+    "creationDate": {
+        "$$date": 1579196940405
+    },
+    "modificationDate": {
+        "$$date": 1579196940405
+    },
+    "_id": "eU6g5yNVaVVP401m",
+    "$entitySet": "templates"
+}
