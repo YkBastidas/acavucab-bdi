@@ -68,7 +68,6 @@ router.get('/read/clientePorRif', db.getClientePorRif) // GET CLIENTE BY RIF
 router.get('/read/clientePorCedula', db.getClientePorCedula) // GET CLIENTE BY CI
 router.get('/read/clientePorUserId', db.getClientePorUserID) //GET CLIENTE BY USER ID
 router.get('/read/usuarioPorNombre', db.getUsuarioPorNombre) // GET USER BY NAME
-router.get('/read/usuarioPorNombreTodo', db.getUsuarioPorNombreTodo) // GET USER BY NAME ALL
 router.get('/read/tiendaFisica', db.getTiendaFisica) // GET REAL SHOP DATA
 router.get('/read/userInfo', db.getUserInfo) //GET USER INFO IF AUTHENTICATED
 router.get('/read/telefonosPorCliente', db.getTelefonosPorCliente) //GET CLIENT'S TEL NUMBERS
@@ -85,7 +84,6 @@ router.get('/read/cervezas', db.getCervezas) //GET ALL BEERS
 router.get('/read/cantidadPorIdCerveza', db.getCantidadPorIdCerveza) //GET QUANTITY OF A BEER IN INVENTORY
 router.get('read/totalFacturaCompra',db.getTotalFacturaCompra) //TE DEVUELTE EL TOTAL DE UNA FACTURA DETERMINADA
 router.get('/read/usuarios', db.getUsuarios) //GET All Users
-router.get('/read/manejohorario', db.getManejoHorario) //GET CLIENT'S horario
 
 //POST ROUTES
 router.post('/create/usuario', db.postUsuario) //CREATE NEW USER
