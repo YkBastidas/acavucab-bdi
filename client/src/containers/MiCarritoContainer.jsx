@@ -157,7 +157,7 @@ export default class MiCarritoContainer extends Component {
     this.state = {
       userData: {id: '', nombre: '', contrasena: '', fk_rol:''},
       cerveza: { nombre: "", descripcion: "", precio_unitario:"", fk_ale:"", fk_lager:""},
-      productLine:{ cerveza1:{nombre: "", tipo:"", descripcion: "", precio: "", cantidad:"", precioTotal:""}},
+      productLine:{ cerveza1:{nombre: "", tipo:"", descripcion: "", precio: "", cantidad:"", cantidadEnCarrito: 0, precioTotal:""}},
       ventanaCerveza: {nombre: "", descripcion: "", precio_unitario:"", tipo:"", cantidadActual:"", cantidadDisp:""},
       totalCompra: "", isLoggedIn: "",
     }
@@ -235,7 +235,8 @@ export default class MiCarritoContainer extends Component {
     e.preventDefault();
     i = i+1
     let cerveza = 'cerveza'+i, ventanaCerveza =  this.state.ventanaCerveza,
-    precioTotal= parseFloat(ventanaCerveza.precio_unitario) * parseInt(ventanaCerveza.cantidadActual)
+    precioTotal= parseFloat(ventanaCerveza.precio_unitario) * parseInt(ventanaCerveza.cantidadActual), cantidadTotal,
+    previousState = this.state.productLine
     await this.setState(prevState => ({
       productLine: {
         ...prevState.productLine,
@@ -243,42 +244,74 @@ export default class MiCarritoContainer extends Component {
           ...prevState[cerveza],
           nombre: ventanaCerveza.nombre, tipo: ventanaCerveza.tipo,
           descripcion: ventanaCerveza.descripcion, precio: ventanaCerveza.precio_unitario,
-          cantidad: ventanaCerveza.cantidadActual, precioTotal: [precioTotal]},
+          cantidad: ventanaCerveza.cantidadActual,  precioTotal: precioTotal, cantidadEnCarrito: ""},
       }
     }))
     let cantidadHTML = document.getElementById('quantity'),
     quantValue = cantidadHTML.value
     await cantidadHTML.setAttribute("max", this.state.ventanaCerveza.cantidadDisp)
-    await this.setState({
-      ventanaCerveza: {nombre: "", descripcion: "", precio_unitario:"", tipo:"", cantidadActual:"", cantidadDisp:""}
-    })
     let elementHTML = document.getElementById('beerWindow'),
     carritoHTML = document.getElementById('ProductLineCarrito')
-    console.log(quantValue, cantidadHTML.max)
-    if((quantValue >= parseInt(cantidadHTML.min))&&(quantValue <= parseInt(cantidadHTML.max))){
+    let Carrito = Object.values(this.state.productLine), x=0, cervezaEnCarrito = this.state.productLine[cerveza], cantidadEnCarrito = 0
+    while(x < Carrito.length){
+      if(Carrito[x].nombre === cervezaEnCarrito.nombre) cantidadEnCarrito = parseInt(cantidadEnCarrito) + parseInt(Carrito[x].cantidad)
+      x++
+    }
+    cantidadEnCarrito = cantidadEnCarrito - quantValue
+    cantidadTotal = parseInt(quantValue) + parseInt(cantidadEnCarrito)
+    console.log(cantidadEnCarrito, cantidadTotal)
+    if((cantidadTotal  >= parseInt(cantidadHTML.min))&&(cantidadTotal  <= parseInt(cantidadHTML.max))){
       ReactDOM.render(crearVentanaCerveza(this.state.ventanaCerveza), elementHTML);
       ReactDOM.render(crearCarrito(this.state.productLine, this.handleSubmit), carritoHTML);
+      console.log(this.state.productLine)
+      await this.setState(prevState => ({
+        productLine: {
+          ...prevState.productLine,
+          [cerveza]: {
+            ...prevState[cerveza],
+            nombre: ventanaCerveza.nombre, tipo: ventanaCerveza.tipo,
+            descripcion: ventanaCerveza.descripcion, precio: ventanaCerveza.precio_unitario,
+            cantidad: ventanaCerveza.cantidadActual,  precioTotal: precioTotal, cantidadEnCarrito: cantidadTotal},
+        }
+      }))
+      await this.setState({
+        ventanaCerveza: {nombre: "", descripcion: "", precio_unitario:"", tipo:"", cantidadActual:"", cantidadDisp:""}
+      })
+      console.log(this.state.productLine)
     }
-    else alert('Cantidad Inválida')
+    else {alert('Cantidad Inválida'); this.setState({productLine : previousState})}
   }
   async handleSubmit(e){
     let idCompra, totalfactura, userData = this.state.userData
     e.preventDefault()
     if(this.state.isLoggedIn){
       if(userData.fk_rol===10){
+        let Carrito = Object.values(this.state.productLine), x=0, montoTotal = 0, cervezaEnCarrito, j = 1, cerveza
+        while(x < Carrito.length){
+          cerveza = "cerveza"+j
+          cervezaEnCarrito = this.state.productLine[cerveza]
+          if(Carrito[x].nombre === cervezaEnCarrito.nombre) montoTotal = parseInt(montoTotal) + parseInt(Carrito[x].precioTotal)
+          x++; j++
+        }
+        alert(montoTotal)
+        /*
         idCompra = await crearCompra(null,1,null,userData.id);
         postStatusCompra(idCompra);
         //AQUI IRIA EL LOOP PARA DETALLE
         totalfactura= await getTotalFactura(idCompra);
         putTotalFactura(idCompra,totalfactura);
+         */
+
       }
       else if (userData.fk_rol===8){
+        /*
         const fk_usuario= getClientePK(userData.id);
         idCompra = await crearCompra(fk_usuario,null,2,null);
         postStatusCompra(idCompra);
         //AQUI IRIA EL LOOP PARA DETALLE
         totalfactura= await getTotalFactura(idCompra);
         putTotalFactura(idCompra,totalfactura);
+         */
       }
     }
     else{

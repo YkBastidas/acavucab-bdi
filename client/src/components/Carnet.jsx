@@ -23,7 +23,7 @@ function formatDate(date) {
 class Carnet extends Component {
   render() {
     let data = this.props.data, qrText = data.rif,
-    qrURL="https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl="+qrText+"&chld=H|0"
+    qrURL="https://chart.googleapis.com/chart?cht=qr&chs=175x175&chl="+qrText+"&chld=H|0"
     return (
       <section className="row align-items-center margin-bottom">
         <h3> CARNET DE AFILIACIÓN </h3>
@@ -46,10 +46,7 @@ class Carnet extends Component {
         </div>
         <div className="col-3 bg-dark text-light align-self-center">
           <div className ="row">
-            <div className="col-12"> <h5>Numero Identificador</h5>{"Random"} </div>
-          </div>
-          <div className ="row">
-            <div className="col-12 mb-1"> <h5>QR CODE</h5> <img src={qrURL} alt="QRCode"/> </div>
+            <div className="col-12 mb-1 py-3"> <h5>QR CODE</h5> <img src={qrURL} alt="QRCode"/> </div>
           </div>
         </div>
     </section>)
