@@ -1,0 +1,20 @@
+{
+    "shortid": "r1gkdjC5lL",
+    "name": "inasistenciasportiempo-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "folder": {
+        "shortid": "4DuMvFM"
+    },
+    "creationDate": {
+        "$$date": 1578982531596
+    },
+    "modificationDate": {
+        "$$date": 1578982531596
+    },
+    "_id": "QsMfTBVoAgKLlFue",
+    "$entitySet": "templates"
+}

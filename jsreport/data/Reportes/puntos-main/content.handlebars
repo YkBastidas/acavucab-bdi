@@ -1,0 +1,88 @@
+<!--
+Invoice dynamically rendered into html using handlebars and converted into pdf
+using chrome-pdf recipe. The styles are extracted into separate asset for
+better readability and later reuse.
+
+Data to this sample are mocked at the design time and should be filled on the
+incoming API request.
+!-->
+
+<html>
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <style>
+            {#asset invoice-styles.css @encoding=utf8}
+        </style>
+    </head>
+    <body>
+        <div class="invoice-box">
+            <table cellpadding="0" cellspacing="0">
+                <tr class="top">
+                    <td colspan="2">
+                        <table>
+                            <tr>
+                                <td class="title">
+                                    <img src="{#asset invoice-logo.png @encoding=dataURI}" style="width:100%; max-width:300px;" />
+                                </td>
+                                <td>
+                                    Creado: {{now}}
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <h1 aling="center">Puntos acumulados y gastados</h1>
+            <table>
+                <tr class="heading">
+                    <td aling="center">
+                        Fecha Inicio 
+                    </td>
+                    <td aling="center">
+                        Fecha Fin
+                    </td>
+                    <td aling="center">
+                        Nombre Persona
+                    </td>
+                    <td aling="center">
+                        Nombre Comercio
+                    </td>
+                    <td aling="center">
+                        Total Puntos Disponibles
+                    </td>
+                    <td aling="center">
+                        Total Puntos Gastados
+                    </td>
+                    <td aling="center">
+                        Total Balance
+                    </td>
+                </tr>
+                {{#each rep}}
+                <tr>
+                    <td>
+                        {{inicio}}
+                    </td>
+                    <td>
+                        {{fin}}
+                    </td>
+                    <td>
+                        {{natural}}
+                    </td>
+                    <td>
+                        {{juridico}}
+                    </td>
+                    <td>
+                        {{tot}}
+                    </td>
+                    <td>
+                        {{total}}
+                    </td>
+                    <td>
+                        {{punto}}
+                    </td>
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+    </body>
+</html>

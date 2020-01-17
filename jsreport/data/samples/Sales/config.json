@@ -1,0 +1,17 @@
+{
+    "folder": {
+        "shortid": "cPgORa5"
+    },
+    "name": "Sales",
+    "shortid": "FnHe~Wz",
+    "creationDate": {
+        "$$date": 1577922855819
+    },
+    "modificationDate": {
+        "$$date": 1577922855819
+    },
+    "inheritedReadPermissions": [],
+    "inheritedEditPermissions": [],
+    "_id": "5wcEZ69Bjw634H3x",
+    "$entitySet": "folders"
+}

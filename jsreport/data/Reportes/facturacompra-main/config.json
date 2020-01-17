@@ -1,0 +1,21 @@
+{
+    "shortid": "Hyxwob43xU",
+    "name": "facturacompra-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "folder": {
+        "shortid": "4DuMvFM"
+    },
+    "data": {
+        "shortid": "S1xOeSyuxU"
+    },
+    "creationDate": "2020-01-15T06:38:35.440Z",
+    "modificationDate": {
+        "$$date": 1579071628159
+    },
+    "_id": "35MWmAUyYuMiISsf",
+    "$entitySet": "templates"
+}

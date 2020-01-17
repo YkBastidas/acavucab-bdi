@@ -1,0 +1,21 @@
+{
+    "shortid": "ryxeoOVnl8",
+    "name": "facturaventa-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "creationDate": "2020-01-15T07:02:13.623Z",
+    "modificationDate": {
+        "$$date": 1579071963067
+    },
+    "_id": "C1NTTJb5Wolm3bRs",
+    "$entitySet": "templates",
+    "data": {
+        "shortid": "S1xOeSyuxU"
+    },
+    "folder": {
+        "shortid": "4DuMvFM"
+    }
+}

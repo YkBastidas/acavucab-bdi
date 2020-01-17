@@ -1,0 +1,21 @@
+{
+    "shortid": "rJxLlqE2xL",
+    "name": "ordecompra-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "folder": {
+        "shortid": "4DuMvFM"
+    },
+    "creationDate": "2020-01-15T07:10:16.262Z",
+    "modificationDate": {
+        "$$date": 1579196391602
+    },
+    "_id": "w1vjr59j011u5aMH",
+    "$entitySet": "templates",
+    "data": {
+        "shortid": "S1xOeSyuxU"
+    }
+}

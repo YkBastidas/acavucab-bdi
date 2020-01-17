@@ -1,0 +1,21 @@
+{
+    "shortid": "ryeTDBspeI",
+    "name": "inventario-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "data": {
+        "shortid": "S1xOeSyuxU"
+    },
+    "creationDate": "2020-01-16T09:01:46.315Z",
+    "modificationDate": {
+        "$$date": 1579165676093
+    },
+    "_id": "9qgnElzAHD2bxZj5",
+    "$entitySet": "templates",
+    "folder": {
+        "shortid": "4DuMvFM"
+    }
+}

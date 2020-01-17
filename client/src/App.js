@@ -42,8 +42,8 @@ import AgregarDireccion from './pages/AgregarDireccion'
 import EditarDireccion from './pages/EditarDireccion'
 import EliminarDireccion from './pages/EliminarDireccion'
 import MiCarrito from './pages/MiCarrito'
-import MetodoPago from './pages/MetodoPago'
 import MetodoPagoTienda from './pages/MetodoPagoTienda'
+import Reportes from './pages/Reportes'
 
 
 class App extends Component {
@@ -90,8 +90,8 @@ class App extends Component {
             <Route path="/editardireccion/" component={EditarDireccion}/>
             <Route path="/eliminardireccion/" component={EliminarDireccion}/>
             <Route path="/carrito/" component={MiCarrito}/>
-            <Route path="/metodopago/" component={MetodoPago}/>
-            <Route path="/metodopagotienda/" component={MetodoPagoTienda}/>
+            <Route path="/metodopago/" component={MetodoPagoTienda}/>
+            <Route path="/reportes/" component={Reportes}/>
           </div>
         </Router>
     );

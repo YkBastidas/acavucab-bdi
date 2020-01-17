@@ -1,0 +1,21 @@
+{
+    "shortid": "H1qHtgTgU",
+    "name": "top5ventasevento-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "data": {
+        "shortid": "S1xOeSyuxU"
+    },
+    "creationDate": "2020-01-15T20:51:35.385Z",
+    "modificationDate": {
+        "$$date": 1579122126911
+    },
+    "_id": "44pQHTxqWivoMbHM",
+    "$entitySet": "templates",
+    "folder": {
+        "shortid": "4DuMvFM"
+    }
+}

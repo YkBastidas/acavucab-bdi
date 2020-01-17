@@ -1,4 +1,4 @@
-﻿//INITIALIZING THE SERVER CONSTANTS
+//INITIALIZING THE SERVER CONSTANTS
 const express = require('express') // invoke an instance of express application.
 const path = require('path')
 const bodyParser = require('body-parser')
@@ -17,8 +17,9 @@ var router = express.Router();
 const app = express()
 const port = 8000 // set application port
 const publicPath = path.join(__dirname, '..', 'client', 'build')
+const routes_report = require('./routes/reporte_routes');
 
-
+app.use('/api/reporte',routes_report);
 app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal'])
 app.use(bodyParser.json()); app.use(cookieParser()); app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({extended: true})) // initialize body-parser to parse incoming parameters requests to req.body
@@ -67,6 +68,7 @@ router.get('/read/clientePorRif', db.getClientePorRif) // GET CLIENTE BY RIF
 router.get('/read/clientePorCedula', db.getClientePorCedula) // GET CLIENTE BY CI
 router.get('/read/clientePorUserId', db.getClientePorUserID) //GET CLIENTE BY USER ID
 router.get('/read/usuarioPorNombre', db.getUsuarioPorNombre) // GET USER BY NAME
+router.get('/read/usuarioPorNombreTodo', db.getUsuarioPorNombreTodo) // GET USER BY NAME ALL
 router.get('/read/tiendaFisica', db.getTiendaFisica) // GET REAL SHOP DATA
 router.get('/read/userInfo', db.getUserInfo) //GET USER INFO IF AUTHENTICATED
 router.get('/read/telefonosPorCliente', db.getTelefonosPorCliente) //GET CLIENT'S TEL NUMBERS
@@ -83,6 +85,7 @@ router.get('/read/cervezas', db.getCervezas) //GET ALL BEERS
 router.get('/read/cantidadPorIdCerveza', db.getCantidadPorIdCerveza) //GET QUANTITY OF A BEER IN INVENTORY
 router.get('read/totalFacturaCompra',db.getTotalFacturaCompra) //TE DEVUELTE EL TOTAL DE UNA FACTURA DETERMINADA
 router.get('/read/usuarios', db.getUsuarios) //GET All Users
+router.get('/read/manejohorario', db.getManejoHorario) //GET CLIENT'S horario
 
 //POST ROUTES
 router.post('/create/usuario', db.postUsuario) //CREATE NEW USER

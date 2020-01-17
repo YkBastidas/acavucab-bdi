@@ -1,0 +1,21 @@
+{
+    "shortid": "Bkg0IgeOlU",
+    "name": "manejohorario-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "folder": {
+        "shortid": "4DuMvFM"
+    },
+    "creationDate": "2020-01-12T01:03:38.819Z",
+    "modificationDate": {
+        "$$date": 1578981426870
+    },
+    "_id": "BJxxYmnISObWdzUk",
+    "$entitySet": "templates",
+    "data": {
+        "shortid": "S1xOeSyuxU"
+    }
+}

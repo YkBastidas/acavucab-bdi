@@ -1,0 +1,21 @@
+{
+    "shortid": "Byx698jpx8",
+    "name": "diariocerveza-main",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "data": {
+        "shortid": "S1xOeSyuxU"
+    },
+    "folder": {
+        "shortid": "4DuMvFM"
+    },
+    "creationDate": "2020-01-16T09:06:26.131Z",
+    "modificationDate": {
+        "$$date": 1579165640151
+    },
+    "_id": "K57HwtUJ6vWOqzgj",
+    "$entitySet": "templates"
+}
