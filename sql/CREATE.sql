@@ -76,7 +76,6 @@ CREATE TABLE public.cerveza_artesanal
      clave numeric NOT NULL DEFAULT nextval('secuencia_cerveza'::regclass),
      nombre varchar(40) NOT NULL,
      descripcion varchar,
-     precio_unitario numeric NOT NULL,
      fk_ale numeric,
      fk_lager numeric,
      CONSTRAINT pk_clave_cerveza PRIMARY KEY (clave),
@@ -272,7 +271,7 @@ CREATE TABLE public.personal
      nombre varchar(15) NOT NULL,
      apellido varchar(15) NOT NULL,
      ci numeric(9) NOT NULL,
-     salario varchar(11) NOT NULL,
+     salario numeric NOT NULL,
      cargo varchar(50) NOT NULL,
      genero varchar NOT NULL,
      fk_usuario numeric NOT NULL,
@@ -669,9 +668,13 @@ CREATE TABLE public.detalle_compra
      precio_unitario numeric NOT NULL,
      fk_compra numeric NOT NULL,
      fk_cerveza numeric NOT NULL,
+     fk_ale numeric,
+     fk_lager numeric,
      CONSTRAINT pk_clave_detalle_compra PRIMARY KEY (clave),
      CONSTRAINT fk_fk_compra_detalle_compra FOREIGN KEY (fk_compra) REFERENCES compra(nro_factura),
-     CONSTRAINT fk_fk_cerveza_detalle_compra FOREIGN KEY (fk_cerveza) REFERENCES cerveza_artesanal(clave)
+     CONSTRAINT fk_fk_cerveza_detalle_compra FOREIGN KEY (fk_cerveza) REFERENCES cerveza_artesanal(clave),
+     CONSTRAINT fk_fk_ale_detalle_compra FOREIGN KEY (fk_ale) REFERENCES ale(clave),
+     CONSTRAINT fk_fk_lager_detalle_compra FOREIGN KEY (fk_lager) REFERENCES lager(clave)
 );
 
 CREATE SEQUENCE public.secuencia_inventario
@@ -877,8 +880,6 @@ CREATE TABLE public.historico_tasa
      numero_cambio numeric NOT NULL,
      fecha_inicio date NOT NULL,
      fecha_fin date,
-     tipo varchar(10),
-     CONSTRAINT chk_tipo_historico_tasa CHECK(tipo in ('Euros','Dólares')),
      CONSTRAINT pk_clave_historico_tasa PRIMARY KEY (clave)
 );
 
@@ -895,7 +896,6 @@ CREATE TABLE public.tipo_pago_divisa
      codigo numeric NOT NULL DEFAULT nextval('secuencia_tipo_pago_divisa'::regclass),
      banco varchar(15),
      tipo varchar(10) NOT NULL,
-     monto numeric NOT NULL,
      fk_historico_tasa numeric NOT NULL,
      fk_cliente varchar,
      CONSTRAINT fk_fk_cliente_tipo_pago_credito FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
@@ -915,9 +915,11 @@ CREATE TABLE public.historico_valor_puntos
 (
      clave numeric NOT NULL DEFAULT nextval('secuencia_historico_valor_puntos'::regclass),
      numero_cambio numeric NOT NULL,
+     tipo varchar(10) NOT NULL,
      fecha_inicio date NOT NULL,
      fecha_fin date,
-     CONSTRAINT pk_clave_historico_valor PRIMARY KEY (clave)
+     CONSTRAINT pk_clave_historico_valor PRIMARY KEY (clave),
+     CONSTRAINT chk_tipo_historico_valor_puntos CHECK (tipo in ('Compra','Venta'))
 );
 
 CREATE SEQUENCE public.secuencia_tipo_pago_puntos
@@ -932,7 +934,7 @@ CREATE TABLE public.tipo_pago_puntos
 (
      codigo numeric NOT NULL DEFAULT nextval('secuencia_tipo_pago_puntos'::regclass),
      banco varchar(15),
-     cantidad numeric NOT NULL,
+     cantidad numeric,
      fk_historico_valor_puntos numeric NOT NULL,
      fk_cliente varchar,
      CONSTRAINT fk_fk_cliente_tipo_pago_credito FOREIGN KEY (fk_cliente) REFERENCES cliente(rif),
@@ -1001,7 +1003,7 @@ CREATE TABLE public.status_compra
      fecha_cambio date NOT NULL,
      fk_status numeric NOT NULL,
      fk_compra numeric NOT NULL,
-     fk_departamento numeric,
+     fk_departamento numeric NOT NULL,
      CONSTRAINT pk_clave_status_compra PRIMARY KEY (clave),
      CONSTRAINT fk_fk_status_status_compra FOREIGN KEY (fk_status) REFERENCES status(clave),
      CONSTRAINT fk_fk_compra_status_compra FOREIGN KEY (fk_compra) REFERENCES compra(nro_factura),
