@@ -4,7 +4,7 @@
   "private": true,
   "proxy": "http://localhost:8000/",
   "dependencies": {
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "browserify-fs": "^1.0.0",
     "cheeseburger-menu": "0.0.13",
     "express": "^4.17.1",
